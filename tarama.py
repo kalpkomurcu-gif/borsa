@@ -1,3 +1,4 @@
+"""
 BIST 100 Gunluk Tarama — v3
 Tum BIST 100 hisseleri taranir, SADECE kriterleri saglayanlar raporlanir.
 
