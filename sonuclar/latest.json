@@ -1,123 +1,221 @@
 {
-  "tarih": "2026-07-08 05:43",
+  "tarih": "2026-07-08 05:52",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21",
   "taranan_hisse_sayisi": 100,
-  "sonuclar": {
-    "ALTNY": {
-      "Fiyat": 18.07,
-      "RSI": 66.3,
-      "MACD": 0.239,
-      "MA5": 17.29,
-      "MA9": 16.69,
-      "MA21": 16.3
+  "aktif_sinyaller": [
+    {
+      "hisse": "IEYHO",
+      "giris_tarih": "2026-06-09",
+      "giris_fiyat": 121.8,
+      "guncel_fiyat": 153.5,
+      "getiri": 26.0,
+      "gun": 20
     },
-    "ASELS": {
-      "Fiyat": 401.75,
-      "RSI": 56.8,
-      "MACD": 2.697,
-      "MA5": 380.45,
-      "MA9": 373.58,
-      "MA21": 379.9
+    {
+      "hisse": "SKBNK",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 16.87,
+      "guncel_fiyat": 19.08,
+      "getiri": 13.1,
+      "gun": 4
     },
-    "ASTOR": {
-      "Fiyat": 317.5,
-      "RSI": 56.6,
-      "MACD": 2.153,
-      "MA5": 298.35,
-      "MA9": 295.14,
-      "MA21": 294.19
+    {
+      "hisse": "ALTNY",
+      "giris_tarih": "2026-06-29",
+      "giris_fiyat": 16.55,
+      "guncel_fiyat": 18.07,
+      "getiri": 9.2,
+      "gun": 6
     },
-    "CWENE": {
-      "Fiyat": 40.0,
-      "RSI": 54.6,
-      "MACD": 0.092,
-      "MA5": 39.58,
-      "MA9": 38.58,
-      "MA21": 38.71
+    {
+      "hisse": "TRENJ",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 88.9,
+      "guncel_fiyat": 95.35,
+      "getiri": 7.3,
+      "gun": 4
     },
-    "IEYHO": {
-      "Fiyat": 153.5,
-      "RSI": 82.9,
-      "MACD": 1.062,
-      "MA5": 152.1,
-      "MA9": 147.73,
-      "MA21": 136.13
+    {
+      "hisse": "TRMET",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 113.8,
+      "guncel_fiyat": 120.4,
+      "getiri": 5.8,
+      "gun": 4
     },
-    "IZENR": {
-      "Fiyat": 10.5,
-      "RSI": 53.9,
-      "MACD": 0.062,
-      "MA5": 10.22,
-      "MA9": 10.15,
-      "MA21": 10.11
+    {
+      "hisse": "KUYAS",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 73.55,
+      "guncel_fiyat": 77.6,
+      "getiri": 5.5,
+      "gun": 4
     },
-    "KUYAS": {
-      "Fiyat": 77.6,
-      "RSI": 59.0,
-      "MACD": 1.302,
-      "MA5": 75.67,
-      "MA9": 72.73,
-      "MA21": 71.77
+    {
+      "hisse": "TUPRS",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 236.3,
+      "guncel_fiyat": 247.4,
+      "getiri": 4.7,
+      "gun": 4
     },
-    "PATEK": {
-      "Fiyat": 24.12,
-      "RSI": 54.2,
-      "MACD": 0.111,
-      "MA5": 23.54,
-      "MA9": 23.11,
-      "MA21": 23.27
+    {
+      "hisse": "THYAO",
+      "giris_tarih": "2026-07-02",
+      "giris_fiyat": 333.25,
+      "guncel_fiyat": 347.0,
+      "getiri": 4.1,
+      "gun": 3
     },
-    "SKBNK": {
-      "Fiyat": 19.08,
-      "RSI": 77.6,
-      "MACD": 0.257,
-      "MA5": 17.34,
-      "MA9": 16.85,
-      "MA21": 15.52
+    {
+      "hisse": "TRALT",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 50.6,
+      "guncel_fiyat": 51.2,
+      "getiri": 1.2,
+      "gun": 2
     },
-    "THYAO": {
-      "Fiyat": 347.0,
-      "RSI": 74.1,
-      "MACD": 1.471,
-      "MA5": 333.75,
-      "MA9": 331.31,
-      "MA21": 321.49
+    {
+      "hisse": "IZENR",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 10.42,
+      "guncel_fiyat": 10.5,
+      "getiri": 0.8,
+      "gun": 2
     },
-    "TRALT": {
-      "Fiyat": 51.2,
-      "RSI": 61.6,
-      "MACD": 0.181,
-      "MA5": 48.85,
-      "MA9": 48.02,
-      "MA21": 47.51
+    {
+      "hisse": "ASELS",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 399.5,
+      "guncel_fiyat": 401.75,
+      "getiri": 0.6,
+      "gun": 2
     },
-    "TRENJ": {
-      "Fiyat": 95.35,
-      "RSI": 61.5,
-      "MACD": 0.857,
-      "MA5": 90.5,
-      "MA9": 87.93,
-      "MA21": 87.97
+    {
+      "hisse": "ASTOR",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 319.0,
+      "guncel_fiyat": 317.5,
+      "getiri": -0.5,
+      "gun": 2
     },
-    "TRMET": {
-      "Fiyat": 120.4,
-      "RSI": 57.1,
-      "MACD": 1.131,
-      "MA5": 115.7,
-      "MA9": 112.81,
-      "MA21": 113.19
+    {
+      "hisse": "CWENE",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 41.0,
+      "guncel_fiyat": 40.0,
+      "getiri": -2.4,
+      "gun": 2
     },
-    "TUPRS": {
-      "Fiyat": 247.4,
-      "RSI": 62.5,
-      "MACD": 3.797,
-      "MA5": 239.84,
-      "MA9": 230.41,
-      "MA21": 229.65
+    {
+      "hisse": "PATEK",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 24.86,
+      "guncel_fiyat": 24.12,
+      "getiri": -3.0,
+      "gun": 2
     }
-  },
-  "portfoy_sinyal_vermeyen": [
-    "DSTKF"
+  ],
+  "listeden_cikanlar": [
+    {
+      "hisse": "BALSU",
+      "giris_tarih": "2026-07-03",
+      "giris_fiyat": 18.2,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 17.35,
+      "getiri": -4.7,
+      "gun": 1
+    },
+    {
+      "hisse": "BTCIM",
+      "giris_tarih": "2026-07-02",
+      "giris_fiyat": 6.09,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 5.88,
+      "getiri": -3.4,
+      "gun": 2
+    },
+    {
+      "hisse": "CCOLA",
+      "giris_tarih": "2026-06-29",
+      "giris_fiyat": 82.95,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 82.4,
+      "getiri": -0.7,
+      "gun": 5
+    },
+    {
+      "hisse": "DSTKF",
+      "giris_tarih": "2026-06-04",
+      "giris_fiyat": 2257.0,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 3585.0,
+      "getiri": 58.8,
+      "gun": 22
+    },
+    {
+      "hisse": "OTKAR",
+      "giris_tarih": "2026-07-02",
+      "giris_fiyat": 377.0,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 374.0,
+      "getiri": -0.8,
+      "gun": 2
+    },
+    {
+      "hisse": "TKFEN",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 141.9,
+      "cikis_tarih": "2026-07-06",
+      "cikis_fiyat": 134.5,
+      "getiri": -5.2,
+      "gun": 3
+    },
+    {
+      "hisse": "ALARK",
+      "giris_tarih": "2026-07-02",
+      "giris_fiyat": 106.7,
+      "cikis_tarih": "2026-07-03",
+      "cikis_fiyat": 104.9,
+      "getiri": -1.7,
+      "gun": 1
+    },
+    {
+      "hisse": "EKGYO",
+      "giris_tarih": "2026-07-01",
+      "giris_fiyat": 21.32,
+      "cikis_tarih": "2026-07-03",
+      "cikis_fiyat": 20.8,
+      "getiri": -2.4,
+      "gun": 2
+    },
+    {
+      "hisse": "ODINE",
+      "giris_tarih": "2026-06-22",
+      "giris_fiyat": 1694.0,
+      "cikis_tarih": "2026-07-03",
+      "cikis_fiyat": 1805.0,
+      "getiri": 6.6,
+      "gun": 9
+    },
+    {
+      "hisse": "BSOKE",
+      "giris_tarih": "2026-06-29",
+      "giris_fiyat": 37.16,
+      "cikis_tarih": "2026-07-02",
+      "cikis_fiyat": 36.96,
+      "getiri": -0.5,
+      "gun": 3
+    },
+    {
+      "hisse": "ENERY",
+      "giris_tarih": "2026-06-30",
+      "giris_fiyat": 10.75,
+      "cikis_tarih": "2026-07-02",
+      "cikis_fiyat": 10.17,
+      "getiri": -5.4,
+      "gun": 2
+    }
   ],
   "veri_alinamayan": []
 }
