@@ -1,7 +1,7 @@
-# BIST 100 Tarama — 2026-07-08 20:39
+# BIST 100 Tarama — 2026-07-09 21:06
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21
-Taranan: 100 hisse | Listede: 9 | Son 7 gunde cikan: 20
+Taranan: 100 hisse | Listede: 9 | Son 7 gunde cikan: 18
 
 ## 🟢 Aktif Sinyaller (9)
 
@@ -17,7 +17,7 @@ Taranan: 100 hisse | Listede: 9 | Son 7 gunde cikan: 20
 | AKSEN | 07.07.2026 | 89.85 | 89.0 | -0.9% | 2 |
 | DSTKF | 07.07.2026 | 3920.0 | 3820.0 | -2.6% | 2 |
 
-## 🔴 Listeden Cikanlar — Son 7 Gun (20)
+## 🔴 Listeden Cikanlar — Son 7 Gun (18)
 
 | Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |
 |---|---|---|---|---|---|---|
@@ -39,7 +39,5 @@ Taranan: 100 hisse | Listede: 9 | Son 7 gunde cikan: 20
 | ALARK | 02.07.2026 | 106.7 | 03.07.2026 | 104.9 | -1.7% | 1 |
 | EKGYO | 01.07.2026 | 21.32 | 03.07.2026 | 20.8 | -2.4% | 2 |
 | ODINE | 22.06.2026 | 1694.0 | 03.07.2026 | 1805.0 | +6.6% | 9 |
-| BSOKE | 29.06.2026 | 37.16 | 02.07.2026 | 36.96 | -0.5% | 3 |
-| ENERY | 30.06.2026 | 10.75 | 02.07.2026 | 10.17 | -5.4% | 2 |
 
 Not: Giris/cikis fiyatlari sinyal gununun kapanisidir; gercek islem fiyati ertesi gun acilisina gore degisebilir.

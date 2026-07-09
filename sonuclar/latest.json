@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-07-08 20:39",
+  "tarih": "2026-07-09 21:06",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -238,24 +238,6 @@
       "cikis_fiyat": 1805.0,
       "getiri": 6.6,
       "gun": 9
-    },
-    {
-      "hisse": "BSOKE",
-      "giris_tarih": "2026-06-29",
-      "giris_fiyat": 37.16,
-      "cikis_tarih": "2026-07-02",
-      "cikis_fiyat": 36.96,
-      "getiri": -0.5,
-      "gun": 3
-    },
-    {
-      "hisse": "ENERY",
-      "giris_tarih": "2026-06-30",
-      "giris_fiyat": 10.75,
-      "cikis_tarih": "2026-07-02",
-      "cikis_fiyat": 10.17,
-      "getiri": -5.4,
-      "gun": 2
     }
   ],
   "veri_alinamayan": []
