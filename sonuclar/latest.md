@@ -1,7 +1,7 @@
-# BIST 100 Tarama — 2026-07-14 19:57
+# BIST 100 Tarama — 2026-07-15 19:49
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21
-Taranan: 100 hisse | Listede: 19 | Son 7 gunde cikan: 18
+Taranan: 100 hisse | Listede: 19 | Son 7 gunde cikan: 14
 
 ## 🟢 Aktif Sinyaller (19)
 
@@ -27,7 +27,7 @@ Taranan: 100 hisse | Listede: 19 | Son 7 gunde cikan: 18
 | SASA | 13.07.2026 | 2.55 | 2.52 | -1.2% | 2 |
 | VESTL | 10.07.2026 | 26.42 | 26.04 | -1.4% | 3 |
 
-## 🔴 Listeden Cikanlar — Son 7 Gun (18)
+## 🔴 Listeden Cikanlar — Son 7 Gun (14)
 
 | Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |
 |---|---|---|---|---|---|---|
@@ -45,9 +45,5 @@ Taranan: 100 hisse | Listede: 19 | Son 7 gunde cikan: 18
 | ASTOR | 03.07.2026 | 319.0 | 09.07.2026 | 304.75 | -4.5% | 4 |
 | CWENE | 03.07.2026 | 41.0 | 09.07.2026 | 39.06 | -4.7% | 4 |
 | SKBNK | 01.07.2026 | 16.87 | 09.07.2026 | 17.55 | +4.0% | 6 |
-| CCOLA | 07.07.2026 | 85.35 | 08.07.2026 | 84.0 | -1.6% | 1 |
-| THYAO | 02.07.2026 | 333.25 | 08.07.2026 | 332.0 | -0.4% | 4 |
-| TRENJ | 01.07.2026 | 88.9 | 08.07.2026 | 92.85 | +4.4% | 5 |
-| TRMET | 01.07.2026 | 113.8 | 08.07.2026 | 116.9 | +2.7% | 5 |
 
 Not: Giris/cikis fiyatlari sinyal gununun kapanisidir; gercek islem fiyati ertesi gun acilisina gore degisebilir.

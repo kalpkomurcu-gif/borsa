@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-07-14 19:57",
+  "tarih": "2026-07-15 19:49",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -282,42 +282,6 @@
       "cikis_fiyat": 17.55,
       "getiri": 4.0,
       "gun": 6
-    },
-    {
-      "hisse": "CCOLA",
-      "giris_tarih": "2026-07-07",
-      "giris_fiyat": 85.35,
-      "cikis_tarih": "2026-07-08",
-      "cikis_fiyat": 84.0,
-      "getiri": -1.6,
-      "gun": 1
-    },
-    {
-      "hisse": "THYAO",
-      "giris_tarih": "2026-07-02",
-      "giris_fiyat": 333.25,
-      "cikis_tarih": "2026-07-08",
-      "cikis_fiyat": 332.0,
-      "getiri": -0.4,
-      "gun": 4
-    },
-    {
-      "hisse": "TRENJ",
-      "giris_tarih": "2026-07-01",
-      "giris_fiyat": 88.9,
-      "cikis_tarih": "2026-07-08",
-      "cikis_fiyat": 92.85,
-      "getiri": 4.4,
-      "gun": 5
-    },
-    {
-      "hisse": "TRMET",
-      "giris_tarih": "2026-07-01",
-      "giris_fiyat": 113.8,
-      "cikis_tarih": "2026-07-08",
-      "cikis_fiyat": 116.9,
-      "getiri": 2.7,
-      "gun": 5
     }
   ],
   "veri_alinamayan": []
