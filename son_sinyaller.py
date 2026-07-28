@@ -3,10 +3,12 @@ Son N gunde sinyale GIREN tum hisseler ve kar/zararlari.
 
 tarama.py'nin gosterge fonksiyonlarini kullanir; gunluk raporla ayni
 5 kriter gecerlidir:
-  MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25,
+  MACD > Sinyal, RSI > 50, ADX(14) > 25,
   Hacim > onceki 20 gunun ortalamasi (girise sart)
 
-ARTI, sadece bu raporda gecerli DENEME kriteri:
+ARTI, sadece bu raporda gecerli DENEME kriterleri:
+  MA kosulu: "Fiyat > MA5/MA9/MA21" yerine "MA5 > MA21" (surekli).
+  Zarar kes: giristen kumule -4% ve altina dusen kapanista cikis.
   Kapanis > onceki gunun kapanisi  —  YALNIZCA GIRISTE aranir.
   Cikis degerlendirmesine girmez; pozisyon dusen gunde de listede kalir.
 Bu yuzden pozisyon dongusu tarama.py'den kopyalanip tek satir eklendi;
@@ -37,6 +39,31 @@ YUKARI_GUN_SART = True
 # olabilir; esik "ilk bu seviyeyi goren kapanista cik" demektir.
 ZARAR_KES = -4.0
 
+# Deneme kriteri: "Fiyat > MA5/MA9/MA21" yerine "MA5 > MA21".
+# MA9 tamamen devre disi. Diger kriterler gibi SUREKLI bir kosuldur:
+# hem girise hem listede kalmaya etki eder.
+MA5_MA21_MODU = True
+
+
+def temel_seri(close: pd.Series) -> pd.Series:
+    """
+    tarama.sinyal_serisi() ile ayni — tek fark MA kosulu.
+    MA5_MA21_MODU=False ise tarama.py'nin kosulu birebir kullanilir.
+    """
+    if not MA5_MA21_MODU:
+        return T.sinyal_serisi(close)
+
+    close = close.dropna()
+    macd_val = (T.macd_histogram(close) if T.MACD_MODE == "histogram"
+                else T.macd_line(close))
+    sinyal = (
+        (macd_val > 0)
+        & (T.rsi(close) > 50)
+        & (close.rolling(5).mean() > close.rolling(21).mean())
+    )
+    sinyal.iloc[:30] = False   # ilk 30 bar: gostergeler oturmamis
+    return sinyal.fillna(False)
+
 
 def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
     """
@@ -46,7 +73,7 @@ def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
     close = close.dropna()
     if len(close) < T.MIN_VERI:
         return []
-    temel = T.sinyal_serisi(close)
+    temel = temel_seri(close)
     adx_ok = (T.adx(high.reindex(close.index), low.reindex(close.index), close)
               > T.ADX_ESIK).fillna(False)
     hacim_ok = T.hacim_kosulu(volume.reindex(close.index))
@@ -136,8 +163,9 @@ def main():
     L = [
         f"# Son {GUN} Gunde Sinyale Girenler — {tarih}",
         "",
-        f"Kriterler: MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, "
-        f"ADX({T.ADX_PERIYOT}) > {T.ADX_ESIK:g}, "
+        f"Kriterler: MACD > Sinyal, RSI > 50, "
+        + ("**MA5 > MA21**" if MA5_MA21_MODU else "Fiyat > MA5/MA9/MA21")
+        + f", ADX({T.ADX_PERIYOT}) > {T.ADX_ESIK:g}, "
         f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)"
         + (", **Kapanis > onceki gun kapanisi (girise sart)**"
            if YUKARI_GUN_SART else "")
