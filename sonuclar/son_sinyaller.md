@@ -1,66 +1,42 @@
-# Son 45 Gunde Sinyale Girenler — 2026-07-28 11:38
+# Son 30 Gunde Sinyale Girenler — 2026-07-28 11:40
 
-Kriterler: MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25, Hacim > onceki 20 gun ortalamasi (girise sart)
-Giris tarihi 13.06.2026 ve sonrasi olan TUM pozisyonlar. Sure filtresi yok.
+Kriterler: MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25, Hacim > onceki 20 gun ortalamasi (girise sart), **Kapanis > onceki gun kapanisi (girise sart)**
+Giris tarihi 28.06.2026 ve sonrasi olan TUM pozisyonlar. Sure filtresi yok.
 
-**Toplam 45 sinyal** | Karli: 11 | Zararli: 34
+**Toplam 21 sinyal** | Karli: 6 | Zararli: 15
 
-**Getiri toplami: -43.0%** | Ortalama: -0.96%
+**Getiri toplami: -28.6%** | Ortalama: -1.36%
 
 | Hisse | Giris | Giris F. | Cikis | Satis F. | Kar/Zarar | Gun | Durum |
 |---|---|---|---|---|---|---|---|
-| IEYHO | 19.06.2026 | 130.9 | 16.07.2026 | 160.0 | +22.2% | 18 | SATILDI |
 | TUPRS | 07.07.2026 | 258.0 | 24.07.2026 | 304.25 | +17.9% | 12 | SATILDI |
-| EFOR | 17.06.2026 | 13.95 | 29.06.2026 | 15.3 | +9.7% | 8 | SATILDI |
 | SKBNK | 01.07.2026 | 16.87 | 09.07.2026 | 17.55 | +4.0% | 6 | SATILDI |
 | MAGEN | 16.07.2026 | 38.24 | 27.07.2026 | 39.7 | +3.8% | 7 | SATILDI |
 | KUYAS | 01.07.2026 | 73.55 | 07.07.2026 | 75.8 | +3.1% | 4 | SATILDI |
-| ODINE | 23.06.2026 | 1750.0 | 03.07.2026 | 1805.0 | +3.1% | 8 | SATILDI |
 | SOKM | 17.07.2026 | 51.6 | 24.07.2026 | 53.1 | +2.9% | 5 | SATILDI |
-| PGSUS | 15.06.2026 | 181.2 | 22.06.2026 | 182.5 | +0.7% | 5 | SATILDI |
-| GRSEL | 27.07.2026 | 344.0 | — | 345.25 | +0.4% | 2 | LISTEDE |
 | TURSG | 20.07.2026 | 6.65 | 23.07.2026 | 6.67 | +0.3% | 3 | SATILDI |
 | THYAO | 02.07.2026 | 333.25 | 08.07.2026 | 332.0 | -0.4% | 4 | SATILDI |
-| FROTO | 15.06.2026 | 90.1 | 17.06.2026 | 89.55 | -0.6% | 2 | SATILDI |
-| KCHOL | 15.06.2026 | 196.8 | 17.06.2026 | 195.7 | -0.6% | 2 | SATILDI |
-| THYAO | 25.06.2026 | 328.5 | 30.06.2026 | 326.0 | -0.8% | 3 | SATILDI |
-| EREGL | 23.07.2026 | 44.2 | — | 43.82 | -0.9% | 4 | LISTEDE |
-| BSOKE | 22.06.2026 | 36.48 | 25.06.2026 | 36.12 | -1.0% | 3 | SATILDI |
-| SKBNK | 19.06.2026 | 15.6 | 26.06.2026 | 15.45 | -1.0% | 5 | SATILDI |
-| VESTL | 26.06.2026 | 26.04 | 30.06.2026 | 25.78 | -1.0% | 2 | SATILDI |
+| EREGL | 23.07.2026 | 44.2 | — | 43.88 | -0.7% | 4 | LISTEDE |
 | AKSEN | 17.07.2026 | 106.0 | 23.07.2026 | 104.4 | -1.5% | 4 | SATILDI |
-| ENERY | 22.06.2026 | 9.86 | 26.06.2026 | 9.71 | -1.5% | 4 | SATILDI |
-| YKBNK | 19.06.2026 | 43.38 | 24.06.2026 | 42.72 | -1.5% | 3 | SATILDI |
 | ISMEN | 16.07.2026 | 37.18 | 22.07.2026 | 36.54 | -1.7% | 4 | SATILDI |
-| TAVHL | 16.06.2026 | 300.0 | 19.06.2026 | 295.03 | -1.7% | 3 | SATILDI |
-| TURSG | 18.06.2026 | 6.56 | 19.06.2026 | 6.45 | -1.7% | 1 | SATILDI |
 | EFOR | 17.07.2026 | 17.86 | 22.07.2026 | 17.5 | -2.0% | 3 | SATILDI |
 | CWENE | 22.07.2026 | 40.3 | 23.07.2026 | 39.44 | -2.1% | 1 | SATILDI |
-| PSGYO | 17.06.2026 | 3.82 | 23.06.2026 | 3.74 | -2.1% | 4 | SATILDI |
-| OYAKC | 15.06.2026 | 22.06 | 17.06.2026 | 21.58 | -2.2% | 2 | SATILDI |
 | PETKM | 23.07.2026 | 22.56 | 24.07.2026 | 22.02 | -2.4% | 1 | SATILDI |
-| TURSG | 16.06.2026 | 6.54 | 17.06.2026 | 6.37 | -2.6% | 1 | SATILDI |
-| HALKB | 18.06.2026 | 49.1 | 19.06.2026 | 47.48 | -3.3% | 1 | SATILDI |
-| ODINE | 27.07.2026 | 2607.5 | — | 2512.5 | -3.6% | 2 | LISTEDE |
-| CWENE | 19.06.2026 | 41.12 | 22.06.2026 | 39.6 | -3.7% | 1 | SATILDI |
+| ODINE | 27.07.2026 | 2607.5 | — | 2517.5 | -3.5% | 2 | LISTEDE |
 | SKBNK | 10.07.2026 | 19.27 | 13.07.2026 | 18.52 | -3.9% | 1 | SATILDI |
-| KTLEV | 18.06.2026 | 185.8 | 24.06.2026 | 178.2 | -4.1% | 4 | SATILDI |
-| VESTL | 13.07.2026 | 25.92 | 17.07.2026 | 24.8 | -4.3% | 3 | SATILDI |
 | BALSU | 03.07.2026 | 18.2 | 06.07.2026 | 17.35 | -4.7% | 1 | SATILDI |
 | CWENE | 03.07.2026 | 41.0 | 09.07.2026 | 39.06 | -4.7% | 4 | SATILDI |
 | ENERY | 30.06.2026 | 10.75 | 02.07.2026 | 10.17 | -5.4% | 2 | SATILDI |
-| BALSU | 24.06.2026 | 18.67 | 29.06.2026 | 17.5 | -6.3% | 3 | SATILDI |
 | EUPWR | 21.07.2026 | 105.6 | 27.07.2026 | 98.2 | -7.0% | 4 | SATILDI |
 | SKBNK | 17.07.2026 | 19.63 | 20.07.2026 | 17.91 | -8.8% | 1 | SATILDI |
-| ODAS | 22.06.2026 | 9.53 | 24.06.2026 | 8.56 | -10.2% | 2 | SATILDI |
 | DSTKF | 07.07.2026 | 3920.0 | 13.07.2026 | 3457.5 | -11.8% | 4 | SATILDI |
 
 ## Ozet
 
 | | Adet | Toplam % | Ortalama % |
 |---|---|---|---|
-| Satilanlar | 42 | -38.9% | -0.93% |
-| Hala listede | 3 | -4.1% | -1.37% |
-| TUMU | 45 | -43.0% | -0.96% |
+| Satilanlar | 19 | -24.4% | -1.28% |
+| Hala listede | 2 | -4.2% | -2.10% |
+| TUMU | 21 | -28.6% | -1.36% |
 
 Not: Yuzdeler her isleme esit tutar konuldugu ve bilesiklenme olmadigi varsayimiyla toplanmistir. Fiyatlar kapanistir; komisyon/slipaj dahil degildir.
