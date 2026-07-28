@@ -25,13 +25,43 @@ jobs:
         run: pip install yfinance pandas
 
       - name: Raporu uret
-        run: python son_sinyaller.py "${{ inputs.gun }}"
+        # pipefail sart: tee'nin cikis kodu python'unkini gizlerdi,
+        # hata sessizce basarili gorunurdu.
+        shell: bash
+        run: |
+          set -o pipefail
+          python son_sinyaller.py "${{ inputs.gun }}" 2>&1 | tee /tmp/cikti.log
 
       - name: Sonucu is ozetine yaz
-        if: always()
+        if: success()
         run: cat sonuclar/son_sinyaller.md >> "$GITHUB_STEP_SUMMARY" || true
 
+      - name: HATA — is ozetine yaz
+        if: failure()
+        run: |
+          {
+            echo "# ❌ RAPOR URETILEMEDI"
+            echo ""
+            if grep -q "endeks verisi alinamadi" /tmp/cikti.log 2>/dev/null; then
+              echo "## Sebep: BIST100 endeks verisi alinamadi"
+              echo ""
+              echo "Goreli guc kriteri (son 21 gun getirisi > BIST100)"
+              echo "hesaplanamadigi icin rapor uretilmedi. Kriteri sessizce"
+              echo "atlayip yaniltici bir tablo vermemek icin duruldu."
+              echo ""
+              echo "En olasi sebep: Yahoo rate limit (429). Birkac dakika"
+              echo "sonra tekrar calistirmak genelde yeterli."
+            else
+              echo "## Sebep: asagidaki log'a bakin"
+            fi
+            echo ""
+            echo '```'
+            tail -40 /tmp/cikti.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Sonucu commit et
+        if: success()
         run: |
           git config user.name "bist-tarama-bot"
           git config user.email "actions@github.com"
