@@ -1,0 +1,40 @@
+name: Son Sinyaller (Kar/Zarar)
+
+on:
+  workflow_dispatch:
+    inputs:
+      gun:
+        description: "Kac gun geriye bakilsin"
+        required: false
+        default: "15"
+
+permissions:
+  contents: write
+
+jobs:
+  rapor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas
+
+      - name: Raporu uret
+        run: python son_sinyaller.py "${{ inputs.gun }}"
+
+      - name: Sonucu is ozetine yaz
+        if: always()
+        run: cat sonuclar/son_sinyaller.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Sonucu commit et
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/son_sinyaller.md
+          git diff --cached --quiet || git commit -m "Son sinyaller raporu: $(date +'%Y-%m-%d %H:%M')"
+          git push
