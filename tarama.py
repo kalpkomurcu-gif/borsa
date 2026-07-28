@@ -7,6 +7,8 @@ Kriterler:
   1) MACD (12-26-9) > Sinyal cizgisi (al kesisimi bolgesi)
   2) RSI (14) > 50
   3) Kapanis > MA5 ve MA9 ve MA21 (SMA)
+  4) ADX (14) > 25  (trend gucu — varsayilan: her gun aranir)
+  5) Hacim > onceki 20 gunun ortalama hacmi  (varsayilan: sadece GIRIS gunu)
 
 Kurallar:
   - Giris fiyati  = kriterlerin ILK saglandigi gunun kapanisi
@@ -53,6 +55,30 @@ MIN_VERI = 60         # bundan az veri varsa hisse atlanir (yeni halka arzlar)
 #   "histogram" -> MACD > Sinyal cizgisi (al kesisimi bolgesi)
 MACD_MODE = "histogram"
 
+# ---------------------------------------------------------------
+# Hacim kosulu (v6)
+# ---------------------------------------------------------------
+# Karsilastirma penceresi sinyal gununu ICERMEZ (shift(1)); aksi halde
+# yuksek hacimli gun kendi esigini yukseltip kosulu zayiflatir.
+HACIM_PERIYOT = 20
+HACIM_CARPAN = 1.0        # 1.0 = esigin ustunde | 1.5 = %50 fazla hacim iste
+HACIM_MODU = "ortalama"   # "ortalama" -> 20 gun ort. | "maksimum" -> 20 gunun en yuksegi
+
+# True  -> hacim SADECE giris gunu aranir, pozisyon MACD/RSI/MA ile devam eder
+# False -> hacim her gun aranir; hacim dususte pozisyon listeden cikar
+HACIM_SADECE_GIRIS = True
+
+# ---------------------------------------------------------------
+# ADX kosulu (v6) — trend gucu
+# ---------------------------------------------------------------
+ADX_PERIYOT = 14
+ADX_ESIK = 25.0
+
+# False -> ADX her gun aranir; trend zayiflayinca pozisyon listeden cikar
+#          (RSI/MACD gibi surekli bir kosul; onerilen)
+# True  -> ADX sadece giris gunu aranir
+ADX_SADECE_GIRIS = False
+
 
 def rsi(close: pd.Series, period: int = 14) -> pd.Series:
     """Wilder RSI"""
@@ -75,6 +101,48 @@ def macd_histogram(close: pd.Series, fast: int = 12, slow: int = 26, signal: int
     macd = macd_line(close, fast, slow)
     sig = macd.ewm(span=signal, adjust=False).mean()
     return macd - sig
+
+
+def adx(high: pd.Series, low: pd.Series, close: pd.Series,
+        period: int = ADX_PERIYOT) -> pd.Series:
+    """
+    Wilder ADX. RSI ile ayni yumusatma kullanilir:
+    ewm(alpha=1/period, adjust=False).
+    Yeterli veri oturmadan NaN doner; NaN karsilastirmasi False verir.
+    """
+    high = pd.to_numeric(high, errors="coerce")
+    low = pd.to_numeric(low, errors="coerce")
+    close = pd.to_numeric(close, errors="coerce")
+
+    up = high.diff()
+    down = -low.diff()
+    # Ilk barda onceki bar yok -> DM/TR tanimsiz (NaN). where(...) kosulu
+    # NaN'da False verip 0 yazacagi icin acikca maskeleniyor.
+    plus_dm = up.where((up > down) & (up > 0), 0.0).where(up.notna())
+    minus_dm = down.where((down > up) & (down > 0), 0.0).where(down.notna())
+
+    onceki_kapanis = close.shift()
+    tr = pd.concat(
+        [high - low, (high - onceki_kapanis).abs(), (low - onceki_kapanis).abs()],
+        axis=1,
+    ).max(axis=1).where(onceki_kapanis.notna())
+
+    def wilder(s: pd.Series) -> pd.Series:
+        return s.ewm(alpha=1 / period, min_periods=period, adjust=False).mean()
+
+    atr = wilder(tr)
+    plus_di = 100 * wilder(plus_dm) / atr
+    minus_di = 100 * wilder(minus_dm) / atr
+    dx = 100 * (plus_di - minus_di).abs() / (plus_di + minus_di)
+    return wilder(dx)
+
+
+def hacim_kosulu(volume: pd.Series) -> pd.Series:
+    """Sinyal gunundeki hacim, onceki HACIM_PERIYOT gunun esigini asiyor mu?"""
+    v = pd.to_numeric(volume, errors="coerce")
+    onceki = v.shift(1).rolling(HACIM_PERIYOT)
+    ref = onceki.max() if HACIM_MODU == "maksimum" else onceki.mean()
+    return (v > ref * HACIM_CARPAN).fillna(False)
 
 
 def sinyal_serisi(close: pd.Series) -> pd.Series:
@@ -101,28 +169,44 @@ def sinyal_serisi(close: pd.Series) -> pd.Series:
     return sinyal.fillna(False)
 
 
-def pozisyonlar(close: pd.Series) -> list[dict]:
+def pozisyonlar(high: pd.Series, low: pd.Series, close: pd.Series,
+                volume: pd.Series) -> list[dict]:
     """
     Sinyal serisindeki kesintisiz True bloklarini pozisyonlara cevirir.
     Her blok: giris (ilk True gun) ve varsa cikis (blok sonrasi ilk gun).
+
+    GIRIS  : MACD/RSI/MA + ADX + hacim kosullarinin tamami.
+    DEVAM  : MACD/RSI/MA + "SADECE_GIRIS" bayragi False olan filtreler.
     """
     close = close.dropna()
     if len(close) < MIN_VERI:
         return []
-    sinyal = sinyal_serisi(close)
+    temel = sinyal_serisi(close)
+    adx_ok = (adx(high.reindex(close.index), low.reindex(close.index), close)
+              > ADX_ESIK).fillna(False)
+    hacim_ok = hacim_kosulu(volume.reindex(close.index))
+
+    giris_kosulu = temel & adx_ok & hacim_ok
+    kalma_kosulu = temel.copy()
+    if not ADX_SADECE_GIRIS:
+        kalma_kosulu &= adx_ok
+    if not HACIM_SADECE_GIRIS:
+        kalma_kosulu &= hacim_ok
 
     poz = []
     aktif = None
-    for i, (tarih, s) in enumerate(sinyal.items()):
-        if s and aktif is None:
+    for i, tarih in enumerate(close.index):
+        girebilir = bool(giris_kosulu.iloc[i])
+        kalabilir = bool(kalma_kosulu.iloc[i])
+        if aktif is None and girebilir:
             aktif = {
                 "giris_tarih": tarih,
                 "giris_fiyat": float(close.iloc[i]),
                 "gun": 1,
             }
-        elif s and aktif is not None:
+        elif aktif is not None and kalabilir:
             aktif["gun"] += 1
-        elif (not s) and aktif is not None:
+        elif aktif is not None and not kalabilir:
             aktif["cikis_tarih"] = tarih
             aktif["cikis_fiyat"] = float(close.iloc[i])
             poz.append(aktif)
@@ -160,7 +244,8 @@ def main():
         sym = t.replace(".IS", "")
         try:
             close = data[t]["Close"]
-            for p in pozisyonlar(close):
+            for p in pozisyonlar(data[t]["High"], data[t]["Low"], close,
+                                 data[t]["Volume"]):
                 if "guncel_fiyat" in p:  # aktif pozisyon
                     aktifler.append({
                         "hisse": sym,
@@ -187,7 +272,18 @@ def main():
     cikanlar.sort(key=lambda x: pd.Timestamp(x["cikis_tarih"]), reverse=True)
 
     tarih = datetime.now().strftime("%Y-%m-%d %H:%M")
-    baslik = "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21"
+    _hacim_ref = (
+        f"son {HACIM_PERIYOT} gunun "
+        f"{'en yuksek' if HACIM_MODU == 'maksimum' else 'ortalama'} hacmi"
+    )
+    _hacim_carpan = "" if HACIM_CARPAN == 1.0 else f" x{HACIM_CARPAN:g}"
+    _hacim_kapsam = "giriste" if HACIM_SADECE_GIRIS else "her gun"
+    _adx_kapsam = "giriste" if ADX_SADECE_GIRIS else "her gun"
+    baslik = (
+        "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, "
+        f"ADX({ADX_PERIYOT}) > {ADX_ESIK:g} ({_adx_kapsam}), "
+        f"Hacim > {_hacim_ref}{_hacim_carpan} ({_hacim_kapsam})"
+    )
 
     lines_md = [
         f"# BIST 100 Tarama — {tarih}",
