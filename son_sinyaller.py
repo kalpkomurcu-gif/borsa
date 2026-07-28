@@ -1,10 +1,16 @@
 """
 Son N gunde sinyale GIREN tum hisseler ve kar/zararlari.
 
-tarama.py'nin pozisyonlar() fonksiyonunu aynen kullanir; yani gunluk
-raporla birebir ayni 5 kriter gecerlidir:
+tarama.py'nin gosterge fonksiyonlarini kullanir; gunluk raporla ayni
+5 kriter gecerlidir:
   MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25,
   Hacim > onceki 20 gunun ortalamasi (girise sart)
+
+ARTI, sadece bu raporda gecerli DENEME kriteri:
+  Kapanis > onceki gunun kapanisi  —  YALNIZCA GIRISTE aranir.
+  Cikis degerlendirmesine girmez; pozisyon dusen gunde de listede kalir.
+Bu yuzden pozisyon dongusu tarama.py'den kopyalanip tek satir eklendi;
+kalma kosulu tarama.py ile birebir aynidir.
 
 Cikan hisse cikis fiyatindan satilmis sayilir; hala listede olan
 guncel fiyattan degerlenir. Sure filtresi YOKTUR.
@@ -21,6 +27,50 @@ import yfinance as yf
 import tarama as T
 
 GUN = int(sys.argv[1]) if len(sys.argv) > 1 else 15
+
+# Deneme kriteri: kapanis onceki gunun kapanisinin uzerinde olsun (sadece giris)
+YUKARI_GUN_SART = True
+
+
+def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
+    """
+    tarama.pozisyonlar() ile ayni; tek fark girise eklenen
+    "kapanis > onceki kapanis" kosulu. Kalma kosulu degismez.
+    """
+    close = close.dropna()
+    if len(close) < T.MIN_VERI:
+        return []
+    temel = T.sinyal_serisi(close)
+    adx_ok = (T.adx(high.reindex(close.index), low.reindex(close.index), close)
+              > T.ADX_ESIK).fillna(False)
+    hacim_ok = T.hacim_kosulu(volume.reindex(close.index))
+
+    giris_kosulu = temel & adx_ok & hacim_ok
+    if YUKARI_GUN_SART:
+        giris_kosulu &= (close > close.shift(1)).fillna(False)
+
+    kalma_kosulu = temel.copy()
+    if not T.ADX_SADECE_GIRIS:
+        kalma_kosulu &= adx_ok
+    if not T.HACIM_SADECE_GIRIS:
+        kalma_kosulu &= hacim_ok
+
+    poz, aktif = [], None
+    for i, tarih in enumerate(close.index):
+        if aktif is None and bool(giris_kosulu.iloc[i]):
+            aktif = {"giris_tarih": tarih, "giris_fiyat": float(close.iloc[i]),
+                     "gun": 1}
+        elif aktif is not None and bool(kalma_kosulu.iloc[i]):
+            aktif["gun"] += 1
+        elif aktif is not None:
+            aktif["cikis_tarih"] = tarih
+            aktif["cikis_fiyat"] = float(close.iloc[i])
+            poz.append(aktif)
+            aktif = None
+    if aktif is not None:
+        aktif["guncel_fiyat"] = float(close.iloc[-1])
+        poz.append(aktif)
+    return poz
 
 
 def main():
@@ -39,7 +89,7 @@ def main():
             if d["Close"].dropna().empty:
                 basarisiz.append(sym)
                 continue
-            for p in T.pozisyonlar(d["High"], d["Low"], d["Close"], d["Volume"]):
+            for p in pozisyonlar_deneme(d["High"], d["Low"], d["Close"], d["Volume"]):
                 if pd.Timestamp(p["giris_tarih"]).normalize() < esik:
                     continue
                 acik = "guncel_fiyat" in p
@@ -69,7 +119,9 @@ def main():
         "",
         f"Kriterler: MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21, "
         f"ADX({T.ADX_PERIYOT}) > {T.ADX_ESIK:g}, "
-        f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)",
+        f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)"
+        + (", **Kapanis > onceki gun kapanisi (girise sart)**"
+           if YUKARI_GUN_SART else ""),
         f"Giris tarihi {esik:%d.%m.%Y} ve sonrasi olan TUM pozisyonlar. "
         "Sure filtresi yok.",
         "",
