@@ -50,7 +50,37 @@ MA5_MA21_MODU = True
 # Sadece GIRISTE aranir; pozisyon endeksin gerisine dusunce cikmaz.
 GORECELI_GUC = True
 GORECELI_PERIYOT = 21      # ~1 ay (islem gunu)
-ENDEKS = "XU100.IS"
+# Yahoo'da BIST100 hem "XU100.IS" hem "^XU100" olarak duruyor; ilki bos
+# donerse ikincisi denenir. 100 hisselik indirmenin hemen ardindan gelen
+# istek bazen 429 yiyor, o yuzden her sembol icin birkac deneme yapilir.
+ENDEKS_ADAYLARI = ["XU100.IS", "^XU100"]
+ENDEKS_DENEME = 3
+
+
+def endeks_kapanis() -> tuple[pd.Series, str]:
+    """BIST100 kapanis serisini getirir. Hicbiri gelmezse SystemExit."""
+    import time
+    hatalar = []
+    for sembol in ENDEKS_ADAYLARI:
+        for deneme in range(1, ENDEKS_DENEME + 1):
+            try:
+                e = yf.download(sembol, period="6mo", interval="1d",
+                                auto_adjust=True, progress=False)
+                kap = e["Close"] if "Close" in e else pd.Series(dtype=float)
+                if hasattr(kap, "columns"):      # tek ticker'da da DataFrame gelebilir
+                    kap = kap.iloc[:, 0]
+                kap = kap.dropna()
+                if len(kap) > GORECELI_PERIYOT:
+                    return kap, sembol
+                hatalar.append(f"{sembol} deneme {deneme}: {len(kap)} satir (yetersiz)")
+            except Exception as exc:
+                hatalar.append(f"{sembol} deneme {deneme}: {type(exc).__name__}")
+            time.sleep(3 * deneme)
+    raise SystemExit(
+        "HATA: BIST100 endeks verisi alinamadi, goreli guc kriteri "
+        "hesaplanamiyor. Kriteri sessizce atlayip yaniltici rapor "
+        "uretmemek icin duruluyor.\n  " + "\n  ".join(hatalar)
+    )
 
 
 def donem_getirisi(close: pd.Series, periyot: int) -> pd.Series:
@@ -145,22 +175,13 @@ def main():
     data = yf.download(tickers, period="6mo", interval="1d",
                        auto_adjust=True, progress=False, group_by="ticker")
 
-    endeks_getiri = None
+    endeks_getiri, endeks_sembol = None, None
     if GORECELI_GUC:
-        print(f"Endeks indiriliyor ({ENDEKS})...")
-        e = yf.download(ENDEKS, period="6mo", interval="1d",
-                        auto_adjust=True, progress=False)
-        ekapanis = e["Close"]
-        if hasattr(ekapanis, "columns"):          # tek ticker'da da DataFrame gelebilir
-            ekapanis = ekapanis.iloc[:, 0]
-        ekapanis = ekapanis.dropna()
-        if ekapanis.empty:
-            raise SystemExit(
-                f"HATA: {ENDEKS} verisi alinamadi. Goreli guc kriteri "
-                "hesaplanamayacagi icin rapor uretilmedi."
-            )
+        print("BIST100 endeksi indiriliyor...")
+        ekapanis, endeks_sembol = endeks_kapanis()
         endeks_getiri = donem_getirisi(ekapanis, GORECELI_PERIYOT)
-        print(f"  {len(ekapanis)} gun endeks verisi alindi.")
+        print(f"  {endeks_sembol}: {len(ekapanis)} gun veri alindi "
+              f"({ekapanis.index[0]:%d.%m.%Y} - {ekapanis.index[-1]:%d.%m.%Y})")
 
     esik = pd.Timestamp(datetime.now() - timedelta(days=GUN)).normalize()
     kayitlar, basarisiz = [], []
@@ -208,8 +229,8 @@ def main():
         f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)"
         + (", **Kapanis > onceki gun kapanisi (girise sart)**"
            if YUKARI_GUN_SART else "")
-        + (f", **Son {GORECELI_PERIYOT} gun getirisi > BIST100 (girise sart)**"
-           if GORECELI_GUC else "")
+        + (f", **Son {GORECELI_PERIYOT} gun getirisi > BIST100 "
+            f"[{endeks_sembol}] (girise sart)**" if GORECELI_GUC else "")
         + (f", **Zarar kes: kapanista {ZARAR_KES:g}%**"
            if ZARAR_KES is not None else ""),
         f"Giris tarihi {esik:%d.%m.%Y} ve sonrasi olan TUM pozisyonlar. "
