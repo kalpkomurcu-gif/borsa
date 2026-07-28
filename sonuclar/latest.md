@@ -1,15 +1,16 @@
-# BIST 100 Tarama — 2026-07-28 11:25
+# BIST 100 Tarama — 2026-07-28 20:22
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)
-Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 10
+Taranan: 100 hisse | Listede: 4 | Son 7 gunde cikan: 10
 
-## 🟢 Aktif Sinyaller (3)
+## 🟢 Aktif Sinyaller (4)
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| GRSEL | 27.07.2026 | 344.0 | 344.5 | +0.1% | 2 |
-| EREGL | 23.07.2026 | 44.2 | 43.76 | -1.0% | 4 |
-| ODINE | 27.07.2026 | 2607.5 | 2505.0 | -3.9% | 2 |
+| GRSEL | 27.07.2026 | 344.0 | 353.5 | +2.8% | 2 |
+| EFOR | 28.07.2026 | 20.62 | 20.62 | +0.0% | 1 |
+| ODINE | 27.07.2026 | 2607.5 | 2600.0 | -0.3% | 2 |
+| EREGL | 23.07.2026 | 44.2 | 43.86 | -0.8% | 4 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (10)
 
