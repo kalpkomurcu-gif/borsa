@@ -31,6 +31,12 @@ GUN = int(sys.argv[1]) if len(sys.argv) > 1 else 15
 # Deneme kriteri: kapanis onceki gunun kapanisinin uzerinde olsun (sadece giris)
 YUKARI_GUN_SART = True
 
+# Zarar kes: kapanista giris fiyatina gore bu yuzdenin altina dusuldugu gun
+# pozisyon kapatilir — kriterler hala saglaniyor olsa bile. None = kapali.
+# Not: gap ile acilan sert dususte gerceklesen zarar bu esikten daha kotu
+# olabilir; esik "ilk bu seviyeyi goren kapanista cik" demektir.
+ZARAR_KES = -4.0
+
 
 def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
     """
@@ -57,16 +63,28 @@ def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
 
     poz, aktif = [], None
     for i, tarih in enumerate(close.index):
-        if aktif is None and bool(giris_kosulu.iloc[i]):
-            aktif = {"giris_tarih": tarih, "giris_fiyat": float(close.iloc[i]),
-                     "gun": 1}
-        elif aktif is not None and bool(kalma_kosulu.iloc[i]):
+        fiyat = float(close.iloc[i])
+        if aktif is None:
+            if bool(giris_kosulu.iloc[i]):
+                aktif = {"giris_tarih": tarih, "giris_fiyat": fiyat, "gun": 1}
+            continue
+
+        # Zarar kes kriterlerden ONCE bakilir: kosullar hala saglansa bile cikar.
+        zarar = (fiyat / aktif["giris_fiyat"] - 1) * 100
+        if ZARAR_KES is not None and zarar <= ZARAR_KES:
+            sebep = "ZARAR KES"
+        elif bool(kalma_kosulu.iloc[i]):
             aktif["gun"] += 1
-        elif aktif is not None:
-            aktif["cikis_tarih"] = tarih
-            aktif["cikis_fiyat"] = float(close.iloc[i])
-            poz.append(aktif)
-            aktif = None
+            continue
+        else:
+            sebep = "KRITER"
+
+        aktif["cikis_tarih"] = tarih
+        aktif["cikis_fiyat"] = fiyat
+        aktif["sebep"] = sebep
+        poz.append(aktif)
+        aktif = None
+
     if aktif is not None:
         aktif["guncel_fiyat"] = float(close.iloc[-1])
         poz.append(aktif)
@@ -103,6 +121,7 @@ def main():
                     "getiri": round((satis / p["giris_fiyat"] - 1) * 100, 1),
                     "gun": p["gun"],
                     "acik": acik,
+                    "sebep": p.get("sebep", ""),
                 })
         except Exception as e:
             basarisiz.append(f"{sym}({type(e).__name__})")
@@ -121,7 +140,9 @@ def main():
         f"ADX({T.ADX_PERIYOT}) > {T.ADX_ESIK:g}, "
         f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)"
         + (", **Kapanis > onceki gun kapanisi (girise sart)**"
-           if YUKARI_GUN_SART else ""),
+           if YUKARI_GUN_SART else "")
+        + (f", **Zarar kes: kapanista {ZARAR_KES:g}%**"
+           if ZARAR_KES is not None else ""),
         f"Giris tarihi {esik:%d.%m.%Y} ve sonrasi olan TUM pozisyonlar. "
         "Sure filtresi yok.",
         "",
@@ -144,14 +165,18 @@ def main():
                 f"| {k['hisse']} | {pd.Timestamp(k['giris_tarih']):%d.%m.%Y} "
                 f"| {k['giris_fiyat']} | {ct} | {k['satis_fiyat']} "
                 f"| {k['getiri']:+.1f}% | {k['gun']} "
-                f"| {'LISTEDE' if k['acik'] else 'SATILDI'} |"
+                f"| {'LISTEDE' if k['acik'] else k['sebep'] or 'KRITER'} |"
             )
 
         kapali = [k for k in kayitlar if not k["acik"]]
         aciklar = [k for k in kayitlar if k["acik"]]
         L += ["", "## Ozet", "",
               "| | Adet | Toplam % | Ortalama % |", "|---|---|---|---|"]
-        for ad, grup in (("Satilanlar", kapali), ("Hala listede", aciklar),
+        zk = [k for k in kapali if k["sebep"] == "ZARAR KES"]
+        kr = [k for k in kapali if k["sebep"] != "ZARAR KES"]
+        for ad, grup in (("Kriter bozulunca satilan", kr),
+                         ("Zarar kes ile satilan", zk),
+                         ("Hala listede", aciklar),
                          ("TUMU", kayitlar)):
             if grup:
                 s = sum(x["getiri"] for x in grup)
