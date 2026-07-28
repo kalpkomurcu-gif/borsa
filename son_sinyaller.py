@@ -9,6 +9,7 @@ tarama.py'nin gosterge fonksiyonlarini kullanir; gunluk raporla ayni
 ARTI, sadece bu raporda gecerli DENEME kriterleri:
   MA kosulu: "Fiyat > MA5/MA9/MA21" yerine "MA5 > MA21" (surekli).
   Zarar kes: giristen kumule -4% ve altina dusen kapanista cikis.
+  Goreli guc: son 21 islem gunu getirisi BIST100'u gecmeli (girise sart).
   Kapanis > onceki gunun kapanisi  —  YALNIZCA GIRISTE aranir.
   Cikis degerlendirmesine girmez; pozisyon dusen gunde de listede kalir.
 Bu yuzden pozisyon dongusu tarama.py'den kopyalanip tek satir eklendi;
@@ -44,6 +45,18 @@ ZARAR_KES = -4.0
 # hem girise hem listede kalmaya etki eder.
 MA5_MA21_MODU = True
 
+# Deneme kriteri: hissenin son GORECELI_PERIYOT islem gunundeki getirisi
+# BIST100 endeksinin ayni donemdeki getirisinden BUYUK olmali.
+# Sadece GIRISTE aranir; pozisyon endeksin gerisine dusunce cikmaz.
+GORECELI_GUC = True
+GORECELI_PERIYOT = 21      # ~1 ay (islem gunu)
+ENDEKS = "XU100.IS"
+
+
+def donem_getirisi(close: pd.Series, periyot: int) -> pd.Series:
+    """Her gun icin son 'periyot' islem gunundeki yuzde degisim."""
+    return close / close.shift(periyot) - 1
+
 
 def temel_seri(close: pd.Series) -> pd.Series:
     """
@@ -65,7 +78,8 @@ def temel_seri(close: pd.Series) -> pd.Series:
     return sinyal.fillna(False)
 
 
-def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
+def pozisyonlar_deneme(high, low, close, volume,
+                       endeks_getiri: pd.Series | None = None) -> list[dict]:
     """
     tarama.pozisyonlar() ile ayni; tek fark girise eklenen
     "kapanis > onceki kapanis" kosulu. Kalma kosulu degismez.
@@ -81,6 +95,13 @@ def pozisyonlar_deneme(high, low, close, volume) -> list[dict]:
     giris_kosulu = temel & adx_ok & hacim_ok
     if YUKARI_GUN_SART:
         giris_kosulu &= (close > close.shift(1)).fillna(False)
+    if GORECELI_GUC:
+        if endeks_getiri is None:
+            raise ValueError("GORECELI_GUC acik ama endeks getirisi verilmedi")
+        hisse_getiri = donem_getirisi(close, GORECELI_PERIYOT)
+        giris_kosulu &= (
+            hisse_getiri > endeks_getiri.reindex(close.index)
+        ).fillna(False)
 
     kalma_kosulu = temel.copy()
     if not T.ADX_SADECE_GIRIS:
@@ -124,6 +145,23 @@ def main():
     data = yf.download(tickers, period="6mo", interval="1d",
                        auto_adjust=True, progress=False, group_by="ticker")
 
+    endeks_getiri = None
+    if GORECELI_GUC:
+        print(f"Endeks indiriliyor ({ENDEKS})...")
+        e = yf.download(ENDEKS, period="6mo", interval="1d",
+                        auto_adjust=True, progress=False)
+        ekapanis = e["Close"]
+        if hasattr(ekapanis, "columns"):          # tek ticker'da da DataFrame gelebilir
+            ekapanis = ekapanis.iloc[:, 0]
+        ekapanis = ekapanis.dropna()
+        if ekapanis.empty:
+            raise SystemExit(
+                f"HATA: {ENDEKS} verisi alinamadi. Goreli guc kriteri "
+                "hesaplanamayacagi icin rapor uretilmedi."
+            )
+        endeks_getiri = donem_getirisi(ekapanis, GORECELI_PERIYOT)
+        print(f"  {len(ekapanis)} gun endeks verisi alindi.")
+
     esik = pd.Timestamp(datetime.now() - timedelta(days=GUN)).normalize()
     kayitlar, basarisiz = [], []
 
@@ -134,7 +172,8 @@ def main():
             if d["Close"].dropna().empty:
                 basarisiz.append(sym)
                 continue
-            for p in pozisyonlar_deneme(d["High"], d["Low"], d["Close"], d["Volume"]):
+            for p in pozisyonlar_deneme(d["High"], d["Low"], d["Close"], d["Volume"],
+                                        endeks_getiri):
                 if pd.Timestamp(p["giris_tarih"]).normalize() < esik:
                     continue
                 acik = "guncel_fiyat" in p
@@ -169,6 +208,8 @@ def main():
         f"Hacim > onceki {T.HACIM_PERIYOT} gun ortalamasi (girise sart)"
         + (", **Kapanis > onceki gun kapanisi (girise sart)**"
            if YUKARI_GUN_SART else "")
+        + (f", **Son {GORECELI_PERIYOT} gun getirisi > BIST100 (girise sart)**"
+           if GORECELI_GUC else "")
         + (f", **Zarar kes: kapanista {ZARAR_KES:g}%**"
            if ZARAR_KES is not None else ""),
         f"Giris tarihi {esik:%d.%m.%Y} ve sonrasi olan TUM pozisyonlar. "
