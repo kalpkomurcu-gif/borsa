@@ -2,13 +2,16 @@
 Filtre karsilastirmali backtest.
 
 tarama.py'deki gercek gosterge fonksiyonlarini kullanir; pozisyon dongusu
-burada acikca kurulur ki ESKI (MACD/RSI/MA) ve YENI (+ADX +Hacim) kriterler
-ayni veri uzerinde yan yana hesaplanabilsin.
+burada acikca kurulur ki farkli kriter setleri ayni veri uzerinde yan yana
+hesaplanabilsin.
 
-Iki getiri tanimi raporlanir:
-  A) Giris fiyatindan cikisa   -> "3 gunden uzun sureni say" (ileriye donuk
-                                  bilgi icerir, uygulanabilir degil)
-  B) 4. gunun kapanisindan cikisa -> "3 gun sinyalde kalani al" (uygulanabilir)
+Getiri = giris gunu kapanisi -> cikis gunu kapanisi. Tum pozisyonlar sayilir;
+sure filtresi YOKTUR.
+
+Kriterler:
+  TEMEL : MACD > Sinyal, RSI > 50, Fiyat > MA5/MA9/MA21
+  HACIM : o gunku hacim > onceki 20 gunun ortalamasi  (girise sart)
+  ADX   : ADX(14) > 25
 
 Kullanim: python backtest.py
 """
@@ -18,9 +21,7 @@ import yfinance as yf
 
 import tarama as T
 
-PERIYOT = "1y"          # indirilecek gecmis
-MIN_GUN = 3             # "3 gunden fazla" -> gun > 3
-GIRIS_GUNU = 4          # B senaryosunda giris yapilan gun
+PERIYOT = "1y"
 
 
 def pozisyon_kur(close: pd.Series, giris: pd.Series, kalma: pd.Series) -> list[dict]:
@@ -28,8 +29,7 @@ def pozisyon_kur(close: pd.Series, giris: pd.Series, kalma: pd.Series) -> list[d
     poz, aktif = [], None
     for i, tarih in enumerate(close.index):
         if aktif is None and bool(giris.iloc[i]):
-            aktif = {"giris_tarih": tarih, "giris_i": i,
-                     "giris_fiyat": float(close.iloc[i]), "gun": 1}
+            aktif = {"giris_tarih": tarih, "giris_fiyat": float(close.iloc[i]), "gun": 1}
         elif aktif is not None and bool(kalma.iloc[i]):
             aktif["gun"] += 1
         elif aktif is not None:
@@ -39,67 +39,64 @@ def pozisyon_kur(close: pd.Series, giris: pd.Series, kalma: pd.Series) -> list[d
             aktif = None
     if aktif is not None:
         aktif["acik"] = True
-        aktif["cikis_fiyat"] = float(close.iloc[-1])
         aktif["cikis_tarih"] = close.index[-1]
+        aktif["cikis_fiyat"] = float(close.iloc[-1])
         poz.append(aktif)
     return poz
 
 
-def senaryo(sym, close, high, low, volume, adx_ac: bool, hacim_ac: bool) -> list[dict]:
+def senaryo(sym, close, high, low, volume, hacim: bool, adx: str | None) -> list[dict]:
+    """adx: None | 'surekli' (her gun aranir) | 'giris' (sadece giriste)."""
     close = close.dropna()
     if len(close) < T.MIN_VERI:
         return []
     temel = T.sinyal_serisi(close)
-    giris = temel.copy()
-    kalma = temel.copy()
+    giris, kalma = temel.copy(), temel.copy()
 
-    if adx_ac:
+    if adx:
         adx_ok = (T.adx(high.reindex(close.index), low.reindex(close.index), close)
                   > T.ADX_ESIK).fillna(False)
         giris &= adx_ok
-        if not T.ADX_SADECE_GIRIS:
+        if adx == "surekli":
             kalma &= adx_ok
-    if hacim_ac:
-        hacim_ok = T.hacim_kosulu(volume.reindex(close.index))
-        giris &= hacim_ok
-        if not T.HACIM_SADECE_GIRIS:
-            kalma &= hacim_ok
+    if hacim:
+        giris &= T.hacim_kosulu(volume.reindex(close.index))
 
-    out = []
-    for p in pozisyon_kur(close, giris, kalma):
+    for p in (out := pozisyon_kur(close, giris, kalma)):
         p["hisse"] = sym
-        i4 = p["giris_i"] + GIRIS_GUNU - 1
-        p["gun4_fiyat"] = float(close.iloc[i4]) if i4 < len(close) else None
-        out.append(p)
+        p["getiri"] = (p["cikis_fiyat"] / p["giris_fiyat"] - 1) * 100
     return out
 
 
 def ozet(poz: list[dict], etiket: str) -> dict:
-    uzun = [p for p in poz if p["gun"] > MIN_GUN]
-    kapali = [p for p in uzun if not p.get("acik")]
-    acik = [p for p in uzun if p.get("acik")]
-
-    def ret_a(p):
-        return (p["cikis_fiyat"] / p["giris_fiyat"] - 1) * 100
-
-    def ret_b(p):
-        return None if not p["gun4_fiyat"] else (p["cikis_fiyat"] / p["gun4_fiyat"] - 1) * 100
-
-    a = [ret_a(p) for p in kapali]
-    b = [x for x in (ret_b(p) for p in kapali) if x is not None]
-    aa = [ret_a(p) for p in acik]
-    ab = [x for x in (ret_b(p) for p in acik) if x is not None]
+    kapali = [p for p in poz if not p.get("acik")]
+    acik = [p for p in poz if p.get("acik")]
+    r = sorted(p["getiri"] for p in kapali)
+    n = len(r)
+    medyan = 0.0 if not n else (r[n // 2] if n % 2 else (r[n // 2 - 1] + r[n // 2]) / 2)
+    kaz = [x for x in r if x > 0]
+    kyb = [x for x in r if x <= 0]
     return {
-        "etiket": etiket, "toplam_poz": len(poz), "uzun_poz": len(uzun),
-        "kapali": len(kapali), "acik": len(acik),
-        "A_toplam": sum(a), "A_ort": (sum(a)/len(a) if a else 0),
-        "A_kazanan": sum(1 for x in a if x > 0),
-        "B_toplam": sum(b), "B_ort": (sum(b)/len(b) if b else 0),
-        "B_kazanan": sum(1 for x in b if x > 0), "B_sayi": len(b),
-        "A_acik": sum(aa), "B_acik": sum(ab),
-        "ort_gun": (sum(p["gun"] for p in uzun)/len(uzun) if uzun else 0),
+        "etiket": etiket, "kapali": n, "acik": len(acik),
+        "toplam": sum(r), "ort": (sum(r) / n if n else 0), "medyan": medyan,
+        "kazanan": len(kaz),
+        "kazanan_ort": (sum(kaz) / len(kaz) if kaz else 0),
+        "kaybeden_ort": (sum(kyb) / len(kyb) if kyb else 0),
+        "ort_gun": (sum(p["gun"] for p in kapali) / n if n else 0),
+        "en_iyi": (r[-1] if n else 0), "en_kotu": (r[0] if n else 0),
+        "acik_toplam": sum(p["getiri"] for p in acik),
         "kapali_poz": kapali,
     }
+
+
+SENARYOLAR = {
+    "TEMEL (MACD/RSI/MA)":        dict(hacim=False, adx=None),
+    "+ Hacim":                    dict(hacim=True,  adx=None),
+    "+ ADX (surekli)":            dict(hacim=False, adx="surekli"),
+    "+ ADX (sadece giris)":       dict(hacim=False, adx="giris"),
+    "TUMU — ADX surekli":         dict(hacim=True,  adx="surekli"),
+    "TUMU — ADX sadece giris":    dict(hacim=True,  adx="giris"),
+}
 
 
 def main():
@@ -108,14 +105,7 @@ def main():
     data = yf.download(tickers, period=PERIYOT, interval="1d",
                        auto_adjust=True, progress=False, group_by="ticker")
 
-    senaryolar = {
-        "ESKI (MACD/RSI/MA)": dict(adx_ac=False, hacim_ac=False),
-        "+ ADX>25": dict(adx_ac=True, hacim_ac=False),
-        "+ Hacim>20g ort": dict(adx_ac=False, hacim_ac=True),
-        "YENI (ADX + Hacim)": dict(adx_ac=True, hacim_ac=True),
-    }
-    sonuc, basarisiz = {k: [] for k in senaryolar}, []
-
+    sonuc, basarisiz = {k: [] for k in SENARYOLAR}, []
     for t in tickers:
         sym = t.replace(".IS", "")
         try:
@@ -123,7 +113,7 @@ def main():
             if d["Close"].dropna().empty:
                 basarisiz.append(sym)
                 continue
-            for ad, kw in senaryolar.items():
+            for ad, kw in SENARYOLAR.items():
                 sonuc[ad] += senaryo(sym, d["Close"], d["High"], d["Low"],
                                      d["Volume"], **kw)
         except Exception as e:
@@ -136,49 +126,57 @@ def main():
         "",
         f"Veri: {PERIYOT} | Taranan: {len(T.BIST100)} hisse "
         f"| Veri alinamayan: {len(basarisiz)}",
-        f"Filtre: sadece {MIN_GUN} gunden UZUN suren pozisyonlar",
+        "Getiri: giris gunu kapanisi -> cikis gunu kapanisi. "
+        "Tum pozisyonlar dahil, sure filtresi yok.",
+        f"Hacim: o gunku hacim > onceki {T.HACIM_PERIYOT} gunun ortalamasi (girise sart). "
+        f"ADX esigi: {T.ADX_ESIK:g}",
         "",
-        "A = giris fiyatindan cikisa (ileriye donuk bilgi icerir, uygulanabilir DEGIL)",
-        f"B = {GIRIS_GUNU}. gun kapanisindan cikisa (uygulanabilir)",
-        "",
-        "| Senaryo | Kapali poz. | Ort. gun | A toplam | A ort | A kazanan | "
-        "B toplam | B ort | B kazanan |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| Kriter seti | Poz. | Ort. gun | Toplam % | Ort. % | Medyan % | "
+        "Kazanma | Kazanan ort. | Kaybeden ort. | En iyi | En kotu |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for o in ozetler:
+        oran = f"{100*o['kazanan']/o['kapali']:.0f}%" if o["kapali"] else "-"
         L.append(
             f"| {o['etiket']} | {o['kapali']} | {o['ort_gun']:.1f} "
-            f"| {o['A_toplam']:+.1f}% | {o['A_ort']:+.2f}% | {o['A_kazanan']}/{o['kapali']} "
-            f"| {o['B_toplam']:+.1f}% | {o['B_ort']:+.2f}% | {o['B_kazanan']}/{o['B_sayi']} |"
+            f"| {o['toplam']:+.1f}% | {o['ort']:+.2f}% | {o['medyan']:+.2f}% "
+            f"| {oran} ({o['kazanan']}/{o['kapali']}) "
+            f"| {o['kazanan_ort']:+.2f}% | {o['kaybeden_ort']:+.2f}% "
+            f"| {o['en_iyi']:+.1f}% | {o['en_kotu']:+.1f}% |"
         )
 
     L += ["", "## Acik pozisyonlar (rapor gunu itibariyle)", "",
-          "| Senaryo | Acik poz. | A toplam | B toplam |", "|---|---|---|---|"]
+          "| Kriter seti | Acik poz. | Toplam % |", "|---|---|---|"]
     for o in ozetler:
-        L.append(f"| {o['etiket']} | {o['acik']} | {o['A_acik']:+.1f}% | {o['B_acik']:+.1f}% |")
+        L.append(f"| {o['etiket']} | {o['acik']} | {o['acik_toplam']:+.1f}% |")
 
-    yeni = next(o for o in ozetler if o["etiket"].startswith("YENI"))
-    en_iyi = sorted(yeni["kapali_poz"],
-                    key=lambda p: -(p["cikis_fiyat"]/p["giris_fiyat"]))[:10]
-    en_kotu = sorted(yeni["kapali_poz"],
-                     key=lambda p: (p["cikis_fiyat"]/p["giris_fiyat"]))[:10]
-    for baslik, grup in (("En iyi 10", en_iyi), ("En kotu 10", en_kotu)):
-        L += ["", f"## YENI kriterler — {baslik}", "",
-              "| Hisse | Giris | Giris F. | Cikis | Cikis F. | A % | B % | Gun |",
-              "|---|---|---|---|---|---|---|---|"]
+    # Tam kriter setinin (senin istedigin) islem dagilimi
+    tam = next(o for o in ozetler if o["etiket"] == "TUMU — ADX surekli")
+    L += ["", "## Tum kriterler — sure dagilimi", "",
+          "| Tutus suresi | Poz. | Toplam % | Ort. % | Kazanma |", "|---|---|---|---|---|"]
+    for et, alt, ust in [("1 gun", 1, 1), ("2-3 gun", 2, 3), ("4-7 gun", 4, 7),
+                         ("8-15 gun", 8, 15), ("16+ gun", 16, 10**6)]:
+        g = [p["getiri"] for p in tam["kapali_poz"] if alt <= p["gun"] <= ust]
+        if not g:
+            continue
+        L.append(f"| {et} | {len(g)} | {sum(g):+.1f}% | {sum(g)/len(g):+.2f}% "
+                 f"| {100*sum(1 for x in g if x>0)/len(g):.0f}% |")
+
+    for baslik, ters in (("En iyi 15", True), ("En kotu 15", False)):
+        grup = sorted(tam["kapali_poz"], key=lambda p: p["getiri"], reverse=ters)[:15]
+        L += ["", f"## Tum kriterler — {baslik}", "",
+              "| Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |",
+              "|---|---|---|---|---|---|---|"]
         for p in grup:
-            ra = (p["cikis_fiyat"]/p["giris_fiyat"]-1)*100
-            rb = ("-" if not p["gun4_fiyat"]
-                  else f"{(p['cikis_fiyat']/p['gun4_fiyat']-1)*100:+.1f}%")
             L.append(
                 f"| {p['hisse']} | {p['giris_tarih']:%d.%m.%Y} | {p['giris_fiyat']:.2f} "
                 f"| {p['cikis_tarih']:%d.%m.%Y} | {p['cikis_fiyat']:.2f} "
-                f"| {ra:+.1f}% | {rb} | {p['gun']} |"
+                f"| {p['getiri']:+.1f}% | {p['gun']} |"
             )
 
     L += ["", "Not: Yuzdeler her isleme esit tutar konuldugu ve bilesiklenme "
               "olmadigi varsayimiyla toplanmistir; portfoy getirisi degildir. "
-              "Komisyon/slipaj dahil degildir."]
+              "Fiyatlar kapanistir, komisyon/slipaj dahil degildir."]
     if basarisiz:
         L += ["", f"Veri alinamayan: {', '.join(basarisiz)}"]
 
