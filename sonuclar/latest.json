@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-07-29 18:44",
+  "tarih": "2026-07-30 20:13",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,28 +7,37 @@
       "hisse": "GRSEL",
       "giris_tarih": "2026-07-27",
       "giris_fiyat": 344.0,
-      "guncel_fiyat": 363.0,
-      "getiri": 5.5,
-      "gun": 3
+      "guncel_fiyat": 360.0,
+      "getiri": 4.7,
+      "gun": 4
     },
     {
       "hisse": "EFOR",
       "giris_tarih": "2026-07-28",
       "giris_fiyat": 20.62,
-      "guncel_fiyat": 21.2,
-      "getiri": 2.8,
-      "gun": 2
+      "guncel_fiyat": 21.36,
+      "getiri": 3.6,
+      "gun": 3
     },
+    {
+      "hisse": "PASEU",
+      "giris_tarih": "2026-07-30",
+      "giris_fiyat": 150.0,
+      "guncel_fiyat": 150.0,
+      "getiri": 0.0,
+      "gun": 1
+    }
+  ],
+  "listeden_cikanlar": [
     {
       "hisse": "ODINE",
       "giris_tarih": "2026-07-27",
       "giris_fiyat": 2607.5,
-      "guncel_fiyat": 2510.0,
-      "getiri": -3.7,
+      "cikis_tarih": "2026-07-30",
+      "cikis_fiyat": 2316.0,
+      "getiri": -11.2,
       "gun": 3
-    }
-  ],
-  "listeden_cikanlar": [
+    },
     {
       "hisse": "EREGL",
       "giris_tarih": "2026-07-23",
@@ -82,33 +91,6 @@
       "cikis_fiyat": 304.25,
       "getiri": 17.9,
       "gun": 12
-    },
-    {
-      "hisse": "AKSEN",
-      "giris_tarih": "2026-07-17",
-      "giris_fiyat": 106.0,
-      "cikis_tarih": "2026-07-23",
-      "cikis_fiyat": 104.4,
-      "getiri": -1.5,
-      "gun": 4
-    },
-    {
-      "hisse": "CWENE",
-      "giris_tarih": "2026-07-22",
-      "giris_fiyat": 40.3,
-      "cikis_tarih": "2026-07-23",
-      "cikis_fiyat": 39.44,
-      "getiri": -2.1,
-      "gun": 1
-    },
-    {
-      "hisse": "TURSG",
-      "giris_tarih": "2026-07-20",
-      "giris_fiyat": 6.65,
-      "cikis_tarih": "2026-07-23",
-      "cikis_fiyat": 6.67,
-      "getiri": 0.3,
-      "gun": 3
     }
   ],
   "veri_alinamayan": []
