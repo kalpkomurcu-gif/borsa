@@ -98,6 +98,11 @@ def katalizor_degerleri(d: pd.DataFrame, ham: pd.DataFrame,
                              if ham_fiyat and ham_d20 == ham_d20 else float("nan")),
         "atr_yuzde": atr_yuzde,
         "stop": ham_fiyat - 2.0 * ham_atr if ham_fiyat == ham_fiyat else float("nan"),
+        # Izleme listesi icin: giris kirilim SEVIYESINDEN olacagi icin
+        # stop da o seviyeye gore hesaplanir, bugunku fiyata gore degil.
+        "kirilim_stop": (ham_d20 - 2.0 * ham_atr
+                         if ham_d20 == ham_d20 and ham_atr == ham_atr
+                         else float("nan")),
         "gg_kirilim": bool(G.gg_kirilimi(close, endeks, 20).iloc[son]),
         "hacim_toplama": deger(G.hacim_genislemesi(vol, 5, 60)),
     }
@@ -171,6 +176,12 @@ def main() -> None:
                     dest="azami_yas",
                     help="onbellek bu saatten eskiyse yeniden indirilir "
                          "(varsayilan 4)")
+    ap.add_argument("--azami-uzaklik", type=float, default=10.0,
+                    dest="azami_uzaklik",
+                    help="izleme listesinde kirilim seviyesine bu yuzdeden "
+                         "uzak hisseler gosterilmez (varsayilan 10). Tek "
+                         "gunde %%10 yukselip kirilim yapmasi zaten "
+                         "beklenmez; 3-5 daha gercekcidir")
     a = ap.parse_args()
 
     strat = STRATEJILER[a.strateji]()
@@ -184,6 +195,13 @@ def main() -> None:
     son_tarih = pd.Timestamp(data.index[-1])
     gecikme = (pd.Timestamp.now().normalize() - son_tarih.normalize()).days
     tetiklendi, izleme = tara(strat, data, semboller, endeks)
+
+    # Ulasilamayacak kadar uzaktakileri ele: tek gunde o mesafeyi kapatip
+    # kirilim yapmasi beklenmedigi icin listede yer kaplamalari anlamsiz.
+    uzak = [t for t in izleme
+            if t["kirilima_uzaklik"] == t["kirilima_uzaklik"]
+            and t["kirilima_uzaklik"] > a.azami_uzaklik]
+    izleme = [t for t in izleme if t not in uzak]
 
     L = [
         f"# Gunluk Tarama — {son_tarih:%d.%m.%Y}",
@@ -231,17 +249,16 @@ def main() -> None:
     ]
 
     if izleme:
-        L += ["| Hisse | Fiyat | Tetik | Eksik kriter | Kirilim seviyesi "
-              "| Uzaklik | RVOL | Baz gen. |",
-              "|---|---|---|---|---|---|---|---|"]
+        L += ["| Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik "
+              "| Stop (bu seviyeden) | Eksik kriter | Baz gen. |",
+              "|---|---|---|---|---|---|---|"]
         for t in izleme[:a.izleme_limit]:
             L.append(
                 f"| **{t['hisse']}** | {_sayi(t['fiyat'])} "
-                f"| {t['tetik_sayisi']}/{t['tetik_toplam']} "
-                f"| {', '.join(t['eksik']) or '—'} "
-                f"| {_sayi(t['d20_zirve'])} "
+                f"| **{_sayi(t['d20_zirve'])}** "
                 f"| {_sayi(t['kirilima_uzaklik'], '%', 1)} "
-                f"| {_sayi(t['rvol'], 'x')} "
+                f"| {_sayi(t['kirilim_stop'])} "
+                f"| {', '.join(t['eksik']) or '—'} "
                 f"| {_sayi(t['baz_genislik'], '%', 1)} |")
         if len(izleme) > a.izleme_limit:
             L.append("")
@@ -249,6 +266,31 @@ def main() -> None:
                      f"--izleme-limit ile artirabilirsin._")
     else:
         L.append("Kurulumu tamamlanmis hisse yok.")
+
+    if uzak:
+        L += ["", f"_Kirilim seviyesine %{a.azami_uzaklik:g}'den uzak "
+                  f"{len(uzak)} hisse listeden cikarildi (tek gunde o "
+                  f"mesafeyi kapatmasi beklenmez): "
+                  + ", ".join(t["hisse"] for t in uzak[:15])
+                  + (" ..." if len(uzak) > 15 else "") + "_"]
+
+    L += [
+        "",
+        "### Nasil kullanilir",
+        "",
+        "1. Bu liste **kapanistan sonra** uretilir.",
+        "2. Ertesi gun, hissenin fiyati **ALIM SEVIYESI**'ni gecerse aday olur.",
+        "3. **Ama seviyeyi gecmesi tek basina yetmez.** Sinyalin tamamlanmasi "
+        "icin o gun ayrica hacmin patlamasi (20 gun medyaninin 2 kati) ve "
+        "kapanisin gun icindeki en yuksek %30'luk dilimde olmasi gerekir. "
+        "Bu ikisi ancak KAPANISTA belli olur.",
+        "4. Yani seviyeyi gun icinde gecerken alirsan, sinyalin onaylanip "
+        "onaylanmayacagini bilmeden almis olursun. Olcumler kapanis "
+        "fiyatina gore yapildi; en yakin uygulama kapanisa dogru veya "
+        "ertesi acilista almaktir.",
+        "5. Stop sutunu, alim seviyesinden girildigi varsayimiyla "
+        "hesaplanmistir (seviye - 2 x ATR).",
+    ]
 
     L += [
         "",
