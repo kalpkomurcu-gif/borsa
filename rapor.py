@@ -1,0 +1,165 @@
+"""
+Olcum raporu — mevcut sistem ile erken giris sistemini yan yana olcer.
+
+Kullanim:
+    python rapor.py                 # BIST 100, 2 yil
+    python rapor.py --periyot 5y
+    python rapor.py --tazele        # onbellegi yok say, yeniden indir
+
+Cikti: sonuclar/olcum.md
+
+Raporu okurken:
+  - "Beklenti" tek basina yeterli degil; EVREN KIYASI satirina bakin.
+    Ayni gunlerde ortalama hisse ne yaptiysa asil sayi aradaki farktir.
+  - Ablasyon tablosunda bir kriteri cikarinca beklenti YUKSELIYORSA
+    o kriter zarar veriyordur.
+  - Islem sayisi 30'un altindaysa hicbir sonuc istatistiksel degildir;
+    periyodu uzatin ya da kriterleri gevsetin.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+
+import pandas as pd
+
+import olcum as O
+import strateji as S
+import veri as V
+from tarama import BIST100
+
+ENDEKS_ADAYLARI = ["XU100.IS", "^XU100"]
+
+
+def endeks_getir(periyot: str, tazele: bool) -> pd.Series:
+    hatalar = []
+    for sembol in ENDEKS_ADAYLARI:
+        try:
+            s = V.tek_sembol(sembol, periyot=periyot, tazele=tazele)
+            if len(s) > 60:
+                print(f"[rapor] endeks: {sembol} ({len(s)} gun)")
+                return s
+            hatalar.append(f"{sembol}: {len(s)} satir (yetersiz)")
+        except Exception as exc:
+            hatalar.append(f"{sembol}: {type(exc).__name__}")
+    raise SystemExit(
+        "HATA: endeks verisi alinamadi. Goreli guc ve rejim ayrimi bu "
+        "veri olmadan hesaplanamaz; yaniltici rapor uretmemek icin "
+        "duruluyor.\n  " + "\n  ".join(hatalar))
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--periyot", default="2y",
+                    help="veri periyodu (2y, 5y, 10y...)")
+    ap.add_argument("--baslangic", default=None,
+                    help="bu tarihten sonraki girisler (YYYY-MM-DD)")
+    ap.add_argument("--tazele", action="store_true",
+                    help="onbellegi yok say, yeniden indir")
+    a = ap.parse_args()
+
+    semboller = [t + ".IS" for t in BIST100]
+    data = V.veri_getir(semboller, "bist100", periyot=a.periyot,
+                        tazele=a.tazele)
+    endeks = endeks_getir(a.periyot, a.tazele)
+
+    mevcut, erken = S.mevcut_sistem(), S.erken_giris()
+    L: list[str] = [
+        f"# Olcum Raporu — {pd.Timestamp.now():%Y-%m-%d %H:%M}",
+        "",
+        f"Evren: BIST 100 ({len(semboller)} hisse) | Periyot: {a.periyot}"
+        + (f" | Girisler {a.baslangic} sonrasi" if a.baslangic else ""),
+        "",
+        "> Tek basina getiri sayisi yorumlanamaz. Her strateji icin "
+        "**evren kiyasi** satirina bakin: ayni tarihlerde ortalama hisse "
+        "ne getirdiyse, stratejinin katkisi aradaki farktir.",
+        "",
+    ]
+
+    tablolar = {}
+    for strat in (mevcut, erken):
+        isl = O.calistir(strat, data, semboller, endeks, a.baslangic)
+        tablolar[strat.ad] = isl
+        L += O.ozet_yaz(f"{strat.ad} sistemi", O.metrikler(isl))
+
+        if isl.empty:
+            continue
+
+        kiyas = O.evren_kiyasi(isl, data, semboller)
+        fark = kiyas["fark"].mean()
+        L += [
+            f"**Evren kiyasi:** strateji {kiyas['getiri'].mean()*100:+.2f}% vs "
+            f"ayni tarihlerde ortalama hisse {kiyas['evren_getiri'].mean()*100:+.2f}% "
+            f"→ **fark {fark*100:+.2f}%**"
+            + ("  ✅ evreni geciyor" if fark > 0 else "  ❌ evrenin altinda"),
+            "",
+        ]
+
+        gec = O.gecikme_olc(isl, data)
+        L += [
+            f"**Giris konumu:** dipten ortalama +{gec['dipten_yukselis'].mean():.1f}% "
+            f"yukarida | 20 gunluk aralikta konum "
+            f"{gec['aralik_konum'].mean():.0f}/100 "
+            f"(>=100 = kirilim gunu girisi)",
+            "",
+            f"**Cikis sebepleri:** "
+            + ", ".join(f"{k}: {v}" for k, v in
+                        isl["sebep"].value_counts().items()),
+            "",
+        ]
+
+        rej = O.rejim_ayir(isl, endeks)
+        if not rej.empty:
+            L += ["**Rejime gore:**", "",
+                  "| Rejim | Islem | Isabet | Ort. getiri | Beklenti |",
+                  "|---|---|---|---|---|"]
+            for ad, r in rej.iterrows():
+                L.append(f"| {ad} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
+                         f"| {r['ort_getiri']*100:+.2f}% "
+                         f"| {r['beklenti']*100:+.2f}% |")
+            L.append("")
+
+    # Ablasyon sadece erken sistem icin (asil gelistirilen o)
+    L += ["## Ablasyon — her kriterin katkisi (erken sistem)", "",
+          "Bir kriteri cikarinca **beklenti yukseliyorsa** o kriter zarar "
+          "veriyordur. Islem sayisi cok artip beklenti korunuyorsa kriter "
+          "gereksiz yere firsat kaciriyordur.", ""]
+    ab = O.ablasyon(erken, data, semboller, endeks, a.baslangic)
+    L += ["| Varyant | Islem | Isabet | Ort. getiri | Beklenti | PF |",
+          "|---|---|---|---|---|---|"]
+    for ad, r in ab.iterrows():
+        if not r.get("islem"):
+            L.append(f"| {ad} | 0 | — | — | — | — |")
+            continue
+        L.append(f"| {ad} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
+                 f"| {r['ort_getiri']*100:+.2f}% | {r['beklenti']*100:+.2f}% "
+                 f"| {r['profit_factor']:.2f} |")
+
+    L += ["", "## Kriterler", ""]
+    for strat in (mevcut, erken):
+        L += [f"**{strat.ad}:**", ""]
+        for tip in ("kurulum", "tetik", "surekli", "kalma"):
+            for k in strat.alt_kume(tip):
+                L.append(f"- `{tip}` **{k.ad}** — {k.aciklama}")
+        c = strat.cikis
+        L += ["", f"  Cikis: "
+              + (f"ATR x{c.atr_carpan}" if c.atr_carpan else "ATR stop yok")
+              + (", iz suren" if c.iz_suren else "")
+              + (", kriter bozulunca" if c.kriter_bozulunca else ""), ""]
+
+    L += ["", "---",
+          "Fiyatlar kapanistir. Stop 'bu seviyeyi ilk goren kapanista cik' "
+          "demektir; gap ile acilan dususte gerceklesen zarar daha kotu olur. "
+          "Komisyon ve slipaj dahil degildir."]
+
+    metin = "\n".join(L) + "\n"
+    os.makedirs("sonuclar", exist_ok=True)
+    with open("sonuclar/olcum.md", "w", encoding="utf-8") as f:
+        f.write(metin)
+    print(metin)
+    print("\n[rapor] sonuclar/olcum.md yazildi.")
+
+
+if __name__ == "__main__":
+    main()

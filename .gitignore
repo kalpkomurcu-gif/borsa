@@ -3,3 +3,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Veri onbellegi (veri.py) — indirilen OHLCV parquet dosyalari
+.onbellek/

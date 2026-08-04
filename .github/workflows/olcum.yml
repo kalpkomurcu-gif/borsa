@@ -1,0 +1,83 @@
+name: Olcum Raporu
+
+# Bir stratejinin gercekten edge'i var mi? Mevcut sistem ile erken giris
+# sistemini ayni veride yan yana olcer. Zamanlanmis DEGIL: elle calistirilir,
+# cunku amaci gunluk sinyal uretmek degil strateji karsilastirmak.
+
+on:
+  workflow_dispatch:
+    inputs:
+      periyot:
+        description: "Veri periyodu (2y, 5y, 10y)"
+        required: false
+        default: "5y"
+      baslangic:
+        description: "Girisler bu tarihten sonra (YYYY-MM-DD, bos birakilabilir)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  olcum:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas pyarrow
+
+      # Ag gerektirmeyen dogrulama. Once bu kosar: boru hatti bozuksa
+      # gercek veriyle uretilecek rapor da yanlis olur, indirmeye gerek yok.
+      - name: Sentetik dogrulama
+        run: python test_olcum.py
+
+      - name: Raporu uret
+        # pipefail sart: tee'nin cikis kodu python'unkini gizlerdi.
+        shell: bash
+        run: |
+          set -o pipefail
+          ARGS="--periyot ${{ inputs.periyot }}"
+          if [ -n "${{ inputs.baslangic }}" ]; then
+            ARGS="$ARGS --baslangic ${{ inputs.baslangic }}"
+          fi
+          python rapor.py $ARGS 2>&1 | tee /tmp/olcum.log
+
+      - name: Sonucu is ozetine yaz
+        if: success()
+        run: cat sonuclar/olcum.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: HATA — is ozetine yaz
+        if: failure()
+        run: |
+          {
+            echo "# ❌ OLCUM RAPORU URETILEMEDI"
+            echo ""
+            if grep -q "endeks verisi alinamadi" /tmp/olcum.log 2>/dev/null; then
+              echo "## Sebep: BIST100 endeks verisi alinamadi"
+              echo ""
+              echo "Goreli guc ve rejim ayrimi bu veri olmadan"
+              echo "hesaplanamiyor. Yaniltici rapor uretmemek icin duruldu."
+              echo "En olasi sebep: Yahoo rate limit (429)."
+            else
+              echo "## Sebep: asagidaki log'a bakin"
+            fi
+            echo ""
+            echo '```'
+            tail -40 /tmp/olcum.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonucu commit et
+        if: success()
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/
+          git diff --cached --quiet || git commit -m "Olcum raporu: $(date +'%Y-%m-%d %H:%M')"
+          git push
