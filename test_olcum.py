@@ -19,6 +19,8 @@ Kullanim: python test_olcum.py
 
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 
@@ -250,8 +252,63 @@ def test_gunluk_tarama(data: pd.DataFrame, semboller: list[str],
                 "izleme listesi tetik doluluguna gore sirali")
 
 
+def test_ham_vs_duzeltilmis() -> None:
+    """
+    Ekranda gosterilen fiyat HAM olmali; gostergeler DUZELTILMIS seriden.
+    Bedelsiz/temettu sonrasi ikisi ayrilir ve ham fiyat gosterilmezse
+    tablo aracı kurum ekraniyla uyusmaz.
+    """
+    import veri as V
+
+    print("\n5) HAM vs DUZELTILMIS FIYAT")
+    n = 120
+    idx = pd.bdate_range("2025-01-01", periods=n)
+    ham_kapanis = pd.Series(np.linspace(100, 200, n), index=idx)
+    # Yariya kadar %50 duzeltme (bedelsiz benzeri), sonra duzeltme yok
+    faktor = pd.Series([0.5] * (n // 2) + [1.0] * (n - n // 2), index=idx)
+    d = pd.DataFrame({
+        "Open": ham_kapanis, "High": ham_kapanis * 1.02,
+        "Low": ham_kapanis * 0.98, "Close": ham_kapanis,
+        "Adj Close": ham_kapanis * faktor,
+        "Volume": pd.Series(1e6, index=idx),
+    })
+    data = pd.concat({"TEST": d}, axis=1)
+    data.columns = pd.MultiIndex.from_tuples(data.columns)
+
+    duz = V.hisse_cerceve(data, "TEST", duzeltilmis=True)
+    ham = V.hisse_cerceve(data, "TEST", duzeltilmis=False)
+
+    kontrol(abs(float(ham["Close"].iloc[0]) - 100.0) < 1e-6,
+            "ham cerceve ham fiyati koruyor (100.00)")
+    kontrol(abs(float(duz["Close"].iloc[0]) - 50.0) < 1e-6,
+            "duzeltilmis cerceve Adj Close oranini uyguluyor (50.00)")
+    kontrol(abs(float(duz["Close"].iloc[-1])
+                - float(ham["Close"].iloc[-1])) < 1e-6,
+            "duzeltme bitince iki seri ayni (son bar)")
+    kontrol(abs(float(duz["High"].iloc[0]) / float(duz["Close"].iloc[0])
+                - 1.02) < 1e-6,
+            "OHLC oranlari duzeltmeden sonra korunuyor")
+
+
+def test_onbellek_yasi(tmp: str) -> None:
+    """Bayat onbellek sessizce kullanilmamali."""
+    import time as _t
+    import veri as V
+
+    print("\n6) ONBELLEK TAZELIGI")
+    os.makedirs(tmp, exist_ok=True)
+    yol = os.path.join(tmp, "bayat.parquet")
+    pd.DataFrame({"a": [1]}).to_parquet(yol)
+
+    kontrol(not V._bayat(yol, 8.0), "yeni dosya bayat sayilmiyor")
+    eski = _t.time() - 20 * 3600
+    os.utime(yol, (eski, eski))
+    kontrol(V._bayat(yol, 8.0), "20 saatlik dosya 8 saat esiginde bayat")
+    kontrol(not V._bayat(yol, None), "azami_yas None ise yas kontrolu kapali")
+
+
 def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
-    print("\n5) SINIR DURUMLARI")
+    print("\n7) SINIR DURUMLARI")
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
@@ -291,6 +348,8 @@ def main() -> int:
     test_giris_zamanlamasi(cerceveler, kirilimlar, endeks)
     test_olcum(data, semboller, endeks)
     test_gunluk_tarama(data, semboller, endeks)
+    test_ham_vs_duzeltilmis()
+    test_onbellek_yasi(os.environ.get("BORSA_ONBELLEK", ".onbellek") + "_test")
     test_sinir_durumlari(cerceveler, endeks)
 
     print("\n" + "=" * 64)

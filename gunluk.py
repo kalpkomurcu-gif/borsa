@@ -56,8 +56,20 @@ def endeks_getir(periyot: str, tazele: bool) -> pd.Series:
     raise SystemExit("HATA: endeks verisi alinamadi.\n  " + "\n  ".join(hatalar))
 
 
-def katalizor_degerleri(d: pd.DataFrame, endeks: pd.Series) -> dict:
-    """Son gunun ham katalizor olcumleri — sinyalin NEDEN olustugunu gosterir."""
+def katalizor_degerleri(d: pd.DataFrame, ham: pd.DataFrame,
+                        endeks: pd.Series) -> dict:
+    """
+    Son gunun katalizor olcumleri — sinyalin NEDEN olustugunu gosterir.
+
+    d   : duzeltilmis fiyatlar — TUM gosterge hesaplari bunun uzerinde
+          (bolunme/bedelsiz seriyi kirmasin diye).
+    ham : ham fiyatlar — TABLODA gosterilecek fiyat, kirilim seviyesi ve
+          stop bunlardan. Kullanicinin aracı kurum ekraninda gordugu sayi.
+
+    Oransal olculer (RVOL, baz genisligi, ATR%) duzeltmeden etkilenmez;
+    mutlak TL seviyeleri etkilenir. Bu yuzden yalnizca seviyeler ham
+    fiyattan alinir.
+    """
     close, high, low, vol = d["Close"], d["High"], d["Low"], d["Volume"]
     son = -1
 
@@ -68,23 +80,24 @@ def katalizor_degerleri(d: pd.DataFrame, endeks: pd.Series) -> dict:
         except Exception:
             return float("nan")
 
-    donchian = G.donchian_ust(high, 20)
-    atr20 = G.atr(high, low, close, 20)
-    fiyat = deger(close)
-    d20 = deger(donchian)
+    atr_yuzde = deger(G.atr(high, low, close, 20)) / deger(close) * 100
+
+    # Seviyeler ham fiyattan
+    ham_fiyat = deger(ham["Close"])
+    ham_d20 = deger(G.donchian_ust(ham["High"], 20))
+    ham_atr = ham_fiyat * atr_yuzde / 100 if ham_fiyat == ham_fiyat else float("nan")
 
     return {
-        "fiyat": fiyat,
+        "fiyat": ham_fiyat,
         "rvol": deger(G.rvol(vol, 20)),
         "baz_genislik": deger(G.baz_genisligi(high, low, 20)) * 100,
         "zirve_yakinlik": deger(G.zirve_yakinligi(close, 252)) * 100,
         "kapanis_konum": deger(G.kapanis_konumu(high, low, close)) * 100,
-        "d20_zirve": d20,
-        "kirilima_uzaklik": ((d20 / fiyat - 1) * 100
-                             if fiyat and d20 == d20 else float("nan")),
-        "atr": deger(atr20),
-        "atr_yuzde": (deger(atr20) / fiyat * 100) if fiyat else float("nan"),
-        "stop": fiyat - 2.0 * deger(atr20) if fiyat else float("nan"),
+        "d20_zirve": ham_d20,
+        "kirilima_uzaklik": ((ham_d20 / ham_fiyat - 1) * 100
+                             if ham_fiyat and ham_d20 == ham_d20 else float("nan")),
+        "atr_yuzde": atr_yuzde,
+        "stop": ham_fiyat - 2.0 * ham_atr if ham_fiyat == ham_fiyat else float("nan"),
         "gg_kirilim": bool(G.gg_kirilimi(close, endeks, 20).iloc[son]),
         "hacim_toplama": deger(G.hacim_genislemesi(vol, 5, 60)),
     }
@@ -98,8 +111,9 @@ def tara(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
 
     tetiklendi, izleme = [], []
     for sembol in semboller:
-        d = V.hisse_cerceve(data, sembol)
-        if d is None or len(d) < S.MIN_VERI:
+        d = V.hisse_cerceve(data, sembol)                      # gostergeler
+        ham = V.hisse_cerceve(data, sembol, duzeltilmis=False)  # ekran fiyati
+        if d is None or ham is None or len(d) < S.MIN_VERI:
             continue
         try:
             kurulum_ok, kurulum_detay = True, []
@@ -124,7 +138,7 @@ def tara(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
                 "tetik_sayisi": tetik_sayisi,
                 "tetik_toplam": len(tetik_detay),
                 "eksik": [ad for ad, v in tetik_detay if not v],
-                **katalizor_degerleri(d, endeks),
+                **katalizor_degerleri(d, ham, endeks),
             }
             if tetik_sayisi == len(tetik_detay):
                 tetiklendi.append(kayit)
@@ -153,14 +167,22 @@ def main() -> None:
     ap.add_argument("--tazele", action="store_true")
     ap.add_argument("--izleme-limit", type=int, default=25,
                     help="izleme listesinde en fazla kac hisse gosterilsin")
+    ap.add_argument("--azami-yas", type=float, default=4.0,
+                    dest="azami_yas",
+                    help="onbellek bu saatten eskiyse yeniden indirilir "
+                         "(varsayilan 4)")
     a = ap.parse_args()
 
     strat = STRATEJILER[a.strateji]()
     semboller = [t + ".IS" for t in BIST100]
-    data = V.veri_getir(semboller, "bist100", periyot=a.periyot, tazele=a.tazele)
+    # Gunluk tarama icin onbellek yasi kisa tutulur: bayat veriyle
+    # uretilen liste sessizce dunun listesi olur.
+    data = V.veri_getir(semboller, "bist100", periyot=a.periyot,
+                        tazele=a.tazele, azami_yas_saat=a.azami_yas)
     endeks = endeks_getir(a.periyot, a.tazele)
 
     son_tarih = pd.Timestamp(data.index[-1])
+    gecikme = (pd.Timestamp.now().normalize() - son_tarih.normalize()).days
     tetiklendi, izleme = tara(strat, data, semboller, endeks)
 
     L = [
@@ -168,6 +190,14 @@ def main() -> None:
         "",
         f"Strateji: **{strat.ad}** | Evren: BIST 100 | "
         f"Rapor: {pd.Timestamp.now():%Y-%m-%d %H:%M}",
+        "",
+        f"**Verinin son gunu: {son_tarih:%d.%m.%Y}**"
+        + (f"  ⚠️ bugunden {gecikme} gun eski — piyasa kapaliysa normal, "
+           "degilse veri gecikmesi var" if gecikme > 1 else ""),
+        "",
+        "Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum "
+        "ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/"
+        "bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.",
         "",
         f"## 🟢 BUGUN TETIKLENDI ({len(tetiklendi)})",
         "",
