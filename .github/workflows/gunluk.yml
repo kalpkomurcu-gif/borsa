@@ -1,0 +1,64 @@
+name: Gunluk Tarama (Erken Giris)
+
+# Hangi hisse, bugun. Iki liste uretir: bugun tetiklenenler ve
+# kurulumu tamam olup tetigi bekleyen izleme listesi.
+
+on:
+  schedule:
+    # Hafta ici 15:40 UTC = 18:40 TR (BIST kapanis 18:00, veri otursun diye)
+    - cron: "40 15 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      strateji:
+        description: "Strateji"
+        required: false
+        default: "erken_dar"
+        type: choice
+        options: [erken_dar, erken, erken_yalin, mevcut]
+
+permissions:
+  contents: write
+
+jobs:
+  gunluk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas pyarrow
+
+      - name: Taramayi calistir
+        shell: bash
+        run: |
+          set -o pipefail
+          python gunluk.py --strateji "${{ inputs.strateji || 'erken_dar' }}" \
+            2>&1 | tee /tmp/gunluk.log
+
+      - name: Sonucu is ozetine yaz
+        if: success()
+        run: cat sonuclar/gunluk.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: HATA — is ozetine yaz
+        if: failure()
+        run: |
+          {
+            echo "# ❌ TARAMA URETILEMEDI"
+            echo ""
+            echo '```'
+            tail -40 /tmp/gunluk.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonucu commit et
+        if: success()
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/
+          git diff --cached --quiet || git commit -m "Gunluk tarama: $(date +'%Y-%m-%d')"
+          git push

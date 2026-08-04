@@ -209,8 +209,49 @@ def test_olcum(data: pd.DataFrame, semboller: list[str],
     kontrol(not rej.empty, "rejim_ayir sonuc uretti")
 
 
+def test_gunluk_tarama(data: pd.DataFrame, semboller: list[str],
+                       endeks: pd.Series) -> None:
+    """Gunluk tarama hisse ISMI veriyor mu, kurulum/tetik ayrimi dogru mu?"""
+    import gunluk
+
+    print("\n4) GUNLUK TARAMA (hisse isimleri)")
+    strat = S.erken_dar()
+    tetiklendi, izleme = gunluk.tara(strat, data, semboller, endeks)
+    kontrol(isinstance(tetiklendi, list) and isinstance(izleme, list),
+            f"tara() iki liste dondu (tetiklendi={len(tetiklendi)}, "
+            f"izleme={len(izleme)})")
+
+    hepsi = tetiklendi + izleme
+    kontrol(bool(hepsi), "en az bir aday bulundu")
+    if not hepsi:
+        return
+
+    kontrol(all(k["hisse"] for k in hepsi), "her kayitta hisse ISMI var")
+    kontrol(all(k["fiyat"] == k["fiyat"] for k in hepsi),
+            "her kayitta gecerli fiyat var")
+
+    # Tetiklenenlerde eksik kriter OLMAMALI, izlemede OLMALI.
+    kontrol(all(not k["eksik"] for k in tetiklendi),
+            "tetiklenenlerde eksik kriter yok")
+    kontrol(all(k["eksik"] for k in izleme),
+            "izleme listesindekilerin hepsinde eksik kriter var")
+    kontrol(all(k["tetik_sayisi"] < k["tetik_toplam"] for k in izleme),
+            "izlemedekilerin tetigi tam degil")
+
+    # Stop girisin ALTINDA olmali (2 x ATR asagida)
+    stoplu = [k for k in hepsi if k["stop"] == k["stop"]]
+    kontrol(all(k["stop"] < k["fiyat"] for k in stoplu),
+            "onerilen stop fiyatin altinda")
+
+    # Izleme siralamasi: once tetigi en dolu olanlar
+    if len(izleme) > 1:
+        kontrol(all(izleme[i]["tetik_sayisi"] >= izleme[i + 1]["tetik_sayisi"]
+                    for i in range(len(izleme) - 1)),
+                "izleme listesi tetik doluluguna gore sirali")
+
+
 def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
-    print("\n4) SINIR DURUMLARI")
+    print("\n5) SINIR DURUMLARI")
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
@@ -249,6 +290,7 @@ def main() -> int:
     test_gostergeler(cerceveler["KIR00"])
     test_giris_zamanlamasi(cerceveler, kirilimlar, endeks)
     test_olcum(data, semboller, endeks)
+    test_gunluk_tarama(data, semboller, endeks)
     test_sinir_durumlari(cerceveler, endeks)
 
     print("\n" + "=" * 64)
