@@ -210,18 +210,55 @@ def donem_bol(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
     Okuma: iki donem arasindaki beklenti farki buyukse (orn. biri pozitif
     digeri negatif) sonuca guvenmeyin — o strateji secildigi veriye
     uydurulmus demektir.
+
+    ANCAK mutlak beklentinin dusmesi tek basina uydurma kaniti DEGILDIR:
+    piyasa zayifladiysa her strateji duser. Ayirt edici olcu EVREN FARKI
+    (her donemde ayni tarihlerde ortalama hisse ne getirdi). Fark
+    korunuyorsa strateji saglam, piyasa zayiflamistir; fark da eriyorse
+    sorun stratejidedir. Bu yuzden tabloya evren sutunlari eklenir.
     """
     isl = calistir(strat, data, semboller, endeks)
     if isl.empty:
         return pd.DataFrame()
+    kiyas = evren_kiyasi(isl, data, semboller)
     sinir = pd.Timestamp(bolme)
     parcalar = {
-        f"1. donem (<{bolme})": isl[isl["giris_tarih"] < sinir],
-        f"2. donem (>={bolme})": isl[isl["giris_tarih"] >= sinir],
+        f"1. donem (<{bolme})": kiyas[kiyas["giris_tarih"] < sinir],
+        f"2. donem (>={bolme})": kiyas[kiyas["giris_tarih"] >= sinir],
     }
-    return pd.DataFrame({
-        ad: metrikler(p) for ad, p in parcalar.items() if not p.empty
-    }).T
+    satirlar = {}
+    for ad, p in parcalar.items():
+        if p.empty:
+            continue
+        m = metrikler(p)
+        m["evren_getiri"] = float(p["evren_getiri"].mean())
+        m["fark"] = float(p["fark"].mean())
+        satirlar[ad] = m
+    return pd.DataFrame(satirlar).T
+
+
+def yillik_kirilim(strat: S.Strateji, data: pd.DataFrame,
+                   semboller: list[str],
+                   endeks: pd.Series | None) -> pd.DataFrame:
+    """
+    Takvim yili bazinda metrikler + evren farki.
+
+    Tek bir bolme noktasi "ne zaman bozuldu" sorusunu cevaplamaz; yillik
+    kirilim bozulmanin kademeli mi yoksa belirli bir yila mi ait oldugunu
+    gosterir. Edge'in hangi yil kayboldugu, stratejiyi mi yoksa rejimi mi
+    sucladigini belirler.
+    """
+    isl = calistir(strat, data, semboller, endeks)
+    if isl.empty:
+        return pd.DataFrame()
+    kiyas = evren_kiyasi(isl, data, semboller)
+    satirlar = {}
+    for yil, grup in kiyas.groupby(kiyas["giris_tarih"].dt.year):
+        m = metrikler(grup)
+        m["evren_getiri"] = float(grup["evren_getiri"].mean())
+        m["fark"] = float(grup["fark"].mean())
+        satirlar[str(int(yil))] = m
+    return pd.DataFrame(satirlar).T
 
 
 # ---------------------------------------------------------------

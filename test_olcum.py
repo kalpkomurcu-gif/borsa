@@ -206,6 +206,18 @@ def test_olcum(data: pd.DataFrame, semboller: list[str],
     kontrol(int(db["islem"].sum()) == len(isl),
             "donem parcalarinin islem toplami = toplam islem "
             f"({int(db['islem'].sum())} = {len(isl)})")
+    kontrol({"evren_getiri", "fark"} <= set(db.columns),
+            "donem_bol evren kiyasi sutunlarini iceriyor")
+    kontrol(all(abs(r["ort_getiri"] - r["evren_getiri"] - r["fark"]) < 1e-9
+                for _, r in db.iterrows()),
+            "her donemde fark = strateji - evren")
+
+    yk = O.yillik_kirilim(erken, data, semboller, endeks)
+    kontrol(not yk.empty and int(yk["islem"].sum()) == len(isl),
+            f"yillik_kirilim tum islemleri kapsiyor "
+            f"({int(yk['islem'].sum())} = {len(isl)})")
+    kontrol({"evren_getiri", "fark"} <= set(yk.columns),
+            "yillik_kirilim evren kiyasi sutunlarini iceriyor")
 
     rej = O.rejim_ayir(isl, endeks)
     kontrol(not rej.empty, "rejim_ayir sonuc uretti")

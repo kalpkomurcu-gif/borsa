@@ -182,18 +182,43 @@ def main() -> None:
           "uyum saglama riskini dogurur. Bir strateji yalnizca 1. donemde "
           "calisiyorsa **sonuca guvenmeyin**; 2. donem gercek beklentiye "
           "daha yakindir.", ""]
+    L += ["**Mutlak beklentinin dusmesi tek basina uydurma kaniti degildir** "
+          "— piyasa zayifladiysa her strateji duser. Ayirt edici sutun "
+          "**FARK**: ayni tarihlerde ortalama hisseye gore ustunluk. Fark "
+          "korunuyorsa strateji saglam, piyasa zayiflamistir; fark da "
+          "eriyorse sorun stratejidedir.", ""]
     for strat in stratejiler:
         db = O.donem_bol(strat, data, semboller, endeks, bolme)
         if db.empty:
             continue
         L += [f"**{strat.ad}**", "",
-              "| Donem | Islem | Isabet | Ort. getiri | Beklenti | PF |",
-              "|---|---|---|---|---|---|"]
+              "| Donem | Islem | Isabet | Strateji | Evren | **Fark** | PF |",
+              "|---|---|---|---|---|---|---|"]
         for ad, r in db.iterrows():
             L.append(f"| {ad} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
                      f"| {r['ort_getiri']*100:+.2f}% "
-                     f"| {r['beklenti']*100:+.2f}% "
+                     f"| {r['evren_getiri']*100:+.2f}% "
+                     f"| **{r['fark']*100:+.2f}%** "
                      f"| {r['profit_factor']:.2f} |")
+        L.append("")
+
+    # ---- Yillik kirilim: edge hangi yil kayboldu? ----
+    L += ["", "## Yillik kirilim", "",
+          "Tek bolme noktasi \"ne zaman bozuldu\" sorusunu cevaplamaz. "
+          "Yillik tablo bozulmanin kademeli mi yoksa belirli bir yila mi "
+          "ait oldugunu gosterir. Yine **Fark** sutunu belirleyicidir.", ""]
+    for strat in stratejiler:
+        yk = O.yillik_kirilim(strat, data, semboller, endeks)
+        if yk.empty:
+            continue
+        L += [f"**{strat.ad}**", "",
+              "| Yil | Islem | Isabet | Strateji | Evren | **Fark** |",
+              "|---|---|---|---|---|---|"]
+        for yil, r in yk.iterrows():
+            L.append(f"| {yil} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
+                     f"| {r['ort_getiri']*100:+.2f}% "
+                     f"| {r['evren_getiri']*100:+.2f}% "
+                     f"| **{r['fark']*100:+.2f}%** |")
         L.append("")
 
     L += ["", "## Kriterler", ""]
