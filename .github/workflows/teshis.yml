@@ -1,0 +1,43 @@
+name: Veri Teshisi
+
+# "Son gunun verisi neden yok?" sorusunu cevaplar. Yahoo'dan farkli
+# parametrelerle indirip her birinin donen son tarihini karsilastirir,
+# ayrica ham chart API'sini sorgular. Hicbir sey commit etmez.
+
+on:
+  workflow_dispatch:
+    inputs:
+      semboller:
+        description: "Bosluklu sembol listesi (bos = varsayilan ornekler)"
+        required: false
+        default: ""
+
+jobs:
+  teshis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas
+
+      - name: Teshisi calistir
+        shell: bash
+        run: |
+          set -o pipefail
+          python teshis.py ${{ inputs.semboller }} 2>&1 | tee /tmp/teshis.log
+
+      - name: Sonucu is ozetine yaz
+        if: always()
+        run: |
+          {
+            echo "# Veri Teshisi"
+            echo ""
+            echo '```'
+            cat /tmp/teshis.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

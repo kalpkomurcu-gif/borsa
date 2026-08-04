@@ -6,3 +6,6 @@ venv/
 
 # Veri onbellegi (veri.py) — indirilen OHLCV parquet dosyalari
 .onbellek/
+
+# Test artiklari
+.onbellek*_test/
