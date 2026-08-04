@@ -173,6 +173,31 @@ def main() -> None:
                      f"| {m['profit_factor']:.2f} |")
     L.append("")
 
+    # ---- Izleme listesi esigi: gercek sinyaller ne kadar uzaktaydi? ----
+    L += ["", "## Izleme listesi esigi", "",
+          "Gunluk taramada izleme listesi, kirilim seviyesine belirli bir "
+          "yuzdeden yakin hisselerle sinirlanir (`--azami-uzaklik`). Bu esik "
+          "tahminle degil olcumle secilmeli.", "",
+          "Uzaklik sinyali **tahmin etmez** — hacim ve tepede kapanis o gun "
+          "ayrica gerceklesmeli. Ama cok uzaktaki hisse ertesi gun seviyeyi "
+          "zaten gecemez (BIST'te gunluk fiyat limiti bunu yapisal olarak "
+          "engeller). Asagidaki tablo, GERCEK sinyallerin bir gun oncesinde "
+          "hangi mesafede olduklarini gosterir.", ""]
+    uz = O.tetik_oncesi_uzaklik(S.erken_dar(), data, semboller, endeks)
+    if uz.empty:
+        L.append("Sinyal bulunamadi.")
+    else:
+        L += [f"Toplam {len(uz)} sinyal | medyan uzaklik "
+              f"**{uz.median():.2f}%** | ortalama {uz.mean():.2f}%",
+              "",
+              "| Esik | Kapsanan sinyal | Kapsam |", "|---|---|---|"]
+        for e, r in O.esik_kapsami(uz).iterrows():
+            L.append(f"| %{e:g} | {int(r['kapsanan_sinyal'])} / {len(uz)} "
+                     f"| **{r['kapsam_%']:.1f}%** |")
+        L += ["", "Okuma: kapsami %95'in uzerine cikaran en KUCUK esigi secin. "
+                  "Daha dar esik gercek sinyal kaybettirir; daha genis esik "
+                  "listeyi gereksiz uzatir.", ""]
+
     # ---- Donem bolme: uydurma (curve-fitting) kontrolu ----
     bolme = a.bolme or str(
         pd.Timestamp(data.index[len(data.index) // 2]).date())

@@ -412,6 +412,65 @@ def gecikme_olc(islemler: pd.DataFrame, data: pd.DataFrame,
 
 
 # ---------------------------------------------------------------
+# Izleme listesi esigi: gercek sinyaller bir gun oncesinde ne kadar
+# uzaktaydi?
+# ---------------------------------------------------------------
+def tetik_oncesi_uzaklik(strat: S.Strateji, data: pd.DataFrame,
+                         semboller: list[str],
+                         endeks: pd.Series | None = None,
+                         periyot: int = 20) -> pd.Series:
+    """
+    Her GERCEK giris sinyali icin: sinyalden ONCEKI gun, izleme
+    listesinde gorunecek olan "kirilima uzaklik" degeri neydi?
+
+    Neden gerekli: izleme listesindeki uzaklik esigi (--azami-uzaklik)
+    simdiye kadar tahminle secildi. Uzaklik sinyali TAHMIN ETMEZ (hacim
+    ve tepede kapanis o gun ayrica gerceklesmeli), ama cok uzaktaki
+    hisse ertesi gun seviyeyi zaten gecemez — BIST'te gunluk fiyat
+    limiti bunu yapisal olarak engeller. Esik, gercek sinyallerin kacini
+    kapsadigina bakilarak secilmelidir: cok dar esik sinyal kaybettirir,
+    cok genis esik listeyi izlenemez hale getirir.
+
+    Doner: her sinyal icin onceki gunun uzaklik yuzdesi (negatif =
+    fiyat seviyeyi zaten gecmisti).
+    """
+    degerler: list[float] = []
+    for sembol in semboller:
+        d = V.hisse_cerceve(data, sembol)
+        if d is None or len(d) < S.MIN_VERI:
+            continue
+        try:
+            girisler = S.giris_serisi(strat, d, endeks)
+        except Exception:
+            continue
+        # Izleme listesinin o gun gosterecegi seviye ve fiyat
+        seviye = G.donchian_ust(d["High"], periyot)
+        uzaklik = (seviye / d["Close"] - 1) * 100
+
+        konum = girisler.to_numpy().nonzero()[0]
+        for i in konum:
+            if i == 0:
+                continue
+            v = float(uzaklik.iloc[i - 1])
+            if v == v:
+                degerler.append(v)
+    return pd.Series(degerler, name="onceki_gun_uzaklik")
+
+
+def esik_kapsami(uzakliklar: pd.Series,
+                 esikler: tuple[float, ...] = (1, 2, 3, 5, 8, 10, 15)) -> pd.DataFrame:
+    """Her esik icin: gercek sinyallerin yuzde kaci o esigin icinde kalirdi?"""
+    if uzakliklar.empty:
+        return pd.DataFrame()
+    return pd.DataFrame([
+        {"esik_%": e,
+         "kapsanan_sinyal": int((uzakliklar <= e).sum()),
+         "kapsam_%": float((uzakliklar <= e).mean() * 100)}
+        for e in esikler
+    ]).set_index("esik_%")
+
+
+# ---------------------------------------------------------------
 # Rapor
 # ---------------------------------------------------------------
 def _yuzde(x) -> str:

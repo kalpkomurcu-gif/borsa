@@ -212,6 +212,17 @@ def test_olcum(data: pd.DataFrame, semboller: list[str],
                 for _, r in db.iterrows()),
             "her donemde fark = strateji - evren")
 
+    uz = O.tetik_oncesi_uzaklik(S.erken_dar(), data, semboller, endeks)
+    kontrol(not uz.empty, f"tetik_oncesi_uzaklik deger uretti ({len(uz)})")
+    if not uz.empty:
+        ek = O.esik_kapsami(uz)
+        kontrol(ek["kapsam_%"].is_monotonic_increasing,
+                "esik buyudukce kapsam artiyor (monoton)")
+        kontrol(ek["kapsam_%"].max() <= 100 and ek["kapsam_%"].min() >= 0,
+                "kapsam 0-100 araliginda")
+        kontrol(int(ek["kapsanan_sinyal"].iloc[-1]) == int((uz <= 15).sum()),
+                "kapsanan sinyal sayisi esikle tutarli")
+
     yk = O.yillik_kirilim(erken, data, semboller, endeks)
     kontrol(not yk.empty and int(yk["islem"].sum()) == len(isl),
             f"yillik_kirilim tum islemleri kapsiyor "

@@ -280,34 +280,58 @@ def main() -> None:
         "ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/"
         "bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.",
         "",
-        f"## 🟢 BUGUN TETIKLENDI ({len(tetiklendi)})",
+        f"## 🟢 ALIM LISTESI — {len(tetiklendi)} hisse",
         "",
-        "Tum giris kriterleri bugun saglandi.",
+        f"**{son_tarih:%d.%m.%Y} kapanisinda tum kriterler saglandi. "
+        "Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**",
         "",
     ]
 
     if tetiklendi:
-        L += ["| Hisse | Fiyat | RVOL | Baz gen. | 52h zirve | Kapanis konum "
-              "| ATR% | Onerilen stop |",
-              "|---|---|---|---|---|---|---|---|"]
+        L += ["| Hisse | Sinyal gunu kapanisi | RVOL | Kapanis konumu "
+              "| ATR% | Stop (girise gore) |",
+              "|---|---|---|---|---|---|"]
         for t in tetiklendi:
             L.append(
                 f"| **{t['hisse']}** | {_sayi(t['fiyat'])} "
-                f"| {_sayi(t['rvol'], 'x')} | {_sayi(t['baz_genislik'], '%', 1)} "
-                f"| {_sayi(t['zirve_yakinlik'], '%', 0)} "
+                f"| {_sayi(t['rvol'], 'x')} "
                 f"| {_sayi(t['kapanis_konum'], '%', 0)} "
-                f"| {_sayi(t['atr_yuzde'], '%', 1)} | {_sayi(t['stop'])} |")
+                f"| {_sayi(t['atr_yuzde'], '%', 1)} "
+                f"| giris - {_sayi(t['atr_yuzde'] * 2, '%', 1)} |")
+        L += [
+            "",
+            "**Stop nasil kurulur:** giris fiyati acilista belli olacagi "
+            "icin sabit bir TL degeri verilemez. Gerceklesen alis fiyatini "
+            "al, tablodaki yuzde kadar asagisina stop koy "
+            "(= 2 x ATR). Sonra hisse yukseldikce stopu yukari cek, "
+            "asla asagi indirme.",
+            "",
+            "**Bu sayilar olculdu:** ertesi gun acilistan giris, "
+            "erken_dar stratejisinde islem basina **+%8.38** beklenti "
+            "verdi (5 yil, BIST 100). Ayni sinyali kapanista almak "
+            "+%9.18 veriyordu — aradaki 0.80 puan gecelik boslugun "
+            "maliyeti.",
+        ]
     else:
-        L.append("Bugun tetiklenen hisse yok.")
+        L += [
+            "Bugun tetiklenen hisse yok — **alim yok.**",
+            "",
+            "Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal "
+            "uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; "
+            "sinyal uretmek icin kriter gevsetmek sistemi bozar.",
+        ]
 
     L += [
         "",
-        f"## 🟡 IZLEME LISTESI ({len(izleme)})",
+        f"## 🟡 Izleme listesi ({len(izleme)}) — bilgi amacli",
         "",
-        "Kurulum tamam, tetik henuz gelmedi. **Asil liste bu:** kirilim "
-        "gununde almak istiyorsan yarin hangi hisseye bakacagini buradan "
-        "secersin. `Kirilim` sutunu, 20 gunluk zirveye ne kadar kaldigini "
-        "gosterir — %0'a yakin olan bir sonraki guclu gunde tetiklenir.",
+        "Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. "
+        "**Buradan alim YAPILMAZ** — alim listesi yukaridaki.",
+        "",
+        "Bu liste sadece \"hangi hisseler kurulmus durumda\" sorusunu "
+        "cevaplar. Alim seviyesine yakin olmak sinyal degildir: hacim ve "
+        "tepede kapanis o gun ayrica gerceklesmeli ve bu ancak kapanista "
+        "belli olur.",
         "",
     ]
 
@@ -339,20 +363,20 @@ def main() -> None:
 
     L += [
         "",
-        "### Nasil kullanilir",
+        "## Nasil kullanilir",
         "",
-        "1. Bu liste **kapanistan sonra** uretilir.",
-        "2. Ertesi gun, hissenin fiyati **ALIM SEVIYESI**'ni gecerse aday olur.",
-        "3. **Ama seviyeyi gecmesi tek basina yetmez.** Sinyalin tamamlanmasi "
-        "icin o gun ayrica hacmin patlamasi (20 gun medyaninin 2 kati) ve "
-        "kapanisin gun icindeki en yuksek %30'luk dilimde olmasi gerekir. "
-        "Bu ikisi ancak KAPANISTA belli olur.",
-        "4. Yani seviyeyi gun icinde gecerken alirsan, sinyalin onaylanip "
-        "onaylanmayacagini bilmeden almis olursun. Olcumler kapanis "
-        "fiyatina gore yapildi; en yakin uygulama kapanisa dogru veya "
-        "ertesi acilista almaktir.",
-        "5. Stop sutunu, alim seviyesinden girildigi varsayimiyla "
-        "hesaplanmistir (seviye - 2 x ATR).",
+        "1. Tarama her islem gunu **kapanistan sonra** calisir.",
+        "2. **ALIM LISTESI**'ndeki hisseleri ertesi islem gunu **acilista** al. "
+        "Baska sart aramana gerek yok — kriterlerin hepsi sinyal gununun "
+        "kapanisinda zaten dogrulandi.",
+        "3. Gerceklesen alis fiyatina gore stopu kur (tablodaki yuzde kadar "
+        "asagi). Hisse yukseldikce stopu yukari cek, asla asagi indirme.",
+        "4. Alim listesi bossa o gun islem yok. Zorlamak yok.",
+        "",
+        "Bu akis kasten basit: gun ici takip, seviye bekleme, emir "
+        "kurma yok. Bedeli olculdu — kapanista almaya gore islem basina "
+        "0.80 puan. Karsiliginda her gun ekran basinda olmak zorunda "
+        "kalmiyorsun.",
     ]
 
     L += [
