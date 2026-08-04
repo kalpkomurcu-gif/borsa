@@ -1,14 +1,15 @@
-# BIST 100 Tarama — 2026-08-03 20:40
+# BIST 100 Tarama — 2026-08-04 20:53
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)
-Taranan: 100 hisse | Listede: 2 | Son 7 gunde cikan: 4
+Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 4
 
-## 🟢 Aktif Sinyaller (2)
+## 🟢 Aktif Sinyaller (3)
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| PASEU | 30.07.2026 | 150.0 | 169.0 | +12.7% | 3 |
-| ODINE | 03.08.2026 | 2670.0 | 2670.0 | +0.0% | 1 |
+| PASEU | 30.07.2026 | 150.0 | 178.0 | +18.7% | 4 |
+| ODINE | 03.08.2026 | 2670.0 | 2905.0 | +8.8% | 2 |
+| YKBNK | 04.08.2026 | 34.86 | 34.86 | +0.0% | 1 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (4)
 

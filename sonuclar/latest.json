@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-08-03 20:40",
+  "tarih": "2026-08-04 20:53",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,15 +7,23 @@
       "hisse": "PASEU",
       "giris_tarih": "2026-07-30",
       "giris_fiyat": 150.0,
-      "guncel_fiyat": 169.0,
-      "getiri": 12.7,
-      "gun": 3
+      "guncel_fiyat": 178.0,
+      "getiri": 18.7,
+      "gun": 4
     },
     {
       "hisse": "ODINE",
       "giris_tarih": "2026-08-03",
       "giris_fiyat": 2670.0,
-      "guncel_fiyat": 2670.0,
+      "guncel_fiyat": 2905.0,
+      "getiri": 8.8,
+      "gun": 2
+    },
+    {
+      "hisse": "YKBNK",
+      "giris_tarih": "2026-08-04",
+      "giris_fiyat": 34.86,
+      "guncel_fiyat": 34.86,
       "getiri": 0.0,
       "gun": 1
     }
