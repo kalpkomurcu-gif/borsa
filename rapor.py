@@ -152,6 +152,27 @@ def main() -> None:
                  f"| {r['ort_getiri']*100:+.2f}% | {r['beklenti']*100:+.2f}% "
                  f"| {r['profit_factor']:.2f} |")
 
+    # ---- Giris zamani: kapanista mi, ertesi acilista mi? ----
+    L += ["", "## Giris zamani — kapanis mi, ertesi acilis mi?", "",
+          "Olcumler sinyal gununun KAPANISINDAN girildigi varsayimiyla "
+          "yapilir. Pratikte bu, kapanisa dakikalar kala ekranda olmayi "
+          "gerektirir. Kolay alternatif ertesi gun acilistan girmektir; "
+          "bedeli gecelik boslugun (gap) maliyetidir. Asagidaki tablo o "
+          "maliyeti gosterir.", ""]
+    L += ["| Strateji | Giris | Islem | Isabet | Beklenti | PF |",
+          "|---|---|---|---|---|---|"]
+    for temel in (S.erken_giris(), S.erken_dar()):
+        for zaman in ("kapanis", "ertesi_acilis"):
+            st = temel.giris_zamanli(zaman)
+            m = O.metrikler(O.calistir(st, data, semboller, endeks,
+                                       a.baslangic))
+            if not m.get("islem"):
+                continue
+            L.append(f"| {temel.ad} | {zaman} | {m['islem']} "
+                     f"| {m['isabet']*100:.1f}% | {m['beklenti']*100:+.2f}% "
+                     f"| {m['profit_factor']:.2f} |")
+    L.append("")
+
     # ---- Donem bolme: uydurma (curve-fitting) kontrolu ----
     bolme = a.bolme or str(
         pd.Timestamp(data.index[len(data.index) // 2]).date())

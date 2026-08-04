@@ -87,6 +87,20 @@ class Strateji:
     kriterler: list[Kriter] = field(default_factory=list)
     cikis: Cikis = field(default_factory=Cikis)
 
+    # "kapanis"       : sinyal gununun kapanisindan girilir. Backtestin
+    #                   varsayimi budur ama pratikte kapanisa dakikalar
+    #                   kala ekranda olmayi gerektirir.
+    # "ertesi_acilis" : sinyal gununun ERTESI gunu acilistan girilir.
+    #                   Uygulamasi kolay; bedeli gecelik boslugun (gap)
+    #                   maliyetidir. Ikisi arasindaki fark olculebilir
+    #                   olsun diye ayri secenek.
+    giris_zamani: str = "kapanis"
+
+    def __post_init__(self):
+        if self.giris_zamani not in ("kapanis", "ertesi_acilis"):
+            raise ValueError(f"{self.ad}: gecersiz giris_zamani "
+                             f"{self.giris_zamani!r}")
+
     def alt_kume(self, tip: str) -> list[Kriter]:
         return [k for k in self.kriterler if k.tip == tip]
 
@@ -96,6 +110,16 @@ class Strateji:
             ad=f"{self.ad} (-{ad})",
             kriterler=[k for k in self.kriterler if k.ad != ad],
             cikis=self.cikis,
+            giris_zamani=self.giris_zamani,
+        )
+
+    def giris_zamanli(self, zaman: str) -> "Strateji":
+        """Ayni strateji, farkli giris zamani — ikisini kiyaslamak icin."""
+        return Strateji(
+            ad=f"{self.ad}@{zaman}",
+            kriterler=list(self.kriterler),
+            cikis=self.cikis,
+            giris_zamani=zaman,
         )
 
     def endeks_ister(self) -> bool:
@@ -141,16 +165,23 @@ def pozisyonlar(s: Strateji, d: pd.DataFrame,
     """
     Stratejiyi tek hissede calistirir, islem listesi doner.
 
-    Fiyatlar kapanistir. Stop "bu seviyeyi ILK goren kapanista cik"
+    Cikis fiyatlari kapanistir. Stop "bu seviyeyi ILK goren kapanista cik"
     demektir; gap ile acilan sert dususte gerceklesen zarar bundan
     daha kotu olur. Bu, kapanis verisiyle backtestin kacinilmaz
     iyimserligidir — sonuclari okurken akilda tutulmali.
+
+    Giris fiyati s.giris_zamani'na baglidir:
+      "kapanis"       -> sinyal gununun kapanisi
+      "ertesi_acilis" -> ertesi gunun acilisi (gecelik bosluk dahil)
     """
     d = d.dropna(subset=["Close"])
     if len(d) < MIN_VERI:
         return []
 
     close = d["Close"]
+    ertesi = s.giris_zamani == "ertesi_acilis"
+    if ertesi and "Open" not in d.columns:
+        raise ValueError("ertesi_acilis girisi Open sutunu gerektirir")
     girebilir = giris_serisi(s, d, endeks)
     kalabilir = kalma_serisi(s, d, endeks)
     a = (G.atr(d["High"], d["Low"], close, s.cikis.atr_periyot)
@@ -158,20 +189,33 @@ def pozisyonlar(s: Strateji, d: pd.DataFrame,
 
     islemler: list[dict] = []
     aktif: dict | None = None
+    son_bar = len(d) - 1
 
     for i, tarih in enumerate(d.index):
         fiyat = float(close.iloc[i])
 
         if aktif is None:
             if bool(girebilir.iloc[i]):
+                # ATR daima sinyal gunundeki deger — ertesi gun acilistan
+                # girilse bile o gunun ATR'si henuz bilinmiyor.
                 atr_giris = float(a.iloc[i]) if a is not None else float("nan")
+                if ertesi:
+                    if i >= son_bar:
+                        continue          # son bar: ertesi gun yok
+                    gi = i + 1
+                    giris_fiyat = float(d["Open"].iloc[gi])
+                    giris_tarih = d.index[gi]
+                    if giris_fiyat != giris_fiyat:
+                        continue          # acilis verisi yok
+                else:
+                    giris_fiyat, giris_tarih = fiyat, tarih
                 aktif = {
-                    "giris_tarih": tarih,
-                    "giris_fiyat": fiyat,
+                    "giris_tarih": giris_tarih,
+                    "giris_fiyat": giris_fiyat,
                     "atr_giris": atr_giris,
-                    "stop": (fiyat - s.cikis.atr_carpan * atr_giris
+                    "stop": (giris_fiyat - s.cikis.atr_carpan * atr_giris
                              if a is not None and atr_giris == atr_giris else None),
-                    "en_yuksek": fiyat,
+                    "en_yuksek": giris_fiyat,
                     "gun": 1,
                 }
             continue

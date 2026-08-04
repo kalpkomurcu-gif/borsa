@@ -252,6 +252,50 @@ def test_gunluk_tarama(data: pd.DataFrame, semboller: list[str],
                 "izleme listesi tetik doluluguna gore sirali")
 
 
+def test_giris_zamani(data: pd.DataFrame, semboller: list[str],
+                      endeks: pd.Series, cerceveler: dict) -> None:
+    """Ertesi gun acilistan giris, tarihi bir gun kaydirip Open'dan almali."""
+    print("\n5) GIRIS ZAMANI (kapanis vs ertesi acilis)")
+    temel = S.erken_dar()
+    kap = temel.giris_zamanli("kapanis")
+    ert = temel.giris_zamanli("ertesi_acilis")
+
+    a = O.calistir(kap, data, semboller, endeks)
+    b = O.calistir(ert, data, semboller, endeks)
+    kontrol(not a.empty and not b.empty, "iki varyant da islem uretti")
+    if a.empty or b.empty:
+        return
+
+    # Ayni sinyaller -> islem sayisi ayni (son bar sinyali haric)
+    kontrol(abs(len(a) - len(b)) <= 2,
+            f"islem sayilari yakin ({len(a)} vs {len(b)})")
+
+    # Tek hissede birebir dogrulama: giris bir gun sonra ve Open fiyatindan
+    d = cerceveler["KIR00"]
+    pk = S.pozisyonlar(kap, d, endeks)
+    pe = S.pozisyonlar(ert, d, endeks)
+    if pk and pe:
+        i_kap = d.index.get_loc(pd.Timestamp(pk[0]["giris_tarih"]))
+        i_ert = d.index.get_loc(pd.Timestamp(pe[0]["giris_tarih"]))
+        kontrol(i_ert == i_kap + 1,
+                f"ertesi acilis girisi 1 gun sonra ({i_kap} -> {i_ert})")
+        kontrol(abs(pe[0]["giris_fiyat"]
+                    - float(d["Open"].iloc[i_ert])) < 1e-9,
+                "ertesi acilis girisi Open fiyatindan")
+        kontrol(abs(pk[0]["giris_fiyat"]
+                    - float(d["Close"].iloc[i_kap])) < 1e-9,
+                "kapanis girisi Close fiyatindan")
+        # ATR sinyal gunune ait olmali (ileriye bakis yok)
+        kontrol(abs(pe[0]["atr_giris"] - pk[0]["atr_giris"]) < 1e-9,
+                "ATR sinyal gununden alinmis (ileriye bakis yok)")
+
+    try:
+        S.Strateji("x", [], giris_zamani="yanlis")
+        kontrol(False, "gecersiz giris_zamani reddedilmeli")
+    except ValueError:
+        kontrol(True, "gecersiz giris_zamani reddediliyor")
+
+
 def test_ham_vs_duzeltilmis() -> None:
     """
     Ekranda gosterilen fiyat HAM olmali; gostergeler DUZELTILMIS seriden.
@@ -260,7 +304,7 @@ def test_ham_vs_duzeltilmis() -> None:
     """
     import veri as V
 
-    print("\n5) HAM vs DUZELTILMIS FIYAT")
+    print("\n6) HAM vs DUZELTILMIS FIYAT")
     n = 120
     idx = pd.bdate_range("2025-01-01", periods=n)
     ham_kapanis = pd.Series(np.linspace(100, 200, n), index=idx)
@@ -295,7 +339,7 @@ def test_onbellek_yasi(tmp: str) -> None:
     import time as _t
     import veri as V
 
-    print("\n6) ONBELLEK TAZELIGI")
+    print("\n7) ONBELLEK TAZELIGI")
     os.makedirs(tmp, exist_ok=True)
     yol = os.path.join(tmp, "bayat.parquet")
     pd.DataFrame({"a": [1]}).to_parquet(yol)
@@ -308,7 +352,7 @@ def test_onbellek_yasi(tmp: str) -> None:
 
 
 def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
-    print("\n7) SINIR DURUMLARI")
+    print("\n8) SINIR DURUMLARI")
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
@@ -348,6 +392,7 @@ def main() -> int:
     test_giris_zamanlamasi(cerceveler, kirilimlar, endeks)
     test_olcum(data, semboller, endeks)
     test_gunluk_tarama(data, semboller, endeks)
+    test_giris_zamani(data, semboller, endeks, cerceveler)
     test_ham_vs_duzeltilmis()
     test_onbellek_yasi(os.environ.get("BORSA_ONBELLEK", ".onbellek") + "_test")
     test_sinir_durumlari(cerceveler, endeks)
