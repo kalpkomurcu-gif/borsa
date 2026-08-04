@@ -73,11 +73,15 @@ def calistir(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
 # ---------------------------------------------------------------
 # Metrikler
 # ---------------------------------------------------------------
-def metrikler(islemler: pd.DataFrame, agirlik: float = 0.2) -> dict:
+def metrikler(islemler: pd.DataFrame) -> dict:
     """
-    agirlik: her isleme ayrilan sermaye orani (0.2 = ayni anda ~5 pozisyon).
-    Ozkaynak egrisi cikis tarihine gore sirali bilesikleme ile kurulur —
-    yuzde toplamaktan farkli olarak gercekten yasanabilir bir sayi.
+    ISLEM BAZLI metrikler. Portfoy sonucu icin portfoy() ayri cagrilir.
+
+    Bu ayrim bilincli: islem bazli sayilar (isabet, beklenti, PF) kac
+    pozisyon tasidiginizdan bagimsizdir ve dogrudan yorumlanabilir.
+    Ozkaynak/dusus ise sermaye tahsisine baglidir — ikisini tek fonksiyonda
+    karistirmak, ust uste binen islemleri siraliymis gibi bilesikleyip
+    "32 milyon kat getiri" turu anlamsiz sayilar uretiyordu.
     """
     if islemler.empty:
         return {"islem": 0}
@@ -85,30 +89,102 @@ def metrikler(islemler: pd.DataFrame, agirlik: float = 0.2) -> dict:
     g = islemler["getiri"]
     kazanan, kaybeden = g[g > 0], g[g <= 0]
     isabet = len(kazanan) / len(g)
-    ort_kazanc = kazanan.mean() if len(kazanan) else 0.0
-    ort_kayip = kaybeden.mean() if len(kaybeden) else 0.0
-
-    brut_kar = kazanan.sum()
+    ort_kazanc = float(kazanan.mean()) if len(kazanan) else 0.0
+    ort_kayip = float(kaybeden.mean()) if len(kaybeden) else 0.0
     brut_zarar = -kaybeden.sum()
-
-    sirali = islemler.sort_values("cikis_tarih", na_position="last")
-    ozkaynak = (1 + agirlik * sirali["getiri"]).cumprod()
-    zirve = ozkaynak.cummax()
-    max_dusus = float((ozkaynak / zirve - 1).min()) if len(ozkaynak) else 0.0
 
     return {
         "islem": int(len(g)),
         "isabet": isabet,
         "ort_getiri": float(g.mean()),
         "medyan_getiri": float(g.median()),
-        "ort_kazanc": float(ort_kazanc),
-        "ort_kayip": float(ort_kayip),
+        "ort_kazanc": ort_kazanc,
+        "ort_kayip": ort_kayip,
         # Beklenti = islem basina beklenen getiri; sistemin tek sayilik ozeti
         "beklenti": float(isabet * ort_kazanc + (1 - isabet) * ort_kayip),
-        "profit_factor": float(brut_kar / brut_zarar) if brut_zarar > 0 else float("inf"),
+        "profit_factor": (float(kazanan.sum() / brut_zarar)
+                          if brut_zarar > 0 else float("inf")),
         "ort_gun": float(islemler["gun"].mean()),
-        "ozkaynak": float(ozkaynak.iloc[-1]) if len(ozkaynak) else 1.0,
+    }
+
+
+def portfoy(islemler: pd.DataFrame, max_pozisyon: int = 5) -> dict:
+    """
+    Gercek portfoy simulasyonu: ayni anda en fazla 'max_pozisyon' pozisyon.
+
+    Neden sart: strateji 5 yilda 1967 sinyal urettiyse bunlarin hepsine
+    girilemez. Slot doluyken gelen sinyal ATLANIR — gercek hayatta oldugu
+    gibi. Atlanan sinyal sayisi stratejinin kapasitesini gosterir: cok
+    yuksekse hangi sinyale girdiginiz sansa kalir ve backtest sonucu
+    tekrarlanabilir olmaktan cikar.
+
+    Ozkaynak egrisi GERCEKLESMIS kar/zarara gore kurulur (cikis anlarinda
+    isaretlenir). Acik pozisyonun gunluk dalgalanmasi izlenmedigi icin
+    gercek dusus buradakinden DERINDIR; sayi alt sinirdir.
+    """
+    if islemler.empty:
+        return {"islem": 0}
+
+    df = islemler.dropna(subset=["giris_tarih"]).copy()
+    if df.empty:
+        return {"islem": 0}
+    son_tarih = pd.Timestamp(
+        max(df["cikis_tarih"].max(), df["giris_tarih"].max()))
+    df["_cikis"] = df["cikis_tarih"].fillna(son_tarih)
+    df = df.sort_values("giris_tarih")
+
+    nakit = 1.0
+    acik: list[tuple[pd.Timestamp, float, float]] = []   # (cikis, tahsis, getiri)
+    egri: list[tuple[pd.Timestamp, float]] = []
+    alinan = atlanan = 0
+
+    def kapat(tarihe_kadar: pd.Timestamp) -> None:
+        nonlocal nakit
+        while acik:
+            i = min(range(len(acik)), key=lambda j: acik[j][0])
+            if acik[i][0] > tarihe_kadar:
+                return
+            ct, tahsis, getiri = acik.pop(i)
+            nakit += tahsis * (1 + getiri)
+            egri.append((ct, nakit + sum(a[1] for a in acik)))
+
+    for _, t in df.iterrows():
+        kapat(t["giris_tarih"])
+        if len(acik) >= max_pozisyon:
+            atlanan += 1
+            continue
+        ozkaynak = nakit + sum(a[1] for a in acik)
+        tahsis = min(ozkaynak / max_pozisyon, nakit)
+        if tahsis <= 0:
+            atlanan += 1
+            continue
+        nakit -= tahsis
+        acik.append((pd.Timestamp(t["_cikis"]), tahsis, float(t["getiri"])))
+        alinan += 1
+
+    kapat(pd.Timestamp.max)
+
+    if not egri:
+        return {"islem": int(len(df)), "alinan": alinan, "atlanan": atlanan}
+
+    seri = pd.Series(dict(egri)).sort_index()
+    zirve = seri.cummax()
+    max_dusus = float((seri / zirve - 1).min())
+
+    gun = (seri.index[-1] - pd.Timestamp(df["giris_tarih"].min())).days
+    yil = gun / 365.25 if gun > 0 else 0.0
+    son = float(seri.iloc[-1])
+    yillik = (son ** (1 / yil) - 1) if yil > 0 and son > 0 else float("nan")
+
+    return {
+        "islem": int(len(df)),
+        "alinan": alinan,
+        "atlanan": atlanan,
+        "max_pozisyon": max_pozisyon,
+        "ozkaynak": son,
+        "yillik": yillik,
         "max_dusus": max_dusus,
+        "yil": yil,
     }
 
 
@@ -269,10 +345,10 @@ def _yuzde(x) -> str:
     return "—" if pd.isna(x) else f"{x * 100:+.2f}%"
 
 
-def ozet_yaz(ad: str, m: dict) -> list[str]:
+def ozet_yaz(ad: str, m: dict, p: dict | None = None) -> list[str]:
     if not m.get("islem"):
         return [f"### {ad}", "", "Islem yok.", ""]
-    return [
+    L = [
         f"### {ad}", "",
         f"- Islem: **{m['islem']}** | Isabet: **{m['isabet']*100:.1f}%** "
         f"| Ort. tutma: {m['ort_gun']:.1f} gun",
@@ -282,10 +358,18 @@ def ozet_yaz(ad: str, m: dict) -> list[str]:
         f"| Ort. kayip: {_yuzde(m['ort_kayip'])}",
         f"- **Beklenti: {_yuzde(m['beklenti'])}** "
         f"| Profit factor: {m['profit_factor']:.2f}",
-        f"- Ozkaynak (x): {m['ozkaynak']:.3f} "
-        f"| Max dusus: {_yuzde(m['max_dusus'])}",
-        "",
     ]
+    if p and p.get("ozkaynak"):
+        kapasite = (p["atlanan"] / p["islem"] * 100) if p["islem"] else 0.0
+        L += [
+            f"- Portfoy ({p['max_pozisyon']} pozisyon): ozkaynak "
+            f"**{p['ozkaynak']:.2f}x** | yillik {_yuzde(p['yillik'])} "
+            f"| max dusus {_yuzde(p['max_dusus'])}",
+            f"- Sinyalin **%{kapasite:.0f}'i atlandi** (slot doluydu): "
+            f"{p['alinan']} alindi / {p['atlanan']} atlandi",
+        ]
+    L.append("")
+    return L
 
 
 def karsilastir(stratejiler: list[S.Strateji], data: pd.DataFrame,

@@ -154,10 +154,31 @@ def test_olcum(data: pd.DataFrame, semboller: list[str],
 
     m = O.metrikler(isl)
     kontrol(0 <= m["isabet"] <= 1, "isabet 0-1 araliginda")
-    kontrol(m["max_dusus"] <= 0, "max_dusus negatif (veya sifir)")
     kontrol(abs(m["beklenti"] - (m["isabet"] * m["ort_kazanc"]
                                  + (1 - m["isabet"]) * m["ort_kayip"])) < 1e-9,
             "beklenti = isabet*ort_kazanc + (1-isabet)*ort_kayip")
+    kontrol("ozkaynak" not in m and "max_dusus" not in m,
+            "metrikler() portfoy sayisi DONDURMUYOR (ayri fonksiyon)")
+
+    p = O.portfoy(isl, max_pozisyon=5)
+    kontrol(p["alinan"] + p["atlanan"] == p["islem"],
+            "portfoy: alinan + atlanan = toplam sinyal")
+    kontrol(p["max_dusus"] <= 0, "portfoy: max_dusus negatif (veya sifir)")
+    kontrol(p["ozkaynak"] > 0, "portfoy: ozkaynak pozitif")
+
+    # Slot limiti gercekten baglayici mi? Az slot -> daha cok atlanan.
+    dar = O.portfoy(isl, max_pozisyon=1)
+    genis = O.portfoy(isl, max_pozisyon=50)
+    kontrol(dar["atlanan"] >= genis["atlanan"],
+            f"az slot daha cok sinyal atliyor ({dar['atlanan']} >= "
+            f"{genis['atlanan']})")
+    kontrol(dar["alinan"] <= genis["alinan"], "az slot daha az islem aliyor")
+
+    # Asil regresyon: ust uste binen islemler SIRALI bilesiklenmemeli.
+    # Eski hatali metrik burada milyonlarca kat ozkaynak uretiyordu.
+    kontrol(p["ozkaynak"] < 1e6,
+            f"ozkaynak makul buyuklukte ({p['ozkaynak']:.2f}x) — "
+            "ust uste binen islemler sirali bilesiklenmiyor")
 
     kiyas = O.evren_kiyasi(isl, data, semboller)
     kontrol("evren_getiri" in kiyas and kiyas["evren_getiri"].notna().any(),
@@ -183,7 +204,8 @@ def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
-    kontrol(O.metrikler(bos) == {"islem": 0}, "bos tablo cokmuyor")
+    kontrol(O.metrikler(bos) == {"islem": 0}, "bos tablo cokmuyor (metrikler)")
+    kontrol(O.portfoy(bos) == {"islem": 0}, "bos tablo cokmuyor (portfoy)")
     kontrol(S.pozisyonlar(S.erken_giris(), cerceveler["KIR00"].head(30),
                           endeks) == [],
             "MIN_VERI altinda islem uretilmiyor")

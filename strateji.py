@@ -347,3 +347,28 @@ def erken_giris() -> Strateji:
         ],
         cikis=Cikis(atr_carpan=2.0, iz_suren=True, kriter_bozulunca=True),
     )
+
+
+def erken_yalin() -> Strateji:
+    """
+    erken_giris()'in ablasyonla budanmis hali.
+
+    BIST 100 / 5 yil ablasyonu uc kriterin ZARAR verdigini gosterdi
+    (cikarilinca hem beklenti hem islem sayisi artiyor):
+      sikisma     283->366 islem, beklenti +7.77% -> +8.33%
+      dar_baz     283->452 islem, beklenti +7.77% -> +8.41%
+      kalma_ma21  283->278 islem, beklenti +7.77% -> +8.68%
+
+    Yani volatilite sikismasi hipotezi bu veride tutmadi: dar bazdan
+    kirilim beklemek, kirilimlarin cogunu kacirtiyor ve kalanlari
+    iyilestirmiyor. Ise yarayan uc kriter momentum tarafinda:
+    kirilim, rvol2, zirveye_yakin (cikarilinca beklenti dusuyor).
+
+    Cikis MA21 kalma kosulundan arindirildi; pozisyonu artik yalnizca
+    iz suren ATR stopu kapatiyor — kazanani erken kesmemek icin.
+    """
+    return Strateji(
+        ad="erken_yalin",
+        kriterler=[K_ZIRVEYE_YAKIN, K_KIRILIM, K_RVOL2, K_TEPEDE_KAPANIS],
+        cikis=Cikis(atr_carpan=2.0, iz_suren=True, kriter_bozulunca=False),
+    )

@@ -64,24 +64,32 @@ def main() -> None:
                         tazele=a.tazele)
     endeks = endeks_getir(a.periyot, a.tazele)
 
-    mevcut, erken = S.mevcut_sistem(), S.erken_giris()
+    stratejiler = (S.mevcut_sistem(), S.erken_giris(), S.erken_yalin())
     L: list[str] = [
         f"# Olcum Raporu — {pd.Timestamp.now():%Y-%m-%d %H:%M}",
         "",
         f"Evren: BIST 100 ({len(semboller)} hisse) | Periyot: {a.periyot}"
         + (f" | Girisler {a.baslangic} sonrasi" if a.baslangic else ""),
         "",
-        "> Tek basina getiri sayisi yorumlanamaz. Her strateji icin "
+        "> **Tek basina getiri sayisi yorumlanamaz.** Her strateji icin "
         "**evren kiyasi** satirina bakin: ayni tarihlerde ortalama hisse "
-        "ne getirdiyse, stratejinin katkisi aradaki farktir.",
+        "ne getirdiyse, stratejinin katkisi aradaki farktir. TL bazli "
+        "getiriler enflasyonla siser; mutlak sayilar degil FARK anlamlidir.",
+        "",
+        "> ⚠️ **Hayatta kalma yanliligi.** Evren, BIST 100'un BUGUNKU "
+        "bilesimidir; gecmise dogru uygulanmasi 'bugun endekste olmayi "
+        "basarmis' hisseleri test etmek demektir. Cokup endeksten dusenler "
+        "listede yok, bu da mutlak getirileri yukari sisirir. Evren kiyasi "
+        "bu yanliligi KISMEN giderir (kiyas da ayni carpik evreni kullanir), "
+        "bu yuzden **fark satirina mutlak getiriden cok daha fazla "
+        "guvenilebilir**. Periyot uzadikca yanlilik buyur.",
         "",
     ]
 
-    tablolar = {}
-    for strat in (mevcut, erken):
+    for strat in stratejiler:
         isl = O.calistir(strat, data, semboller, endeks, a.baslangic)
-        tablolar[strat.ad] = isl
-        L += O.ozet_yaz(f"{strat.ad} sistemi", O.metrikler(isl))
+        L += O.ozet_yaz(f"{strat.ad} sistemi", O.metrikler(isl),
+                        O.portfoy(isl))
 
         if isl.empty:
             continue
@@ -120,12 +128,14 @@ def main() -> None:
                          f"| {r['beklenti']*100:+.2f}% |")
             L.append("")
 
-    # Ablasyon sadece erken sistem icin (asil gelistirilen o)
-    L += ["## Ablasyon — her kriterin katkisi (erken sistem)", "",
+    # Ablasyon yalin sistem uzerinde: budanmis surumun kalan kriterleri
+    # hala tasiyip tasimadigini gorurruz.
+    hedef = S.erken_yalin()
+    L += [f"## Ablasyon — her kriterin katkisi ({hedef.ad})", "",
           "Bir kriteri cikarinca **beklenti yukseliyorsa** o kriter zarar "
           "veriyordur. Islem sayisi cok artip beklenti korunuyorsa kriter "
           "gereksiz yere firsat kaciriyordur.", ""]
-    ab = O.ablasyon(erken, data, semboller, endeks, a.baslangic)
+    ab = O.ablasyon(hedef, data, semboller, endeks, a.baslangic)
     L += ["| Varyant | Islem | Isabet | Ort. getiri | Beklenti | PF |",
           "|---|---|---|---|---|---|"]
     for ad, r in ab.iterrows():
@@ -137,7 +147,7 @@ def main() -> None:
                  f"| {r['profit_factor']:.2f} |")
 
     L += ["", "## Kriterler", ""]
-    for strat in (mevcut, erken):
+    for strat in stratejiler:
         L += [f"**{strat.ad}:**", ""]
         for tip in ("kurulum", "tetik", "surekli", "kalma"):
             for k in strat.alt_kume(tip):
