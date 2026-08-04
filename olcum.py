@@ -184,8 +184,44 @@ def portfoy(islemler: pd.DataFrame, max_pozisyon: int = 5) -> dict:
         "ozkaynak": son,
         "yillik": yillik,
         "max_dusus": max_dusus,
+        # Yillik getiri / max dusus. Stratejileri mutlak getiriye gore
+        # siralamak yaniltir: dususu iki kati olan sistem "daha iyi"
+        # gorunur. Bu oran onu duzeltir. Dusus alt sinir oldugu icin
+        # gercek oran buradakinden DUSUKTUR.
+        "getiri_dusus": (abs(yillik / max_dusus)
+                         if max_dusus < 0 and yillik == yillik else float("nan")),
         "yil": yil,
     }
+
+
+# ---------------------------------------------------------------
+# Curve-fitting korumasi: donem bolme
+# ---------------------------------------------------------------
+def donem_bol(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
+              endeks: pd.Series | None, bolme: str) -> pd.DataFrame:
+    """
+    Ayni stratejiyi iki ayri donemde olcer.
+
+    Neden gerekli: ayni backtest uzerinde varyant secmek (kriter ekleyip
+    cikarmak) kacinilmaz olarak o donemin gurultusune uyum saglar. Bir
+    strateji SADECE ilk donemde calisiyorsa, ikinci donemdeki sonuc
+    gercek beklentiye cok daha yakindir.
+
+    Okuma: iki donem arasindaki beklenti farki buyukse (orn. biri pozitif
+    digeri negatif) sonuca guvenmeyin — o strateji secildigi veriye
+    uydurulmus demektir.
+    """
+    isl = calistir(strat, data, semboller, endeks)
+    if isl.empty:
+        return pd.DataFrame()
+    sinir = pd.Timestamp(bolme)
+    parcalar = {
+        f"1. donem (<{bolme})": isl[isl["giris_tarih"] < sinir],
+        f"2. donem (>={bolme})": isl[isl["giris_tarih"] >= sinir],
+    }
+    return pd.DataFrame({
+        ad: metrikler(p) for ad, p in parcalar.items() if not p.empty
+    }).T
 
 
 # ---------------------------------------------------------------
@@ -364,7 +400,8 @@ def ozet_yaz(ad: str, m: dict, p: dict | None = None) -> list[str]:
         L += [
             f"- Portfoy ({p['max_pozisyon']} pozisyon): ozkaynak "
             f"**{p['ozkaynak']:.2f}x** | yillik {_yuzde(p['yillik'])} "
-            f"| max dusus {_yuzde(p['max_dusus'])}",
+            f"| max dusus {_yuzde(p['max_dusus'])} "
+            f"| **getiri/dusus {p['getiri_dusus']:.2f}**",
             f"- Sinyalin **%{kapasite:.0f}'i atlandi** (slot doluydu): "
             f"{p['alinan']} alindi / {p['atlanan']} atlandi",
         ]

@@ -372,3 +372,27 @@ def erken_yalin() -> Strateji:
         kriterler=[K_ZIRVEYE_YAKIN, K_KIRILIM, K_RVOL2, K_TEPEDE_KAPANIS],
         cikis=Cikis(atr_carpan=2.0, iz_suren=True, kriter_bozulunca=False),
     )
+
+
+def erken_dar() -> Strateji:
+    """
+    erken_yalin + dar baz kosulu.
+
+    erken_yalin en yuksek getiriyi verdi ama HEDEFI ISKALADI: dipten
+    ortalama +%24.7 yukaridan giriyor (mevcut sistem +%23.4). Sebebi
+    dar_baz'in cikarilmasi — o kosul olmayinca "20 gunun zirvesini kir"
+    kriteri, zaten %25 kosmus GENIS bir araligin tepesinde de saglaniyor.
+    Yani erken_yalin bir erken giris sistemi degil, momentum devam
+    sistemidir.
+
+    Bu varyant calisan momentum tetikleyicilerini korur ama girisi yine
+    DAR bazdan almaya zorlar. Beklenen takas: erken_yalin'dan daha az
+    islem ve daha dusuk mutlak getiri, buna karsilik hedefe uygun giris
+    (dipten daha az uzakta) ve daha sig dusus.
+    """
+    return Strateji(
+        ad="erken_dar",
+        kriterler=[K_DAR_BAZ, K_ZIRVEYE_YAKIN,
+                   K_KIRILIM, K_RVOL2, K_TEPEDE_KAPANIS],
+        cikis=Cikis(atr_carpan=2.0, iz_suren=True, kriter_bozulunca=False),
+    )

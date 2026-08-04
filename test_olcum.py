@@ -191,9 +191,19 @@ def test_olcum(data: pd.DataFrame, semboller: list[str],
     kontrol(gec["aralik_konum"].mean() >= 100,
             "erken sistem araligin USTUNDEN giriyor (kirilim)")
 
+    kontrol(p["getiri_dusus"] > 0 or p["getiri_dusus"] != p["getiri_dusus"],
+            "getiri/dusus orani hesaplandi")
+
     ab = O.ablasyon(erken, data, semboller, endeks)
     kontrol("TAM SISTEM" in ab.index and len(ab) == len(erken.kriterler) + 1,
             f"ablasyon her kriter icin satir uretti ({len(ab)} satir)")
+
+    orta = str(pd.Timestamp(data.index[len(data.index) // 2]).date())
+    db = O.donem_bol(erken, data, semboller, endeks, orta)
+    kontrol(len(db) == 2, f"donem_bol iki donem uretti ({len(db)})")
+    kontrol(int(db["islem"].sum()) == len(isl),
+            "donem parcalarinin islem toplami = toplam islem "
+            f"({int(db['islem'].sum())} = {len(isl)})")
 
     rej = O.rejim_ayir(isl, endeks)
     kontrol(not rej.empty, "rejim_ayir sonuc uretti")

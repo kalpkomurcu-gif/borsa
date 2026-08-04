@@ -57,6 +57,11 @@ def main() -> None:
                     help="bu tarihten sonraki girisler (YYYY-MM-DD)")
     ap.add_argument("--tazele", action="store_true",
                     help="onbellegi yok say, yeniden indir")
+    ap.add_argument("--bolme", default=None,
+                    help="donem bolme tarihi (YYYY-MM-DD). Ayni backtest "
+                         "uzerinde varyant secmenin yarattigi uydurma "
+                         "riskini gormek icin; bos birakilirsa verinin "
+                         "orta noktasi kullanilir")
     a = ap.parse_args()
 
     semboller = [t + ".IS" for t in BIST100]
@@ -64,7 +69,8 @@ def main() -> None:
                         tazele=a.tazele)
     endeks = endeks_getir(a.periyot, a.tazele)
 
-    stratejiler = (S.mevcut_sistem(), S.erken_giris(), S.erken_yalin())
+    stratejiler = (S.mevcut_sistem(), S.erken_giris(), S.erken_yalin(),
+                   S.erken_dar())
     L: list[str] = [
         f"# Olcum Raporu — {pd.Timestamp.now():%Y-%m-%d %H:%M}",
         "",
@@ -145,6 +151,29 @@ def main() -> None:
         L.append(f"| {ad} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
                  f"| {r['ort_getiri']*100:+.2f}% | {r['beklenti']*100:+.2f}% "
                  f"| {r['profit_factor']:.2f} |")
+
+    # ---- Donem bolme: uydurma (curve-fitting) kontrolu ----
+    bolme = a.bolme or str(
+        pd.Timestamp(data.index[len(data.index) // 2]).date())
+    L += ["", "## Donem bolme — uydurma kontrolu", "",
+          f"Bolme tarihi: **{bolme}**", "",
+          "Varyantlari ayni backtest uzerinde secmek, o donemin gurultusune "
+          "uyum saglama riskini dogurur. Bir strateji yalnizca 1. donemde "
+          "calisiyorsa **sonuca guvenmeyin**; 2. donem gercek beklentiye "
+          "daha yakindir.", ""]
+    for strat in stratejiler:
+        db = O.donem_bol(strat, data, semboller, endeks, bolme)
+        if db.empty:
+            continue
+        L += [f"**{strat.ad}**", "",
+              "| Donem | Islem | Isabet | Ort. getiri | Beklenti | PF |",
+              "|---|---|---|---|---|---|"]
+        for ad, r in db.iterrows():
+            L.append(f"| {ad} | {int(r['islem'])} | {r['isabet']*100:.1f}% "
+                     f"| {r['ort_getiri']*100:+.2f}% "
+                     f"| {r['beklenti']*100:+.2f}% "
+                     f"| {r['profit_factor']:.2f} |")
+        L.append("")
 
     L += ["", "## Kriterler", ""]
     for strat in stratejiler:
