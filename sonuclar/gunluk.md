@@ -1,6 +1,6 @@
 # Gunluk Tarama — 03.08.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-04 11:45
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-04 11:53
 
 **Taranan gun (kapanis): 03.08.2026**
 
@@ -8,44 +8,53 @@ Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-04 11:45
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
-## 🟢 BUGUN TETIKLENDI (0)
+## 🟢 ALIM LISTESI — 1 hisse
 
-Tum giris kriterleri bugun saglandi.
+**03.08.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
-Bugun tetiklenen hisse yok.
+| Hisse | Sinyal gunu kapanisi | RVOL | Kapanis konumu | ATR% | Stop (girise gore) |
+|---|---|---|---|---|---|
+| **AKSA** | 13.00 | 2.55x | 97% | 3.5% | giris - 6.9% |
 
-## 🟡 IZLEME LISTESI (16)
+**Stop nasil kurulur:** giris fiyati acilista belli olacagi icin sabit bir TL degeri verilemez. Gerceklesen alis fiyatini al, tablodaki yuzde kadar asagisina stop koy (= 2 x ATR). Sonra hisse yukseldikce stopu yukari cek, asla asagi indirme.
 
-Kurulum tamam, tetik henuz gelmedi. **Asil liste bu:** kirilim gununde almak istiyorsan yarin hangi hisseye bakacagini buradan secersin. `Kirilim` sutunu, 20 gunluk zirveye ne kadar kaldigini gosterir — %0'a yakin olan bir sonraki guclu gunde tetiklenir.
+**Bu sayilar olculdu:** ertesi gun acilistan giris, erken_dar stratejisinde islem basina **+%8.38** beklenti verdi (5 yil, BIST 100). Ayni sinyali kapanista almak +%9.18 veriyordu — aradaki 0.80 puan gecelik boslugun maliyeti.
+
+## 🟡 Izleme listesi (16) — bilgi amacli
+
+Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
+
+Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviyesine yakin olmak sinyal degildir: hacim ve tepede kapanis o gun ayrica gerceklesmeli ve bu ancak kapanista belli olur.
 
 | Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
 |---|---|---|---|---|---|---|
-| **AEFES** | 22.08 | **22.48** | 1.8% | 21.05 | kirilim, rvol2 | 15.8% |
-| **DOHOL** | 21.26 | **21.90** | 3.0% | 20.41 | kirilim, tepede_kapanis | 9.2% |
-| **MAVI** | 39.14 | **41.58** | 6.2% | 39.44 | kirilim, rvol2 | 11.1% |
-| **BSOKE** | 35.80 | **38.32** | 7.0% | 35.10 | kirilim, rvol2 | 16.1% |
-| **IEYHO** | 164.30 | **167.00** | 1.6% | 159.36 | kirilim, rvol2, tepede_kapanis | 15.7% |
-| **ENJSA** | 109.50 | **111.80** | 2.1% | 105.23 | kirilim, rvol2, tepede_kapanis | 12.8% |
-| **AKSA** | 12.32 | **12.65** | 2.7% | 11.78 | kirilim, rvol2, tepede_kapanis | 12.7% |
-| **CCOLA** | 90.50 | **93.50** | 3.3% | 87.25 | kirilim, rvol2, tepede_kapanis | 17.2% |
-| **ANSGR** | 26.88 | **28.38** | 5.6% | 26.89 | kirilim, rvol2, tepede_kapanis | 8.6% |
-| **EREGL** | 42.40 | **45.10** | 6.4% | 42.13 | kirilim, rvol2, tepede_kapanis | 15.5% |
-| **ODAS** | 8.69 | **9.26** | 6.6% | 8.54 | kirilim, rvol2, tepede_kapanis | 16.9% |
-| **BIMAS** | 383.00 | **408.25** | 6.6% | 385.11 | kirilim, rvol2, tepede_kapanis | 15.6% |
-| **DOAS** | 181.50 | **193.90** | 6.8% | 185.43 | kirilim, rvol2, tepede_kapanis | 8.1% |
-| **KCHOL** | 191.50 | **205.70** | 7.4% | 194.90 | kirilim, rvol2, tepede_kapanis | 13.0% |
-| **MGROS** | 623.00 | **671.50** | 7.8% | 632.57 | kirilim, rvol2, tepede_kapanis | 12.4% |
-| **MPARK** | 400.25 | **432.75** | 8.1% | 406.49 | kirilim, rvol2, tepede_kapanis | 9.8% |
+| **IEYHO** | 167.50 | **167.00** | -0.3% | 159.28 | rvol2, tepede_kapanis | 15.7% |
+| **DOAS** | 190.40 | **193.90** | 1.8% | 184.96 | kirilim, rvol2 | 7.1% |
+| **CCOLA** | 91.05 | **93.50** | 2.7% | 87.30 | kirilim, rvol2 | 17.2% |
+| **AEFES** | 21.88 | **22.48** | 2.7% | 21.05 | kirilim, rvol2 | 15.8% |
+| **ANSGR** | 27.20 | **28.38** | 4.3% | 26.89 | kirilim, rvol2 | 8.6% |
+| **KCHOL** | 196.90 | **205.70** | 4.5% | 194.90 | kirilim, rvol2 | 13.0% |
+| **BIMAS** | 390.25 | **408.25** | 4.6% | 385.17 | kirilim, rvol2 | 15.6% |
+| **MGROS** | 625.50 | **661.50** | 5.8% | 622.82 | kirilim, rvol2 | 10.7% |
+| **DOHOL** | 20.92 | **22.18** | 6.0% | 20.66 | kirilim, tepede_kapanis | 10.6% |
+| **MPARK** | 405.00 | **432.75** | 6.9% | 407.13 | kirilim, rvol2 | 9.8% |
+| **BSOKE** | 35.56 | **38.32** | 7.8% | 35.11 | kirilim, rvol2 | 16.1% |
+| **SISE** | 41.74 | **45.38** | 8.7% | 42.82 | kirilim, rvol2 | 10.3% |
+| **ALARK** | 101.00 | **111.00** | 9.9% | 103.73 | kirilim, rvol2 | 14.3% |
+| **ENJSA** | 108.90 | **111.80** | 2.7% | 105.04 | kirilim, rvol2, tepede_kapanis | 12.8% |
+| **EREGL** | 42.54 | **45.10** | 6.0% | 42.17 | kirilim, rvol2, tepede_kapanis | 15.5% |
+| **MAVI** | 39.12 | **41.58** | 6.3% | 39.44 | kirilim, rvol2, tepede_kapanis | 11.1% |
 
-_Kirilim seviyesine %10'den uzak 3 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): ALARK, TURSG, THYAO_
+_Kirilim seviyesine %10'den uzak 3 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): THYAO, TURSG, ODAS_
 
-### Nasil kullanilir
+## Nasil kullanilir
 
-1. Bu liste **kapanistan sonra** uretilir.
-2. Ertesi gun, hissenin fiyati **ALIM SEVIYESI**'ni gecerse aday olur.
-3. **Ama seviyeyi gecmesi tek basina yetmez.** Sinyalin tamamlanmasi icin o gun ayrica hacmin patlamasi (20 gun medyaninin 2 kati) ve kapanisin gun icindeki en yuksek %30'luk dilimde olmasi gerekir. Bu ikisi ancak KAPANISTA belli olur.
-4. Yani seviyeyi gun icinde gecerken alirsan, sinyalin onaylanip onaylanmayacagini bilmeden almis olursun. Olcumler kapanis fiyatina gore yapildi; en yakin uygulama kapanisa dogru veya ertesi acilista almaktir.
-5. Stop sutunu, alim seviyesinden girildigi varsayimiyla hesaplanmistir (seviye - 2 x ATR).
+1. Tarama her islem gunu **kapanistan sonra** calisir.
+2. **ALIM LISTESI**'ndeki hisseleri ertesi islem gunu **acilista** al. Baska sart aramana gerek yok — kriterlerin hepsi sinyal gununun kapanisinda zaten dogrulandi.
+3. Gerceklesen alis fiyatina gore stopu kur (tablodaki yuzde kadar asagi). Hisse yukseldikce stopu yukari cek, asla asagi indirme.
+4. Alim listesi bossa o gun islem yok. Zorlamak yok.
+
+Bu akis kasten basit: gun ici takip, seviye bekleme, emir kurma yok. Bedeli olculdu — kapanista almaya gore islem basina 0.80 puan. Karsiliginda her gun ekran basinda olmak zorunda kalmiyorsun.
 
 ## Kriterler
 
