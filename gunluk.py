@@ -132,17 +132,41 @@ def katalizor_degerleri(d: pd.DataFrame, ham: pd.DataFrame,
 
 
 def tara(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
-         endeks: pd.Series) -> tuple[list[dict], list[dict]]:
-    """(tetiklenenler, izleme_listesi) doner."""
+         endeks: pd.Series,
+         tarama_gunu: pd.Timestamp | None = None,
+         ) -> tuple[list[dict], list[dict], list[str]]:
+    """
+    (tetiklenenler, izleme_listesi, bayat_semboller) doner.
+
+    tarama_gunu verilirse, son bari o gune ait OLMAYAN hisseler taramaya
+    alinmaz ve bayat listesine yazilir.
+
+    Bu kontrol sart: hisse_cerceve() her sembol icin dropna(Close) yapar,
+    dolayisiyla tarama gununde verisi eksik olan bir hissenin .iloc[-1]'i
+    sessizce DAHA ESKI bir bara duser. Rapor basligi ise tum sembollerin
+    birlesik indeksinden gelen genel son gunu yazar. Ikisi ayrisinca
+    ortaya "31 Temmuz'un fiyati 3 Agustos diye raporlanmis" turu bir
+    hata cikar ve hicbir sey uyarmaz — parcali indirmede parcalar farkli
+    tarih araligi dondugunde concat birlesimi NaN doldurdugu icin bu
+    durum gercekten olusuyor.
+    """
     kurulumlar = strat.alt_kume("kurulum") + strat.alt_kume("surekli")
     tetikler = strat.alt_kume("tetik")
+    if tarama_gunu is not None:
+        tarama_gunu = pd.Timestamp(tarama_gunu).normalize()
 
-    tetiklendi, izleme = [], []
+    tetiklendi, izleme, bayat = [], [], []
     for sembol in semboller:
         d = V.hisse_cerceve(data, sembol)                      # gostergeler
         ham = V.hisse_cerceve(data, sembol, duzeltilmis=False)  # ekran fiyati
         if d is None or ham is None or len(d) < S.MIN_VERI:
             continue
+        if tarama_gunu is not None:
+            son = pd.Timestamp(d.index[-1]).normalize()
+            if son != tarama_gunu:
+                bayat.append(f"{sembol.replace('.IS', '')}"
+                             f"({son:%d.%m})")
+                continue
         try:
             kurulum_ok, kurulum_detay = True, []
             for k in kurulumlar:
@@ -181,7 +205,7 @@ def tara(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
                                x["kirilima_uzaklik"]
                                if x["kirilima_uzaklik"] == x["kirilima_uzaklik"]
                                else 999))
-    return tetiklendi, izleme
+    return tetiklendi, izleme, bayat
 
 
 def _sayi(x, ek: str = "", basamak: int = 2) -> str:
@@ -256,7 +280,15 @@ def main() -> None:
                 f"**{son_tarih:%d.%m.%Y}**.")
 
     gecikme = (pd.Timestamp.now().normalize() - son_tarih.normalize()).days
-    tetiklendi, izleme = tara(strat, data, semboller, endeks)
+    tetiklendi, izleme, bayat = tara(strat, data, semboller, endeks,
+                                     tarama_gunu=son_tarih)
+    if bayat:
+        notlar.append(
+            f"⚠️ **{len(bayat)} hissenin {son_tarih:%d.%m.%Y} verisi yok**, "
+            "taramaya alinmadilar. Parantez ici o hissenin son veri gunu: "
+            + ", ".join(bayat[:20]) + (" ..." if len(bayat) > 20 else "")
+            + ". Bu hisseler icin eski bir barin fiyatini bugunku gibi "
+            "raporlamaktansa listeden cikarmak dogru olan.")
 
     # Ulasilamayacak kadar uzaktakileri ele: tek gunde o mesafeyi kapatip
     # kirilim yapmasi beklenmedigi icin listede yer kaplamalari anlamsiz.

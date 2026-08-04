@@ -241,10 +241,35 @@ def test_gunluk_tarama(data: pd.DataFrame, semboller: list[str],
 
     print("\n4) GUNLUK TARAMA (hisse isimleri)")
     strat = S.erken_dar()
-    tetiklendi, izleme = gunluk.tara(strat, data, semboller, endeks)
+    tetiklendi, izleme, bayat = gunluk.tara(strat, data, semboller, endeks)
     kontrol(isinstance(tetiklendi, list) and isinstance(izleme, list),
-            f"tara() iki liste dondu (tetiklendi={len(tetiklendi)}, "
+            f"tara() liste dondu (tetiklendi={len(tetiklendi)}, "
             f"izleme={len(izleme)})")
+
+    # --- REGRESYON: bayat sembol tarama gunuyle karistirilmamali ---
+    # hisse_cerceve() dropna(Close) yaptigi icin, tarama gununde verisi
+    # eksik olan hissenin .iloc[-1]'i sessizce daha eski bir bara duser.
+    # Gercekte olan hata buydu: 31 Temmuz'un fiyati 3 Agustos diye
+    # raporlandi. Asagida bir sembolun son iki bari bilerek NaN yapilir.
+    bozuk = data.copy()
+    hedef = semboller[0]
+    bozuk.loc[bozuk.index[-2:], (hedef, "Close")] = np.nan
+    son_gun = pd.Timestamp(data.index[-1])
+
+    _, _, b2 = gunluk.tara(strat, bozuk, semboller, endeks,
+                           tarama_gunu=son_gun)
+    kontrol(any(hedef.replace(".IS", "") in x for x in b2),
+            f"tarama gununde verisi olmayan sembol bayat sayildi ({hedef})")
+
+    t2, z2, _ = gunluk.tara(strat, bozuk, semboller, endeks,
+                            tarama_gunu=son_gun)
+    kontrol(all(x["hisse"] != hedef.replace(".IS", "")
+                for x in t2 + z2),
+            "bayat sembol alim/izleme listelerine GIRMIYOR")
+
+    # tarama_gunu verilmezse eski davranis (filtre yok)
+    t3, z3, b3 = gunluk.tara(strat, bozuk, semboller, endeks)
+    kontrol(b3 == [], "tarama_gunu verilmezse bayat filtresi calismiyor")
 
     hepsi = tetiklendi + izleme
     kontrol(bool(hepsi), "en az bir aday bulundu")
