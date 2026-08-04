@@ -25,6 +25,8 @@ from __future__ import annotations
 
 import argparse
 import os
+from datetime import time as _time
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -34,6 +36,27 @@ import veri as V
 from tarama import BIST100
 
 ENDEKS_ADAYLARI = ["XU100.IS", "^XU100"]
+
+# BIST kapanisi 18:00 TR. Veri saglayicisinin son bari oturtmasi icin pay.
+BORSA_SAAT_DILIMI = ZoneInfo("Europe/Istanbul")
+KAPANIS_SAATI = _time(18, 10)
+
+
+def son_bar_tamamlandi_mi(son_tarih: pd.Timestamp) -> bool:
+    """
+    Verinin son bari tamamlanmis bir islem gunu mu, yoksa suren seansin
+    yarim bari mi?
+
+    Bu ayrim kritik: yarim barda HACIM eksik olur (RVOL oldugundan cok
+    dusuk cikar) ve "kapanis" henuz kapanis degildir, dolayisiyla
+    tepede_kapanis kriteri anlamsizdir. Yarim barla tarama yapilirsa
+    hicbir hisse tetiklenmez ve bu sessizce "bugun sinyal yok" diye
+    okunur — en tehlikeli hata tipi.
+    """
+    simdi = pd.Timestamp.now(tz=BORSA_SAAT_DILIMI)
+    if son_tarih.date() < simdi.date():
+        return True                      # gecmis bir gun: tamamlanmis
+    return simdi.time() >= KAPANIS_SAATI  # bugun: ancak kapanistan sonra
 
 STRATEJILER = {
     "erken": S.erken_giris,
@@ -176,6 +199,15 @@ def main() -> None:
                     dest="azami_yas",
                     help="onbellek bu saatten eskiyse yeniden indirilir "
                          "(varsayilan 4)")
+    ap.add_argument("--tarih", default=None,
+                    help="taramayi bu tarihe gore yap (YYYY-MM-DD). Veri bu "
+                         "gune kadar kirpilir; gecmis bir gunun listesini "
+                         "gormek icin")
+    ap.add_argument("--yarim-bari-kullan", action="store_true",
+                    dest="yarim_bar",
+                    help="suren seansin tamamlanmamis barini ELEME. "
+                         "Varsayilan olarak elenir; hacim eksik oldugu icin "
+                         "yarim barla tarama yaniltir")
     ap.add_argument("--azami-uzaklik", type=float, default=10.0,
                     dest="azami_uzaklik",
                     help="izleme listesinde kirilim seviyesine bu yuzdeden "
@@ -192,7 +224,37 @@ def main() -> None:
                         tazele=a.tazele, azami_yas_saat=a.azami_yas)
     endeks = endeks_getir(a.periyot, a.tazele)
 
+    # --tarih verilmisse veriyi o gune kadar kirp (gecmis gun taramasi)
+    notlar: list[str] = []
+    if a.tarih:
+        sinir = pd.Timestamp(a.tarih)
+        data = data[data.index <= sinir]
+        endeks = endeks[endeks.index <= sinir]
+        if data.empty:
+            raise SystemExit(f"HATA: {a.tarih} tarihine kadar veri yok.")
+        notlar.append(f"Tarama **{sinir:%d.%m.%Y}** tarihine gore yapildi "
+                      f"(sonraki gunler veriden cikarildi).")
+
+    # Suren seansin yarim barini ele: hacim eksik oldugu icin RVOL
+    # oldugundan dusuk cikar ve hicbir hisse tetiklenmez.
     son_tarih = pd.Timestamp(data.index[-1])
+    if not son_bar_tamamlandi_mi(son_tarih):
+        if a.yarim_bar:
+            notlar.append(
+                f"⚠️ **{son_tarih:%d.%m.%Y} bari TAMAMLANMAMIS** (seans "
+                "suruyor). Hacim eksik oldugu icin RVOL oldugundan dusuk, "
+                "'tepede kapanis' ise anlamsizdir. Sonuclar yaniltici.")
+        else:
+            data = data.iloc[:-1]
+            endeks = endeks[endeks.index < son_tarih]
+            if data.empty:
+                raise SystemExit("HATA: yarim bar elendikten sonra veri kalmadi.")
+            atilan, son_tarih = son_tarih, pd.Timestamp(data.index[-1])
+            notlar.append(
+                f"{atilan:%d.%m.%Y} bari tamamlanmamisti (seans suruyor), "
+                f"elendi. Tarama son KAPANAN gune gore: "
+                f"**{son_tarih:%d.%m.%Y}**.")
+
     gecikme = (pd.Timestamp.now().normalize() - son_tarih.normalize()).days
     tetiklendi, izleme = tara(strat, data, semboller, endeks)
 
@@ -209,10 +271,11 @@ def main() -> None:
         f"Strateji: **{strat.ad}** | Evren: BIST 100 | "
         f"Rapor: {pd.Timestamp.now():%Y-%m-%d %H:%M}",
         "",
-        f"**Verinin son gunu: {son_tarih:%d.%m.%Y}**"
+        f"**Taranan gun (kapanis): {son_tarih:%d.%m.%Y}**"
         + (f"  ⚠️ bugunden {gecikme} gun eski — piyasa kapaliysa normal, "
            "degilse veri gecikmesi var" if gecikme > 1 else ""),
         "",
+        *([f"> {n}" for n in notlar] + [""] if notlar else []),
         "Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum "
         "ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/"
         "bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.",

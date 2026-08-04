@@ -15,6 +15,14 @@ on:
         default: "erken_dar"
         type: choice
         options: [erken_dar, erken, erken_yalin, mevcut]
+      tarih:
+        description: "Hangi gune gore taransin (YYYY-MM-DD, bos = son kapanan gun)"
+        required: false
+        default: ""
+      azami_uzaklik:
+        description: "Kirilim seviyesine azami uzaklik (%)"
+        required: false
+        default: "10"
 
 permissions:
   contents: write
@@ -36,8 +44,12 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          python gunluk.py --strateji "${{ inputs.strateji || 'erken_dar' }}" \
-            2>&1 | tee /tmp/gunluk.log
+          ARGS="--strateji ${{ inputs.strateji || 'erken_dar' }}"
+          ARGS="$ARGS --azami-uzaklik ${{ inputs.azami_uzaklik || '10' }}"
+          if [ -n "${{ inputs.tarih }}" ]; then
+            ARGS="$ARGS --tarih ${{ inputs.tarih }}"
+          fi
+          python gunluk.py $ARGS 2>&1 | tee /tmp/gunluk.log
 
       - name: Sonucu is ozetine yaz
         if: success()

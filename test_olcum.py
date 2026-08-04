@@ -264,10 +264,35 @@ def test_gunluk_tarama(data: pd.DataFrame, semboller: list[str],
                 "izleme listesi tetik doluluguna gore sirali")
 
 
+def test_yarim_bar() -> None:
+    """
+    Suren seansin yarim bari tamamlanmis sayilmamali.
+
+    Bu kontrol olmadan tarama, hacmi eksik yarim barla calisip hicbir
+    hisse tetiklemiyor ve bu sessizce "bugun sinyal yok" diye okunuyordu.
+    """
+    import gunluk
+
+    print("\n5) YARIM BAR TESPITI")
+    simdi = pd.Timestamp.now(tz=gunluk.BORSA_SAAT_DILIMI)
+    dun = pd.Timestamp(simdi.date()) - pd.Timedelta(days=1)
+    bugun = pd.Timestamp(simdi.date())
+
+    kontrol(gunluk.son_bar_tamamlandi_mi(dun),
+            "gecmis gunun bari tamamlanmis sayiliyor")
+    beklenen = simdi.time() >= gunluk.KAPANIS_SAATI
+    kontrol(gunluk.son_bar_tamamlandi_mi(bugun) == beklenen,
+            f"bugunun bari ancak kapanistan sonra tamamlanmis sayiliyor "
+            f"(su an {simdi:%H:%M} TR -> {beklenen})")
+    kontrol(not gunluk.son_bar_tamamlandi_mi(
+                pd.Timestamp(simdi.date()) + pd.Timedelta(days=1)),
+            "gelecek tarihli bar tamamlanmis sayilmiyor")
+
+
 def test_giris_zamani(data: pd.DataFrame, semboller: list[str],
                       endeks: pd.Series, cerceveler: dict) -> None:
     """Ertesi gun acilistan giris, tarihi bir gun kaydirip Open'dan almali."""
-    print("\n5) GIRIS ZAMANI (kapanis vs ertesi acilis)")
+    print("\n6) GIRIS ZAMANI (kapanis vs ertesi acilis)")
     temel = S.erken_dar()
     kap = temel.giris_zamanli("kapanis")
     ert = temel.giris_zamanli("ertesi_acilis")
@@ -316,7 +341,7 @@ def test_ham_vs_duzeltilmis() -> None:
     """
     import veri as V
 
-    print("\n6) HAM vs DUZELTILMIS FIYAT")
+    print("\n7) HAM vs DUZELTILMIS FIYAT")
     n = 120
     idx = pd.bdate_range("2025-01-01", periods=n)
     ham_kapanis = pd.Series(np.linspace(100, 200, n), index=idx)
@@ -351,7 +376,7 @@ def test_onbellek_yasi(tmp: str) -> None:
     import time as _t
     import veri as V
 
-    print("\n7) ONBELLEK TAZELIGI")
+    print("\n8) ONBELLEK TAZELIGI")
     os.makedirs(tmp, exist_ok=True)
     yol = os.path.join(tmp, "bayat.parquet")
     pd.DataFrame({"a": [1]}).to_parquet(yol)
@@ -364,7 +389,7 @@ def test_onbellek_yasi(tmp: str) -> None:
 
 
 def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
-    print("\n8) SINIR DURUMLARI")
+    print("\n9) SINIR DURUMLARI")
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
@@ -404,6 +429,7 @@ def main() -> int:
     test_giris_zamanlamasi(cerceveler, kirilimlar, endeks)
     test_olcum(data, semboller, endeks)
     test_gunluk_tarama(data, semboller, endeks)
+    test_yarim_bar()
     test_giris_zamani(data, semboller, endeks, cerceveler)
     test_ham_vs_duzeltilmis()
     test_onbellek_yasi(os.environ.get("BORSA_ONBELLEK", ".onbellek") + "_test")
