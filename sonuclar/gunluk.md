@@ -1,10 +1,10 @@
 # Gunluk Tarama — 03.08.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-04 11:53
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-04 11:55
 
 **Taranan gun (kapanis): 03.08.2026**
 
-> 04.08.2026 bari tamamlanmamisti (seans suruyor), elendi. Tarama son KAPANAN gune gore: **03.08.2026**.
+> Tarama **03.08.2026** tarihine gore yapildi (sonraki gunler veriden cikarildi).
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
