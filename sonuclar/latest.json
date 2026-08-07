@@ -1,34 +1,60 @@
 {
-  "tarih": "2026-08-07 01:43",
+  "tarih": "2026-08-07 16:28",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
     {
-      "hisse": "PASEU",
-      "giris_tarih": "2026-07-30",
-      "giris_fiyat": 150.0,
-      "guncel_fiyat": 180.9,
-      "getiri": 20.6,
-      "gun": 5
-    },
-    {
-      "hisse": "ODINE",
-      "giris_tarih": "2026-08-03",
-      "giris_fiyat": 2670.0,
-      "guncel_fiyat": 2745.0,
-      "getiri": 2.8,
-      "gun": 3
+      "hisse": "TKFEN",
+      "giris_tarih": "2026-08-06",
+      "giris_fiyat": 193.9,
+      "guncel_fiyat": 209.0,
+      "getiri": 7.8,
+      "gun": 2
     },
     {
       "hisse": "TRMET",
       "giris_tarih": "2026-08-05",
       "giris_fiyat": 135.3,
-      "guncel_fiyat": 135.3,
+      "guncel_fiyat": 139.5,
+      "getiri": 3.1,
+      "gun": 3
+    },
+    {
+      "hisse": "PSGYO",
+      "giris_tarih": "2026-08-06",
+      "giris_fiyat": 3.7,
+      "guncel_fiyat": 3.7,
+      "getiri": 0.0,
+      "gun": 2
+    },
+    {
+      "hisse": "TUPRS",
+      "giris_tarih": "2026-08-07",
+      "giris_fiyat": 323.5,
+      "guncel_fiyat": 323.5,
       "getiri": 0.0,
       "gun": 1
     }
   ],
   "listeden_cikanlar": [
+    {
+      "hisse": "PASEU",
+      "giris_tarih": "2026-07-30",
+      "giris_fiyat": 150.0,
+      "cikis_tarih": "2026-08-07",
+      "cikis_fiyat": 174.2,
+      "getiri": 16.1,
+      "gun": 6
+    },
+    {
+      "hisse": "ODINE",
+      "giris_tarih": "2026-08-03",
+      "giris_fiyat": 2670.0,
+      "cikis_tarih": "2026-08-06",
+      "cikis_fiyat": 2690.0,
+      "getiri": 0.7,
+      "gun": 3
+    },
     {
       "hisse": "YKBNK",
       "giris_tarih": "2026-08-04",
