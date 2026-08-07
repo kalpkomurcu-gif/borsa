@@ -9,6 +9,7 @@ Kriterler:
   3) Kapanis > MA5 ve MA9 ve MA21 (SMA)
   4) ADX (14) > 25  (trend gucu — varsayilan: her gun aranir)
   5) Hacim > onceki 20 gunun ortalama hacmi  (varsayilan: sadece GIRIS gunu)
+  6) Son 21 islem gunu (~1 ay) getirisi < %10  (sadece GIRIS gunu)
 
 Kurallar:
   - Giris fiyati  = kriterlerin ILK saglandigi gunun kapanisi
@@ -79,6 +80,26 @@ ADX_ESIK = 25.0
 # True  -> ADX sadece giris gunu aranir
 ADX_SADECE_GIRIS = False
 
+# ---------------------------------------------------------------
+# Asiri kosmusluk filtresi (v7) — "kar alma" riski
+# ---------------------------------------------------------------
+# Son GETIRI_PERIYOT islem gununde GETIRI_TAVAN'dan fazla yukselmis
+# hisseye GIRILMEZ. Gerekcesi: hareketin buyuk kismi gecmisse alicinin
+# karsisinda kar realizasyonu yapan bir satici kitlesi birikmis olur;
+# giris sonrasi dalgalanma artar.
+#
+# SADECE GIRIS KOSULUDUR — kalma kosuluna eklenemez. Eklenirse
+# giristen sonra %10 kazanan her pozisyon ertesi gun listeden atilir,
+# yani sistem yalnizca kazanmayanlari tutar. Kazanani kesen bu
+# davranis kriterin amaciyla taban tabana zittir.
+#
+# Diger kriterlerle etkilesimi: MACD>0 + RSI>50 + fiyat 3 MA'nin
+# ustunde + ADX>25 zaten kosan bir hisseyi tarif eder. Bu tavan o
+# kumeden en hizli kosanlari ayiklar, dolayisiyla sinyal sayisini
+# belirgin dusurmesi beklenir — filtrenin isini yaptiginin isareti.
+GETIRI_TAVAN = 10.0     # yuzde; None = filtre kapali
+GETIRI_PERIYOT = 21     # islem gunu (~1 takvim ayi)
+
 
 def rsi(close: pd.Series, period: int = 14) -> pd.Series:
     """Wilder RSI"""
@@ -145,6 +166,24 @@ def hacim_kosulu(volume: pd.Series) -> pd.Series:
     return (v > ref * HACIM_CARPAN).fillna(False)
 
 
+def getiri_tavani_kosulu(close: pd.Series) -> pd.Series:
+    """
+    Son GETIRI_PERIYOT gunun getirisi tavanin ALTINDA mi?
+
+    Karsilastirma penceresi shift(GETIRI_PERIYOT) ile geriye bakar;
+    bugunku bar getiriye dahildir — kastedilen zaten "bugune kadar
+    ne kadar kosmus" oldugu icin dogrusu budur.
+
+    Yeterli gecmis olmayan barlarda NaN -> False. Olculemeyen kosulu
+    "saglandi" saymak filtreyi sessizce devre disi birakirdi; guvenli
+    taraf, sinyal uretmemektir.
+    """
+    if GETIRI_TAVAN is None:
+        return pd.Series(True, index=close.index)
+    donem_getirisi = close / close.shift(GETIRI_PERIYOT) - 1
+    return (donem_getirisi < GETIRI_TAVAN / 100).fillna(False)
+
+
 def sinyal_serisi(close: pd.Series) -> pd.Series:
     """Her gun icin kriterlerin saglanip saglanmadigini (True/False) doner."""
     close = close.dropna()
@@ -175,8 +214,9 @@ def pozisyonlar(high: pd.Series, low: pd.Series, close: pd.Series,
     Sinyal serisindeki kesintisiz True bloklarini pozisyonlara cevirir.
     Her blok: giris (ilk True gun) ve varsa cikis (blok sonrasi ilk gun).
 
-    GIRIS  : MACD/RSI/MA + ADX + hacim kosullarinin tamami.
+    GIRIS  : MACD/RSI/MA + ADX + hacim + getiri tavani kosullarinin tamami.
     DEVAM  : MACD/RSI/MA + "SADECE_GIRIS" bayragi False olan filtreler.
+             Getiri tavani DEVAM'a girmez (bkz. GETIRI_TAVAN aciklamasi).
     """
     close = close.dropna()
     if len(close) < MIN_VERI:
@@ -186,7 +226,7 @@ def pozisyonlar(high: pd.Series, low: pd.Series, close: pd.Series,
               > ADX_ESIK).fillna(False)
     hacim_ok = hacim_kosulu(volume.reindex(close.index))
 
-    giris_kosulu = temel & adx_ok & hacim_ok
+    giris_kosulu = temel & adx_ok & hacim_ok & getiri_tavani_kosulu(close)
     kalma_kosulu = temel.copy()
     if not ADX_SADECE_GIRIS:
         kalma_kosulu &= adx_ok
@@ -279,10 +319,15 @@ def main():
     _hacim_carpan = "" if HACIM_CARPAN == 1.0 else f" x{HACIM_CARPAN:g}"
     _hacim_kapsam = "giriste" if HACIM_SADECE_GIRIS else "her gun"
     _adx_kapsam = "giriste" if ADX_SADECE_GIRIS else "her gun"
+    _tavan = (
+        f", Son {GETIRI_PERIYOT} gun getirisi < %{GETIRI_TAVAN:g} (giriste)"
+        if GETIRI_TAVAN is not None else ""
+    )
     baslik = (
         "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, "
         f"ADX({ADX_PERIYOT}) > {ADX_ESIK:g} ({_adx_kapsam}), "
         f"Hacim > {_hacim_ref}{_hacim_carpan} ({_hacim_kapsam})"
+        f"{_tavan}"
     )
 
     lines_md = [
