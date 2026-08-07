@@ -1,0 +1,62 @@
+name: Girisler (yeni kriter)
+
+# Gecici is: getiri tavani filtresinin son N gundeki girislere etkisini
+# olcmek icin. Dala her push'ta calisir, cunku raporu uretecek ortamda
+# Yahoo erisimi yok. Filtre main'e alindiktan sonra silinebilir.
+on:
+  push:
+    branches:
+      - getiri-tavani-filtresi
+  workflow_dispatch:
+    inputs:
+      gun:
+        description: "Kac gun geriye bakilsin"
+        required: false
+        default: "20"
+
+permissions:
+  contents: write
+
+jobs:
+  rapor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas
+
+      - name: Raporu uret
+        # pipefail sart: tee'nin cikis kodu python'unkini gizlerdi.
+        shell: bash
+        run: |
+          set -o pipefail
+          python girisler.py "${{ inputs.gun || '20' }}" 2>&1 | tee /tmp/cikti.log
+
+      - name: Sonucu is ozetine yaz
+        if: success()
+        run: cat sonuclar/girisler.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: HATA — is ozetine yaz
+        if: failure()
+        run: |
+          {
+            echo "# ❌ RAPOR URETILEMEDI"
+            echo ""
+            echo '```'
+            tail -40 /tmp/cikti.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonucu commit et
+        if: success()
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/girisler.md
+          git diff --cached --quiet || git commit -m "Girisler raporu: $(date +'%Y-%m-%d %H:%M')"
+          git push
