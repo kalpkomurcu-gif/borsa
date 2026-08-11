@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-08-10 16:26",
+  "tarih": "2026-08-11 16:29",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,44 +7,47 @@
       "hisse": "TKFEN",
       "giris_tarih": "2026-08-06",
       "giris_fiyat": 193.9,
-      "guncel_fiyat": 221.9,
-      "getiri": 14.4,
-      "gun": 3
+      "guncel_fiyat": 221.6,
+      "getiri": 14.3,
+      "gun": 4
     },
     {
       "hisse": "TUPRS",
       "giris_tarih": "2026-08-07",
       "giris_fiyat": 323.5,
-      "guncel_fiyat": 340.0,
-      "getiri": 5.1,
-      "gun": 2
+      "guncel_fiyat": 336.5,
+      "getiri": 4.0,
+      "gun": 3
+    }
+  ],
+  "listeden_cikanlar": [
+    {
+      "hisse": "BRYAT",
+      "giris_tarih": "2026-08-10",
+      "giris_fiyat": 1912.0,
+      "cikis_tarih": "2026-08-11",
+      "cikis_fiyat": 1793.0,
+      "getiri": -6.2,
+      "gun": 1
     },
     {
       "hisse": "TRMET",
       "giris_tarih": "2026-08-05",
       "giris_fiyat": 135.3,
-      "guncel_fiyat": 139.7,
-      "getiri": 3.3,
+      "cikis_tarih": "2026-08-11",
+      "cikis_fiyat": 128.8,
+      "getiri": -4.8,
       "gun": 4
-    },
-    {
-      "hisse": "BRYAT",
-      "giris_tarih": "2026-08-10",
-      "giris_fiyat": 1912.0,
-      "guncel_fiyat": 1912.0,
-      "getiri": 0.0,
-      "gun": 1
     },
     {
       "hisse": "TTKOM",
       "giris_tarih": "2026-08-10",
       "giris_fiyat": 56.0,
-      "guncel_fiyat": 56.0,
-      "getiri": 0.0,
+      "cikis_tarih": "2026-08-11",
+      "cikis_fiyat": 55.45,
+      "getiri": -1.0,
       "gun": 1
-    }
-  ],
-  "listeden_cikanlar": [
+    },
     {
       "hisse": "PSGYO",
       "giris_tarih": "2026-08-06",
