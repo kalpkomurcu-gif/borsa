@@ -1,6 +1,6 @@
 # Gunluk Tarama — 11.08.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-12 05:37
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-12 05:39
 
 **Taranan gun (kapanis): 11.08.2026**
 
