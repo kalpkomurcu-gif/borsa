@@ -1,26 +1,42 @@
 {
-  "tarih": "2026-08-13 11:25",
-  "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %18 (giriste)",
+  "tarih": "2026-08-13 16:29",
+  "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
+    {
+      "hisse": "TUPRS",
+      "giris_tarih": "2026-08-07",
+      "giris_fiyat": 323.5,
+      "guncel_fiyat": 346.0,
+      "getiri": 7.0,
+      "gun": 5
+    },
+    {
+      "hisse": "GLRMK",
+      "giris_tarih": "2026-08-12",
+      "giris_fiyat": 177.0,
+      "guncel_fiyat": 183.1,
+      "getiri": 3.4,
+      "gun": 2
+    },
     {
       "hisse": "ECILC",
       "giris_tarih": "2026-08-12",
       "giris_fiyat": 76.0,
-      "guncel_fiyat": 77.35,
-      "getiri": 1.8,
+      "guncel_fiyat": 76.9,
+      "getiri": 1.2,
       "gun": 2
     }
   ],
   "listeden_cikanlar": [
     {
-      "hisse": "DOAS",
-      "giris_tarih": "2026-08-12",
-      "giris_fiyat": 179.4,
-      "cikis_tarih": "2026-08-13",
-      "cikis_fiyat": 175.4,
-      "getiri": -2.2,
-      "gun": 1
+      "hisse": "TRMET",
+      "giris_tarih": "2026-08-03",
+      "giris_fiyat": 125.1,
+      "cikis_tarih": "2026-08-12",
+      "cikis_fiyat": 128.1,
+      "getiri": 2.4,
+      "gun": 7
     },
     {
       "hisse": "BRYAT",
@@ -32,13 +48,13 @@
       "gun": 1
     },
     {
-      "hisse": "AKSA",
-      "giris_tarih": "2026-08-03",
-      "giris_fiyat": 12.5,
+      "hisse": "GRSEL",
+      "giris_tarih": "2026-07-27",
+      "giris_fiyat": 344.0,
       "cikis_tarih": "2026-08-10",
-      "cikis_fiyat": 12.22,
-      "getiri": -2.2,
-      "gun": 5
+      "cikis_fiyat": 345.0,
+      "getiri": 0.3,
+      "gun": 9
     }
   ],
   "veri_alinamayan": []
