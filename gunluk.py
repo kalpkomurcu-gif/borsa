@@ -24,6 +24,7 @@ Kullanim:
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from datetime import time as _time
 
@@ -252,6 +253,78 @@ def tara(strat: S.Strateji, data: pd.DataFrame, semboller: list[str],
                                if x["kirilima_uzaklik"] == x["kirilima_uzaklik"]
                                else 999))
     return tetiklendi, izleme, bayat
+
+
+def piyasa_ozeti(data: pd.DataFrame, semboller: list[str], endeks: pd.Series,
+                 son_tarih: pd.Timestamp, bayat: list[str]) -> dict:
+    """
+    Evren geneli olculer — tekil sinyal yokken piyasanin hangi fazda
+    oldugunu soyler, ayrica taramanin veri saglıgını rakamla belgeler.
+
+    Tarama zaten butun evreni bellege almis durumda; buradaki olculer
+    ek indirme yapmadan ayni cerceveden cikarilir.
+    """
+    zirveye_yakin = dar_baz = ma50_ustu = kirilim_yapan = 0
+    olculen = 0
+    for sembol in semboller:
+        d = V.hisse_cerceve(data, sembol)
+        if d is None or len(d) < 60:
+            continue
+        if pd.Timestamp(d.index[-1]).normalize() != son_tarih.normalize():
+            continue
+        try:
+            close, high, low = d["Close"], d["High"], d["Low"]
+            olculen += 1
+            if float(G.zirve_yakinligi(close, 252).iloc[-1]) >= 0.80:
+                zirveye_yakin += 1
+            if float(G.baz_genisligi(high, low, 20).iloc[-1]) < 0.18:
+                dar_baz += 1
+            if float(close.iloc[-1]) > float(close.rolling(50).mean().iloc[-1]):
+                ma50_ustu += 1
+            if bool(G.kirilim(close, high, 20).iloc[-1]):
+                kirilim_yapan += 1
+        except Exception:
+            continue
+
+    def _oran(x: int) -> float:
+        return round(100 * x / olculen, 1) if olculen else 0.0
+
+    rejim = {}
+    try:
+        e = pd.to_numeric(endeks, errors="coerce").dropna()
+        if len(e) >= 200:
+            ma50 = float(e.rolling(50).mean().iloc[-1])
+            ma200 = float(e.rolling(200).mean().iloc[-1])
+            son = float(e.iloc[-1])
+            rejim = {
+                "kapanis": round(son, 2),
+                "gunluk_degisim_yuzde": round(
+                    (son / float(e.iloc[-2]) - 1) * 100, 2) if len(e) > 1 else None,
+                "ma50_ustunde": son > ma50,
+                "ma200_ustunde": son > ma200,
+                "ma50_ma200_uzerinde": ma50 > ma200,
+            }
+    except Exception:
+        rejim = {}
+
+    return {
+        "tarama_gunu": f"{son_tarih:%Y-%m-%d}",
+        "veri_sagligi": {
+            "evren": len(semboller),
+            "taranan": len(semboller) - len(bayat),
+            "elenen": len(bayat),
+            "elenen_hisseler": [b.split("(")[0] for b in bayat],
+            "guvenilir": len(bayat) < len(semboller) * (1 - ASGARI_KAPSAM),
+        },
+        "breadth": {
+            "olculen": olculen,
+            "zirveye_yakin_yuzde": _oran(zirveye_yakin),
+            "dar_bazda_yuzde": _oran(dar_baz),
+            "ma50_ustunde_yuzde": _oran(ma50_ustu),
+            "kirilim_yapan": kirilim_yapan,
+        },
+        "endeks_rejimi": rejim,
+    }
 
 
 def _sayi(x, ek: str = "", basamak: int = 2) -> str:
@@ -536,8 +609,19 @@ def main() -> None:
     os.makedirs("sonuclar", exist_ok=True)
     with open("sonuclar/gunluk.md", "w", encoding="utf-8") as f:
         f.write(metin)
+
+    # Makine okunur ozet: gunluk degerlendirme bunu okuyup yorumlar,
+    # boylece veriyi ikinci kez indirmesi gerekmez.
+    ozet = piyasa_ozeti(data, semboller, endeks, son_tarih, bayat)
+    ozet["strateji"] = strat.ad
+    ozet["rapor_zamani"] = f"{pd.Timestamp.now():%Y-%m-%d %H:%M}"
+    ozet["alim_listesi"] = [t["hisse"] for t in tetiklendi]
+    ozet["izleme_listesi"] = [t["hisse"] for t in izleme]
+    with open("sonuclar/piyasa.json", "w", encoding="utf-8") as f:
+        json.dump(ozet, f, ensure_ascii=False, indent=2)
+
     print(metin)
-    print("\n[gunluk] sonuclar/gunluk.md yazildi.")
+    print("\n[gunluk] sonuclar/gunluk.md ve piyasa.json yazildi.")
 
 
 if __name__ == "__main__":
