@@ -424,8 +424,132 @@ def test_onbellek_yasi(tmp: str) -> None:
     kontrol(not V._bayat(yol, None), "azami_yas None ise yas kontrolu kapali")
 
 
+def _bos_kapanisli_cerceve(semboller: list[str], gun_sayisi: int = 5,
+                           kapanis_bos: bool = True) -> pd.DataFrame:
+    """
+    Son barin OHLC/hacmi dolu ama kapanisi BOS oldugu sentetik cerceve.
+
+    Yahoo'nun gercekte dondurdugu sekil bu: bar var, kapanis alani null
+    (Adj Close de null). Testin ag baglantisina ihtiyaci olmasin diye
+    elle uretilir.
+    """
+    idx = pd.bdate_range(end=pd.Timestamp.now().normalize()
+                         - pd.Timedelta(days=1), periods=gun_sayisi)
+    sut, veri = [], {}
+    for s in semboller:
+        for alan in ("Open", "High", "Low", "Close", "Adj Close", "Volume"):
+            sut.append((s, alan))
+            if alan == "Volume":
+                veri[(s, alan)] = [1_000_000.0] * gun_sayisi
+            else:
+                veri[(s, alan)] = [100.0] * gun_sayisi
+        veri[(s, "High")] = [102.0] * gun_sayisi
+        veri[(s, "Low")] = [98.0] * gun_sayisi
+        if kapanis_bos:
+            for alan in ("Close", "Adj Close"):
+                d = list(veri[(s, alan)])
+                d[-1] = float("nan")
+                veri[(s, alan)] = d
+    return pd.DataFrame(veri, index=idx,
+                        columns=pd.MultiIndex.from_tuples(sut))
+
+
+def test_eksik_kapanis() -> None:
+    """
+    Kapanisi bos gelen son bar ne taramayi cokertmeli ne de sessizce
+    "alim yok" olmali.
+
+    13.08.2026 sabahi olan buydu: Yahoo 12.08 barini OHLC ve hacimle
+    birlikte verdi ama kapanis alanini bos birakti. Bar indekste durdugu
+    icin tarama gunu 12.08 secildi, dropna(Close) yuzunden hicbir hissede
+    12.08 verisi kalmadi ve 100 hissenin 100'u "verisi yok" diye elendi.
+    Rapor bunu "alim yok, bu normaldir" diye yazdi.
+    """
+    import gunluk
+    import veri as V
+
+    print("\n10) BOS KAPANIS (hayalet bar)")
+    semboller = ["AAA.IS", "BBB.IS", "CCC.IS"]
+
+    # --- 1. Yamama: meta'daki gerceklesmis kapanis bara yazilmali
+    df = _bos_kapanisli_cerceve(semboller)
+    son = pd.Timestamp(df.index[-1])
+    gercek = V.son_seans_kapanisi
+    V.son_seans_kapanisi = lambda s: (son, 101.0)   # aralik icinde (98-102)
+    try:
+        tamamlanan, kalan = V.eksik_kapanislari_tamamla(df, semboller)
+    finally:
+        V.son_seans_kapanisi = gercek
+    kontrol(sorted(tamamlanan) == sorted(semboller) and not kalan,
+            f"bos kapanislar meta'dan tamamlandi ({len(tamamlanan)}/3)")
+    kontrol(abs(float(df[(semboller[0], "Close")].iloc[-1]) - 101.0) < 1e-9,
+            "Close yamandi")
+    kontrol(abs(float(df[(semboller[0], "Adj Close")].iloc[-1]) - 101.0) < 1e-9,
+            "Adj Close da yamandi (yoksa duzeltme carpani NaN kalirdi)")
+    kontrol(V.hisse_cerceve(df, semboller[0]) is not None
+            and pd.Timestamp(V.hisse_cerceve(df, semboller[0]).index[-1]) == son,
+            "yamadan sonra son bar hisse_cerceve'de duruyor")
+
+    # --- 2. Guvenlik siniri: barin dip-tepe araligina sigmayan fiyat yamanmaz
+    df2 = _bos_kapanisli_cerceve(semboller)
+    V.son_seans_kapanisi = lambda s: (son, 150.0)   # 98-102 araliginda degil
+    try:
+        tamamlanan2, kalan2 = V.eksik_kapanislari_tamamla(df2, semboller)
+    finally:
+        V.son_seans_kapanisi = gercek
+    kontrol(not tamamlanan2 and sorted(kalan2) == sorted(semboller),
+            "bar araligina sigmayan meta fiyati yamanmiyor")
+
+    # --- 3. Guvenlik siniri: meta baska bir gune aitse yamanmaz
+    df3 = _bos_kapanisli_cerceve(semboller)
+    V.son_seans_kapanisi = lambda s: (son - pd.Timedelta(days=3), 101.0)
+    try:
+        tamamlanan3, _ = V.eksik_kapanislari_tamamla(df3, semboller)
+    finally:
+        V.son_seans_kapanisi = gercek
+    kontrol(not tamamlanan3, "baska gune ait meta fiyati yamanmiyor")
+
+    # --- 4. Suren seansin barina hic dokunulmamali
+    df4 = _bos_kapanisli_cerceve(semboller)
+    df4.index = pd.DatetimeIndex(list(df4.index[:-1])
+                                 + [pd.Timestamp.now().normalize()])
+    cagrildi = []
+    V.son_seans_kapanisi = lambda s: cagrildi.append(s) or (son, 101.0)
+    try:
+        tamamlanan4, kalan4 = V.eksik_kapanislari_tamamla(df4, semboller)
+    finally:
+        V.son_seans_kapanisi = gercek
+    kontrol(not tamamlanan4 and not kalan4 and not cagrildi,
+            "bugunun (suren seansin) barina dokunulmuyor — canli fiyat "
+            "kapanis diye yazilmaz")
+
+    # --- 5. Yamanamayan bar taranabilir sayilmamali, bir onceki gune dusulmeli
+    df5 = _bos_kapanisli_cerceve(semboller)
+    hedef, oran, hayalet = gunluk.taranabilir_son_gun(df5, semboller)
+    kontrol(oran == 1.0 and hedef == pd.Timestamp(df5.index[-2]),
+            f"hayalet bar elendi, bir onceki kapanan gune dusuldu "
+            f"({hedef:%d.%m} secildi)")
+    kontrol(len(hayalet) == 1 and hayalet[0][0] == son and hayalet[0][1] == 0.0,
+            "elenen bar kapsamiyla birlikte raporlaniyor (%0)")
+
+    # --- 6. Kapanisi dolu cercevede hicbir sey elenmemeli
+    df6 = _bos_kapanisli_cerceve(semboller, kapanis_bos=False)
+    hedef6, oran6, hayalet6 = gunluk.taranabilir_son_gun(df6, semboller)
+    kontrol(not hayalet6 and hedef6 == pd.Timestamp(df6.index[-1])
+            and oran6 == 1.0,
+            "saglam veride son bar oldugu gibi taraniyor")
+
+    # --- 7. Hicbir barda kapanis yoksa: sessiz "alim yok" degil, acik hata
+    df7 = _bos_kapanisli_cerceve(semboller, gun_sayisi=3)
+    for s in semboller:
+        df7[(s, "Close")] = float("nan")
+    hedef7, _, _ = gunluk.taranabilir_son_gun(df7, semboller)
+    kontrol(hedef7 is None,
+            "tamamen bos kapanista taranabilir gun bulunmuyor (cagiran hata verir)")
+
+
 def test_sinir_durumlari(cerceveler: dict, endeks: pd.Series) -> None:
-    print("\n9) SINIR DURUMLARI")
+    print("\n11) SINIR DURUMLARI")
     bos = pd.DataFrame(columns=["hisse", "giris_tarih", "cikis_tarih",
                                 "giris_fiyat", "satis_fiyat", "getiri",
                                 "gun", "sebep", "acik"])
@@ -469,6 +593,7 @@ def main() -> int:
     test_giris_zamani(data, semboller, endeks, cerceveler)
     test_ham_vs_duzeltilmis()
     test_onbellek_yasi(os.environ.get("BORSA_ONBELLEK", ".onbellek") + "_test")
+    test_eksik_kapanis()
     test_sinir_durumlari(cerceveler, endeks)
 
     print("\n" + "=" * 64)
