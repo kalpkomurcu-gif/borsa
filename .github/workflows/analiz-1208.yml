@@ -1,0 +1,37 @@
+name: Tek seferlik analiz — 12.08 kriter karsilastirmasi
+
+# Gecici workflow: analiz_1208.py degistiginde calisir, sonucu commit eder.
+# Karsilastirma bittikten sonra bu dosya da script de silinecek.
+on:
+  push:
+    paths:
+      - "analiz_1208.py"
+      - ".github/workflows/analiz-1208.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analiz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install yfinance pandas
+
+      - name: Analizi calistir
+        run: python analiz_1208.py
+
+      - name: Sonucu commit et
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/analiz_1208.md
+          git diff --cached --quiet || git commit -m "Analiz: 12.08 kriter karsilastirmasi"
+          git push
