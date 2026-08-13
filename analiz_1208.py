@@ -1,15 +1,17 @@
 """
-Tek seferlik karsilastirma: 12.08.2026 kapanisina gore ESKI ve YENI kriterler.
+Tek seferlik karsilastirma: 12.08.2026 kapanisina gore kriter setleri.
 
-ESKI : MACD > Sinyal, RSI > 50, Kapanis > MA5/MA9/MA21, ADX > 25, Hacim (giriste)
-YENI : MACD > Sinyal, RSI > 50, MA5 > MA21, ADX > 25, Hacim (giriste),
-       son 20 gunluk baz genisligi < %18 (giriste)
+Dort varyant ayni veriyle taranir ki hangi degisiklik neyi eledigi gorulsun:
+  A) ESKI          : Kapanis > MA5/MA9/MA21            (baz filtresi yok)
+  B) SADECE MA     : MA5 > MA21                        (baz filtresi yok)
+  C) SADECE BAZ    : Kapanis > MA5/MA9/MA21 + baz < %18
+  D) YENI          : MA5 > MA21 + baz < %18            (yayindaki hali)
 
-YENI taraf tarama.py'nin yayindaki kodunu (T.pozisyonlar) dogrudan cagirir;
-ESKI taraf degisiklik oncesi mantigin birebir kopyasidir. Veri 12.08.2026'ya
-kadar kirpilir, boylece rapor o gunun kapanisiyla uretilmis gibi olur.
+Ayrica ESKI'de olup YENI'de olmayan her hisse icin GIRIS GUNUNDEKI baz
+genisligi yazilir — esigin nereye konmasi gerektigi buradan okunur.
 
-Cikti: sonuclar/analiz_1208.md   (gunluk latest.md'ye DOKUNMAZ)
+Veri 12.08.2026'ya kirpilir. Cikti: sonuclar/analiz_1208.md
+Gunluk latest.md'ye DOKUNMAZ.
 """
 
 import pandas as pd
@@ -22,33 +24,39 @@ SON_GUN = pd.Timestamp("2026-08-12")
 CIKANLAR_GUN = T.CIKANLAR_GUN
 
 
-# ---------------------------------------------------------------
-# ESKI mantik — degisiklik oncesi tarama.py'nin birebir kopyasi
-# ---------------------------------------------------------------
-def temel_eski(close: pd.Series) -> pd.Series:
+def temel_seri(close: pd.Series, yeni_ma: bool) -> pd.Series:
+    """yeni_ma=True -> MA5 > MA21 | False -> Kapanis > MA5/MA9/MA21."""
     close = close.dropna()
-    ma5 = close.rolling(5).mean()
-    ma9 = close.rolling(9).mean()
-    ma21 = close.rolling(21).mean()
     macd_val = (T.macd_histogram(close) if T.MACD_MODE == "histogram"
                 else T.macd_line(close))
-    sinyal = ((macd_val > 0) & (T.rsi(close) > 50)
-              & (close > ma5) & (close > ma9) & (close > ma21))
+    ortak = (macd_val > 0) & (T.rsi(close) > 50)
+    if yeni_ma:
+        sinyal = ortak & (close.rolling(5).mean() > close.rolling(21).mean())
+    else:
+        sinyal = (ortak
+                  & (close > close.rolling(5).mean())
+                  & (close > close.rolling(9).mean())
+                  & (close > close.rolling(21).mean()))
     sinyal.iloc[:30] = False
     return sinyal.fillna(False)
 
 
-def pozisyonlar_eski(high, low, close, volume) -> list[dict]:
+def pozisyonlar(high, low, close, volume, yeni_ma: bool,
+                baz_filtresi: bool) -> list[dict]:
+    """tarama.pozisyonlar() ile ayni akis; MA ve baz secenekleri parametrik."""
     close = close.dropna()
     if len(close) < T.MIN_VERI:
         return []
-    temel = temel_eski(close)
-    adx_ok = (T.adx(high.reindex(close.index), low.reindex(close.index), close)
-              > T.ADX_ESIK).fillna(False)
+    yuksek, dusuk = high.reindex(close.index), low.reindex(close.index)
+    temel = temel_seri(close, yeni_ma)
+    adx_ok = (T.adx(yuksek, dusuk, close) > T.ADX_ESIK).fillna(False)
     hacim_ok = T.hacim_kosulu(volume.reindex(close.index))
 
     giris_kosulu = temel & adx_ok & hacim_ok
-    kalma_kosulu = temel & adx_ok          # hacim sadece giriste
+    if baz_filtresi:
+        giris_kosulu &= (G.baz_genisligi(yuksek, dusuk, T.BAZ_PERIYOT) * 100
+                         < T.BAZ_ESIK).fillna(False)
+    kalma_kosulu = temel & adx_ok          # hacim ve baz sadece giriste
 
     poz, aktif = [], None
     for i, tarih in enumerate(close.index):
@@ -68,74 +76,62 @@ def pozisyonlar_eski(high, low, close, volume) -> list[dict]:
     return poz
 
 
-# ---------------------------------------------------------------
-def topla(data, poz_fn):
-    """Tum hisseler icin aktif ve cikan pozisyonlari toplar."""
-    aktifler, cikanlar, basarisiz = [], [], []
+def topla(data, yeni_ma, baz_filtresi):
+    aktifler, cikanlar = [], []
     esik = SON_GUN - pd.Timedelta(days=CIKANLAR_GUN)
-
     for t in T.TICKERS:
         sym = t.replace(".IS", "")
         try:
             d = data[t]
-            kirp = d.index <= SON_GUN
-            d = d[kirp]
+            d = d[d.index <= SON_GUN]
             close = d["Close"].dropna()
             if close.empty:
-                basarisiz.append(sym)
                 continue
-            for p in poz_fn(d["High"], d["Low"], close, d["Volume"]):
+            for p in pozisyonlar(d["High"], d["Low"], close, d["Volume"],
+                                 yeni_ma, baz_filtresi):
+                ortak = {"hisse": sym,
+                         "giris_tarih": p["giris_tarih"],
+                         "giris_fiyat": round(p["giris_fiyat"], 2),
+                         "gun": p["gun"]}
                 if "guncel_fiyat" in p:
-                    aktifler.append({
-                        "hisse": sym,
-                        "giris_tarih": p["giris_tarih"],
-                        "giris_fiyat": round(p["giris_fiyat"], 2),
-                        "guncel_fiyat": round(p["guncel_fiyat"], 2),
-                        "getiri": T.getiri(p["giris_fiyat"], p["guncel_fiyat"]),
-                        "gun": p["gun"],
-                    })
+                    aktifler.append({**ortak,
+                                     "guncel_fiyat": round(p["guncel_fiyat"], 2),
+                                     "getiri": T.getiri(p["giris_fiyat"],
+                                                        p["guncel_fiyat"])})
                 elif pd.Timestamp(p["cikis_tarih"]) >= esik:
-                    cikanlar.append({
-                        "hisse": sym,
-                        "giris_tarih": p["giris_tarih"],
-                        "giris_fiyat": round(p["giris_fiyat"], 2),
-                        "cikis_tarih": p["cikis_tarih"],
-                        "cikis_fiyat": round(p["cikis_fiyat"], 2),
-                        "getiri": T.getiri(p["giris_fiyat"], p["cikis_fiyat"]),
-                        "gun": p["gun"],
-                    })
-        except Exception as e:
-            basarisiz.append(f"{sym}({type(e).__name__})")
-
+                    cikanlar.append({**ortak,
+                                     "cikis_tarih": p["cikis_tarih"],
+                                     "cikis_fiyat": round(p["cikis_fiyat"], 2),
+                                     "getiri": T.getiri(p["giris_fiyat"],
+                                                        p["cikis_fiyat"])})
+        except Exception:
+            pass
     aktifler.sort(key=lambda x: x["getiri"], reverse=True)
     cikanlar.sort(key=lambda x: pd.Timestamp(x["cikis_tarih"]), reverse=True)
-    return aktifler, cikanlar, basarisiz
+    return aktifler, cikanlar
 
 
-def tablolar(baslik, aktifler, cikanlar):
-    L = [f"## {baslik}", "",
-         f"Listede: {len(aktifler)} | Son {CIKANLAR_GUN} gunde cikan: {len(cikanlar)}",
-         "", f"### Aktif Sinyaller ({len(aktifler)})", ""]
-    if aktifler:
-        L += ["| Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |",
-              "|---|---|---|---|---|---|"]
-        for a in aktifler:
-            L.append(f"| {a['hisse']} | {T.fmt_tarih(a['giris_tarih'])} "
-                     f"| {a['giris_fiyat']} | {a['guncel_fiyat']} "
-                     f"| {a['getiri']:+.1f}% | {a['gun']} |")
-    else:
-        L.append("Kriterleri saglayan hisse yok.")
+def aktif_tablo(aktifler):
+    if not aktifler:
+        return ["Kriterleri saglayan hisse yok."]
+    L = ["| Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |",
+         "|---|---|---|---|---|---|"]
+    for a in aktifler:
+        L.append(f"| {a['hisse']} | {T.fmt_tarih(a['giris_tarih'])} "
+                 f"| {a['giris_fiyat']} | {a['guncel_fiyat']} "
+                 f"| {a['getiri']:+.1f}% | {a['gun']} |")
+    return L
 
-    L += ["", f"### Listeden Cikanlar — Son {CIKANLAR_GUN} Gun ({len(cikanlar)})", ""]
-    if cikanlar:
-        L += ["| Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |",
-              "|---|---|---|---|---|---|---|"]
-        for c in cikanlar:
-            L.append(f"| {c['hisse']} | {T.fmt_tarih(c['giris_tarih'])} "
-                     f"| {c['giris_fiyat']} | {T.fmt_tarih(c['cikis_tarih'])} "
-                     f"| {c['cikis_fiyat']} | {c['getiri']:+.1f}% | {c['gun']} |")
-    else:
-        L.append("Cikan yok.")
+
+def cikan_tablo(cikanlar):
+    if not cikanlar:
+        return ["Cikan yok."]
+    L = ["| Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |",
+         "|---|---|---|---|---|---|---|"]
+    for c in cikanlar:
+        L.append(f"| {c['hisse']} | {T.fmt_tarih(c['giris_tarih'])} "
+                 f"| {c['giris_fiyat']} | {T.fmt_tarih(c['cikis_tarih'])} "
+                 f"| {c['cikis_fiyat']} | {c['getiri']:+.1f}% | {c['gun']} |")
     return L
 
 
@@ -144,26 +140,54 @@ def main():
     data = yf.download(T.TICKERS, period="6mo", interval="1d",
                        auto_adjust=True, progress=False, group_by="ticker")
 
-    eski_a, eski_c, bas1 = topla(data, pozisyonlar_eski)
-    yeni_a, yeni_c, bas2 = topla(data, T.pozisyonlar)
+    varyantlar = [
+        ("A) ESKI — Fiyat > MA5/MA9/MA21, baz filtresi yok", False, False),
+        ("B) SADECE MA degisikligi — MA5 > MA21, baz filtresi yok", True, False),
+        ("C) SADECE baz filtresi — eski MA + baz < %18", False, True),
+        (f"D) YENI (yayinda) — MA5 > MA21 + baz < %{T.BAZ_ESIK:g}", True, True),
+    ]
 
-    e_set = {a["hisse"] for a in eski_a}
-    y_set = {a["hisse"] for a in yeni_a}
-
-    L = [f"# 12.08.2026 Kapanisi — Kriter Karsilastirmasi", "",
-         f"Veri {SON_GUN:%d.%m.%Y} kapanisina kirpildi. Ayni veri, iki kriter seti.",
+    sonuc = {}
+    L = ["# 12.08.2026 Kapanisi — Kriter Karsilastirmasi", "",
+         f"Veri {SON_GUN:%d.%m.%Y} kapanisina kirpildi; dort kriter seti ayni veriyle.",
          ""]
-    L += tablolar("ESKI kriterler (Fiyat > MA5/MA9/MA21)", eski_a, eski_c)
-    L += [""]
-    L += tablolar(f"YENI kriterler (MA5 > MA21 + baz genisligi < %{T.BAZ_ESIK:g})",
-                  yeni_a, yeni_c)
-    L += ["", "## Fark", "",
-          f"- Eski listede {len(e_set)}, yeni listede {len(y_set)} hisse.",
-          f"- Sadece ESKI'de: {', '.join(sorted(e_set - y_set)) or '—'}",
-          f"- Sadece YENI'de: {', '.join(sorted(y_set - e_set)) or '—'}",
-          f"- Ortak: {', '.join(sorted(e_set & y_set)) or '—'}"]
-    if bas1 or bas2:
-        L += ["", f"Veri alinamayan: {', '.join(sorted(set(bas1) | set(bas2)))}"]
+
+    for ad, yeni_ma, baz in varyantlar:
+        a, c = topla(data, yeni_ma, baz)
+        sonuc[ad[0]] = (a, c)
+        L += [f"## {ad}", "",
+              f"Listede: {len(a)} | Son {CIKANLAR_GUN} gunde cikan: {len(c)}", "",
+              f"### Aktif Sinyaller ({len(a)})", ""] + aktif_tablo(a)
+        L += ["", f"### Listeden Cikanlar ({len(c)})", ""] + cikan_tablo(c) + [""]
+
+    # --- Elenenlerin giris gunundeki baz genisligi --------------------
+    eski_a = sonuc["A"][0]
+    yeni_isim = {x["hisse"] for x in sonuc["D"][0]}
+    L += ["## Elenen hisselerin GIRIS GUNUNDEKI baz genisligi", "",
+          f"Esik su an %{T.BAZ_ESIK:g}. Asagidaki hisseler eski kriterlerle "
+          "listedeydi; giris gunundeki baz genisligi esigin ustunde oldugu "
+          "icin yeni kriterlerde giris alamiyor.", "",
+          "| Hisse | Giris | Getiri % | Baz genisligi | Durum |",
+          "|---|---|---|---|---|"]
+    for a in eski_a:
+        t = a["hisse"] + ".IS"
+        d = data[t]
+        d = d[d.index <= SON_GUN]
+        gen = G.baz_genisligi(d["High"], d["Low"], T.BAZ_PERIYOT) * 100
+        try:
+            deger = float(gen.loc[a["giris_tarih"]])
+            gen_txt = f"%{deger:.1f}"
+        except Exception:
+            deger, gen_txt = float("nan"), "—"
+        durum = "GECTI" if a["hisse"] in yeni_isim else "ELENDI"
+        L.append(f"| {a['hisse']} | {T.fmt_tarih(a['giris_tarih'])} "
+                 f"| {a['getiri']:+.1f}% | {gen_txt} | {durum} |")
+
+    L += ["", "## Ozet", ""]
+    for ad, _, _ in varyantlar:
+        a, c = sonuc[ad[0]]
+        isim = ", ".join(x["hisse"] for x in a) or "—"
+        L.append(f"- **{ad}** -> {len(a)} hisse: {isim}")
 
     metin = "\n".join(L) + "\n"
     import os
