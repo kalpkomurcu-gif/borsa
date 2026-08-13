@@ -1,12 +1,10 @@
 name: Tek seferlik analiz — 12.08 kriter karsilastirmasi
 
-# Gecici workflow: analiz_1208.py degistiginde calisir, sonucu commit eder.
-# Karsilastirma bittikten sonra bu dosya da script de silinecek.
+# Yardimci analiz — KENDILIGINDEN CALISMAZ, sadece Actions sekmesinden
+# "Run workflow" ile elle tetiklenir. Baz esigini degistirip yeniden
+# olcmek icin analiz_1208.py'deki BAZ_ESIK/varyantlari duzenleyip calistirin.
+# Gunluk tarama dosyalarina (sonuclar/latest.*) dokunmaz.
 on:
-  push:
-    paths:
-      - "analiz_1208.py"
-      - ".github/workflows/analiz-1208.yml"
   workflow_dispatch:
 
 permissions:
