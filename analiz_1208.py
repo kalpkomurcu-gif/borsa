@@ -76,18 +76,35 @@ def pozisyonlar(high, low, close, volume, yeni_ma: bool,
     return poz
 
 
+def hizali(data, t):
+    """Bir hissenin 12.08'e kirpilmis, NaN gunleri atilmis OHLCV'si.
+
+    tarama.pozisyonlar() ile ayni hizalama: once Close.dropna(), sonra
+    High/Low/Volume o indekse reindex. 100 hisse birlikte indirildigi icin
+    ortak takvimde islem gormeyen gunler NaN kalir; hizalanmazsa
+    rolling(20) pencereleri komple NaN doner.
+    """
+    d = data[t]
+    d = d[d.index <= SON_GUN]
+    close = d["Close"].dropna()
+    if close.empty:
+        return None
+    return (d["High"].reindex(close.index), d["Low"].reindex(close.index),
+            close, d["Volume"].reindex(close.index))
+
+
 def topla(data, yeni_ma, baz_filtresi):
-    aktifler, cikanlar = [], []
+    aktifler, cikanlar, basarisiz = [], [], []
     esik = SON_GUN - pd.Timedelta(days=CIKANLAR_GUN)
     for t in T.TICKERS:
         sym = t.replace(".IS", "")
         try:
-            d = data[t]
-            d = d[d.index <= SON_GUN]
-            close = d["Close"].dropna()
-            if close.empty:
+            h = hizali(data, t)
+            if h is None:
+                basarisiz.append(sym)
                 continue
-            for p in pozisyonlar(d["High"], d["Low"], close, d["Volume"],
+            yuksek, dusuk, close, hacim = h
+            for p in pozisyonlar(yuksek, dusuk, close, hacim,
                                  yeni_ma, baz_filtresi):
                 ortak = {"hisse": sym,
                          "giris_tarih": p["giris_tarih"],
@@ -104,11 +121,11 @@ def topla(data, yeni_ma, baz_filtresi):
                                      "cikis_fiyat": round(p["cikis_fiyat"], 2),
                                      "getiri": T.getiri(p["giris_fiyat"],
                                                         p["cikis_fiyat"])})
-        except Exception:
-            pass
+        except Exception as e:
+            basarisiz.append(f"{sym}({type(e).__name__})")
     aktifler.sort(key=lambda x: x["getiri"], reverse=True)
     cikanlar.sort(key=lambda x: pd.Timestamp(x["cikis_tarih"]), reverse=True)
-    return aktifler, cikanlar
+    return aktifler, cikanlar, basarisiz
 
 
 def aktif_tablo(aktifler):
@@ -153,7 +170,7 @@ def main():
          ""]
 
     for ad, yeni_ma, baz in varyantlar:
-        a, c = topla(data, yeni_ma, baz)
+        a, c, basarisiz = topla(data, yeni_ma, baz)
         sonuc[ad[0]] = (a, c)
         L += [f"## {ad}", "",
               f"Listede: {len(a)} | Son {CIKANLAR_GUN} gunde cikan: {len(c)}", "",
@@ -170,22 +187,38 @@ def main():
           "| Hisse | Giris | Getiri % | Baz genisligi | Durum |",
           "|---|---|---|---|---|"]
     for a in eski_a:
-        t = a["hisse"] + ".IS"
-        d = data[t]
-        d = d[d.index <= SON_GUN]
-        gen = G.baz_genisligi(d["High"], d["Low"], T.BAZ_PERIYOT) * 100
-        try:
-            deger = float(gen.loc[a["giris_tarih"]])
-            gen_txt = f"%{deger:.1f}"
-        except Exception:
-            deger, gen_txt = float("nan"), "—"
+        h = hizali(data, a["hisse"] + ".IS")
+        gen_txt = "—"
+        if h is not None:
+            yuksek, dusuk, close, _ = h
+            gen = G.baz_genisligi(yuksek, dusuk, T.BAZ_PERIYOT) * 100
+            if a["giris_tarih"] in gen.index:
+                deger = float(gen.loc[a["giris_tarih"]])
+                gen_txt = "—" if pd.isna(deger) else f"%{deger:.1f}"
         durum = "GECTI" if a["hisse"] in yeni_isim else "ELENDI"
         L.append(f"| {a['hisse']} | {T.fmt_tarih(a['giris_tarih'])} "
                  f"| {a['getiri']:+.1f}% | {gen_txt} | {durum} |")
 
+    # --- Esik duyarliligi: hangi esikte kac sinyal kalir? -------------
+    L += ["", "## Esik duyarliligi (MA5 > MA21 sabit)", "",
+          "Baz esigi degistikce 12.08 itibariyla listede kalan hisseler.", "",
+          "| Baz esigi | Listede | Hisseler |", "|---|---|---|"]
+    orijinal = T.BAZ_ESIK
+    for esik_deneme in (10.0, 15.0, 18.0, 25.0, 30.0, 40.0, None):
+        T.BAZ_ESIK = 1e9 if esik_deneme is None else esik_deneme
+        a, _, _ = topla(data, True, esik_deneme is not None)
+        etiket = "filtre yok" if esik_deneme is None else f"< %{esik_deneme:g}"
+        isim = ", ".join(x["hisse"] for x in a) or "—"
+        L.append(f"| {etiket} | {len(a)} | {isim} |")
+    T.BAZ_ESIK = orijinal
+
+    if basarisiz:
+        L += ["", f"**Veri alinamayan ({len(basarisiz)}):** "
+                  + ", ".join(basarisiz)]
+
     L += ["", "## Ozet", ""]
     for ad, _, _ in varyantlar:
-        a, c = sonuc[ad[0]]
+        a, _c = sonuc[ad[0]]
         isim = ", ".join(x["hisse"] for x in a) or "—"
         L.append(f"- **{ad}** -> {len(a)} hisse: {isim}")
 
