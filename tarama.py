@@ -6,9 +6,10 @@ GIRIS tarihi/fiyati, GUNCEL fiyati ve listeden CIKIS tarihi/fiyati izlenir.
 Kriterler:
   1) MACD (12-26-9) > Sinyal cizgisi (al kesisimi bolgesi)
   2) RSI (14) > 50
-  3) Kapanis > MA5 ve MA9 ve MA21 (SMA)
+  3) MA5 > MA21 (SMA) — surekli kosul, hem girise hem kalmaya etki eder
   4) ADX (14) > 25  (trend gucu — varsayilan: her gun aranir)
   5) Hacim > onceki 20 gunun ortalama hacmi  (varsayilan: sadece GIRIS gunu)
+  6) Son 20 gunluk baz genisligi < %18  (varsayilan: sadece GIRIS gunu)
 
 Kurallar:
   - Giris fiyati  = kriterlerin ILK saglandigi gunun kapanisi
@@ -24,6 +25,8 @@ Gereksinim: pip install yfinance pandas
 
 import pandas as pd
 import yfinance as yf
+
+import gostergeler as G
 
 # ---------------------------------------------------------------
 # BIST 100 listesi — Temmuz 2026 bilesimi (100 hisse)
@@ -78,6 +81,22 @@ ADX_ESIK = 25.0
 #          (RSI/MACD gibi surekli bir kosul; onerilen)
 # True  -> ADX sadece giris gunu aranir
 ADX_SADECE_GIRIS = False
+
+# ---------------------------------------------------------------
+# Baz genisligi kosulu (v7) — dar bazdan cikan kirilim daha temiz
+# ---------------------------------------------------------------
+# G.baz_genisligi(): (son BAZ_PERIYOT gunun en yuksegi - en dusugu) / en dusuk,
+# BUGUN HARIC (shift(1)). Bugunku bar dahil edilseydi kirilim gunu kendi bazini
+# genisletip kosulu kendiliginden bozardi — hacimdeki shift(1) ile ayni mantik.
+BAZ_PERIYOT = 20
+BAZ_ESIK = 18.0           # yuzde
+
+# True  -> baz darligi SADECE giris gunu aranir (onerilen). strateji.py'de de
+#          "kurulum" kriteridir: dar baz girisin KOSULU, pozisyonun degil.
+#          Kirilimdan sonra bazin genislemesi beklenen davranistir; bu yuzden
+#          pozisyon kapatmak kazanan hareketi daha 2. gunde keserdi.
+# False -> her gun aranir; baz genisleyince pozisyon listeden cikar.
+BAZ_SADECE_GIRIS = True
 
 
 def rsi(close: pd.Series, period: int = 14) -> pd.Series:
@@ -149,7 +168,6 @@ def sinyal_serisi(close: pd.Series) -> pd.Series:
     """Her gun icin kriterlerin saglanip saglanmadigini (True/False) doner."""
     close = close.dropna()
     ma5 = close.rolling(5).mean()
-    ma9 = close.rolling(9).mean()
     ma21 = close.rolling(21).mean()
     if MACD_MODE == "histogram":
         macd_val = macd_histogram(close)
@@ -160,9 +178,7 @@ def sinyal_serisi(close: pd.Series) -> pd.Series:
     sinyal = (
         (macd_val > 0)
         & (rsi_val > 50)
-        & (close > ma5)
-        & (close > ma9)
-        & (close > ma21)
+        & (ma5 > ma21)
     )
     # Ilk 30 bar: gostergeler henuz oturmamis, sinyal sayma
     sinyal.iloc[:30] = False
@@ -175,23 +191,28 @@ def pozisyonlar(high: pd.Series, low: pd.Series, close: pd.Series,
     Sinyal serisindeki kesintisiz True bloklarini pozisyonlara cevirir.
     Her blok: giris (ilk True gun) ve varsa cikis (blok sonrasi ilk gun).
 
-    GIRIS  : MACD/RSI/MA + ADX + hacim kosullarinin tamami.
+    GIRIS  : MACD/RSI/MA + ADX + hacim + baz genisligi kosullarinin tamami.
     DEVAM  : MACD/RSI/MA + "SADECE_GIRIS" bayragi False olan filtreler.
     """
     close = close.dropna()
     if len(close) < MIN_VERI:
         return []
+    yuksek = high.reindex(close.index)
+    dusuk = low.reindex(close.index)
     temel = sinyal_serisi(close)
-    adx_ok = (adx(high.reindex(close.index), low.reindex(close.index), close)
-              > ADX_ESIK).fillna(False)
+    adx_ok = (adx(yuksek, dusuk, close) > ADX_ESIK).fillna(False)
     hacim_ok = hacim_kosulu(volume.reindex(close.index))
+    baz_ok = (G.baz_genisligi(yuksek, dusuk, BAZ_PERIYOT) * 100
+              < BAZ_ESIK).fillna(False)
 
-    giris_kosulu = temel & adx_ok & hacim_ok
+    giris_kosulu = temel & adx_ok & hacim_ok & baz_ok
     kalma_kosulu = temel.copy()
     if not ADX_SADECE_GIRIS:
         kalma_kosulu &= adx_ok
     if not HACIM_SADECE_GIRIS:
         kalma_kosulu &= hacim_ok
+    if not BAZ_SADECE_GIRIS:
+        kalma_kosulu &= baz_ok
 
     poz = []
     aktif = None
@@ -279,10 +300,12 @@ def main():
     _hacim_carpan = "" if HACIM_CARPAN == 1.0 else f" x{HACIM_CARPAN:g}"
     _hacim_kapsam = "giriste" if HACIM_SADECE_GIRIS else "her gun"
     _adx_kapsam = "giriste" if ADX_SADECE_GIRIS else "her gun"
+    _baz_kapsam = "giriste" if BAZ_SADECE_GIRIS else "her gun"
     baslik = (
-        "MACD > Sinyal (al kesisimi), RSI > 50, Fiyat > MA5/MA9/MA21, "
+        "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, "
         f"ADX({ADX_PERIYOT}) > {ADX_ESIK:g} ({_adx_kapsam}), "
-        f"Hacim > {_hacim_ref}{_hacim_carpan} ({_hacim_kapsam})"
+        f"Hacim > {_hacim_ref}{_hacim_carpan} ({_hacim_kapsam}), "
+        f"Son {BAZ_PERIYOT} gunluk baz genisligi < %{BAZ_ESIK:g} ({_baz_kapsam})"
     )
 
     lines_md = [
