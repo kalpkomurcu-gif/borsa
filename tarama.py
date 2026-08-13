@@ -9,7 +9,7 @@ Kriterler:
   3) MA5 > MA21 (SMA) — surekli kosul, hem girise hem kalmaya etki eder
   4) ADX (14) > 25  (trend gucu — varsayilan: her gun aranir)
   5) Hacim > onceki 20 gunun ortalama hacmi  (varsayilan: sadece GIRIS gunu)
-  6) Son 20 gunluk baz genisligi < %18  (varsayilan: sadece GIRIS gunu)
+  6) Son 20 gunluk baz genisligi < %30  (varsayilan: sadece GIRIS gunu)
 
 Kurallar:
   - Giris fiyati  = kriterlerin ILK saglandigi gunun kapanisi
@@ -89,7 +89,10 @@ ADX_SADECE_GIRIS = False
 # BUGUN HARIC (shift(1)). Bugunku bar dahil edilseydi kirilim gunu kendi bazini
 # genisletip kosulu kendiliginden bozardi — hacimdeki shift(1) ile ayni mantik.
 BAZ_PERIYOT = 20
-BAZ_ESIK = 18.0           # yuzde
+# %18 BIST100'de fazla darmis: 12.08.2026 verisinde tum listeyi 7 hisseden
+# 1'e dusuruyor ve o gunun en iyisini (TKFEN +%25.3, baz %54.6) eliyordu.
+# %30 ayni gunde 3 hisse birakiyor. Olcum icin bkz. sonuclar/analiz_1208.md
+BAZ_ESIK = 30.0           # yuzde
 
 # True  -> baz darligi SADECE giris gunu aranir (onerilen). strateji.py'de de
 #          "kurulum" kriteridir: dar baz girisin KOSULU, pozisyonun degil.
