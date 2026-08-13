@@ -1,0 +1,64 @@
+name: Gunluk Degerlendirme (BIST 100)
+
+# Taramanin ciktisini yorumlar: veri sagligi, gunun sonucu, piyasa geneli.
+# Veriyi YENIDEN INDIRMEZ — yalnizca sonuclar/ altindaki dosyalari okur.
+# Bu bilincli: Yahoo'nun kapanis alanini bos biraktigi pencereye ikinci
+# kez maruz kalmamak icin.
+
+on:
+  schedule:
+    # Hafta ici 16:15 UTC = 19:15 TR. Tarama 15:40 UTC'de basliyor;
+    # 35 dakika, sonucun yazilip commit'lenmesi icin fazlasiyla yeterli.
+    - cron: "15 16 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  degerlendirme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: pip install pandas
+
+      # Tarama ayni tetikte calistigi icin sonuclar/ guncel olmayabilir;
+      # degerlendirmeden hemen once son commit'i cek.
+      - name: Tarama sonucunu tazele
+        run: git pull --rebase origin ${{ github.ref_name }} || true
+
+      - name: Degerlendirmeyi uret
+        shell: bash
+        run: |
+          set -o pipefail
+          python degerlendirme.py 2>&1 | tee /tmp/degerlendirme.log
+
+      - name: Is ozetine yaz
+        if: success()
+        run: cat sonuclar/degerlendirme.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: HATA — is ozetine yaz
+        if: failure()
+        run: |
+          {
+            echo "# ❌ DEGERLENDIRME URETILEMEDI"
+            echo ""
+            echo '```'
+            tail -40 /tmp/degerlendirme.log 2>/dev/null || echo "(log alinamadi)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonucu commit et
+        if: success()
+        run: |
+          git config user.name "bist-tarama-bot"
+          git config user.email "actions@github.com"
+          git add sonuclar/
+          git diff --cached --quiet || git commit -m "Degerlendirme: $(date +'%Y-%m-%d')"
+          git push
