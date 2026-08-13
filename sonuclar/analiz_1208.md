@@ -92,13 +92,27 @@ Esik su an %18. Asagidaki hisseler eski kriterlerle listedeydi; giris gunundeki 
 
 | Hisse | Giris | Getiri % | Baz genisligi | Durum |
 |---|---|---|---|---|
-| TKFEN | 06.08.2026 | +25.3% | %nan | ELENDI |
-| TUPRS | 07.08.2026 | +8.6% | %nan | ELENDI |
-| ECILC | 12.08.2026 | +0.0% | %nan | GECTI |
-| GLRMK | 12.08.2026 | +0.0% | %nan | ELENDI |
-| KTLEV | 12.08.2026 | +0.0% | %nan | ELENDI |
-| OTKAR | 12.08.2026 | +0.0% | %nan | ELENDI |
-| TTKOM | 12.08.2026 | +0.0% | %nan | ELENDI |
+| TKFEN | 06.08.2026 | +25.3% | %54.6 | ELENDI |
+| TUPRS | 07.08.2026 | +8.6% | %26.7 | ELENDI |
+| ECILC | 12.08.2026 | +0.0% | %14.5 | GECTI |
+| GLRMK | 12.08.2026 | +0.0% | %23.1 | ELENDI |
+| KTLEV | 12.08.2026 | +0.0% | %58.4 | ELENDI |
+| OTKAR | 12.08.2026 | +0.0% | %28.8 | ELENDI |
+| TTKOM | 12.08.2026 | +0.0% | %19.5 | ELENDI |
+
+## Esik duyarliligi (MA5 > MA21 sabit)
+
+Baz esigi degistikce 12.08 itibariyla listede kalan hisseler.
+
+| Baz esigi | Listede | Hisseler |
+|---|---|---|
+| < %10 | 0 | — |
+| < %15 | 1 | ECILC |
+| < %18 | 1 | ECILC |
+| < %25 | 2 | ECILC, GLRMK |
+| < %30 | 3 | TUPRS, ECILC, GLRMK |
+| < %40 | 3 | TUPRS, ECILC, GLRMK |
+| filtre yok | 6 | ODINE, TKFEN, TUPRS, ECILC, GLRMK, PASEU |
 
 ## Ozet
 
