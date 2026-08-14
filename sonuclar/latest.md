@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-08-13 16:29
+# BIST 100 Tarama — 2026-08-14 16:27
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 3
@@ -7,16 +7,16 @@ Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 3
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| TUPRS | 07.08.2026 | 323.5 | 346.0 | +7.0% | 5 |
-| GLRMK | 12.08.2026 | 177.0 | 183.1 | +3.4% | 2 |
-| ECILC | 12.08.2026 | 76.0 | 76.9 | +1.2% | 2 |
+| TUPRS | 07.08.2026 | 323.5 | 361.75 | +11.8% | 6 |
+| GLRMK | 12.08.2026 | 177.0 | 179.0 | +1.1% | 3 |
+| ECILC | 12.08.2026 | 76.0 | 75.0 | -1.3% | 3 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (3)
 
 | Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |
 |---|---|---|---|---|---|---|
-| TRMET | 03.08.2026 | 125.1 | 12.08.2026 | 128.1 | +2.4% | 7 |
+| DOAS | 12.08.2026 | 179.4 | 13.08.2026 | 174.5 | -2.7% | 1 |
+| TRMET | 05.08.2026 | 135.3 | 12.08.2026 | 128.1 | -5.3% | 5 |
 | BRYAT | 10.08.2026 | 1912.0 | 11.08.2026 | 1793.0 | -6.2% | 1 |
-| GRSEL | 27.07.2026 | 344.0 | 10.08.2026 | 345.0 | +0.3% | 9 |
 
 Not: Giris/cikis fiyatlari sinyal gununun kapanisidir; gercek islem fiyati ertesi gun acilisina gore degisebilir.
