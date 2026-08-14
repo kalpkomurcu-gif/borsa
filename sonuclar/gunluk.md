@@ -1,20 +1,20 @@
-# Gunluk Tarama — 13.08.2026
+# Gunluk Tarama — 14.08.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-13 16:31
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-14 16:29
 
-**Taranan gun (kapanis): 13.08.2026**
+**Taranan gun (kapanis): 14.08.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**13.08.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**14.08.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
 Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; sinyal uretmek icin kriter gevsetmek sistemi bozar.
 
-## 🟡 Izleme listesi (20) — bilgi amacli
+## 🟡 Izleme listesi (15) — bilgi amacli
 
 Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
 
@@ -22,28 +22,23 @@ Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviye
 
 | Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
 |---|---|---|---|---|---|---|
-| **ASELS** | 395.75 | **391.25** | -1.1% | 357.98 | rvol2 | 17.9% |
-| **IEYHO** | 180.00 | **180.90** | 0.5% | 173.61 | kirilim, rvol2 | 15.1% |
-| **ALTNY** | 16.89 | **17.57** | 4.0% | 16.21 | kirilim, rvol2 | 17.6% |
-| **KRDMD** | 41.76 | **45.10** | 8.0% | 41.67 | kirilim, rvol2 | 16.5% |
-| **AKSA** | 12.29 | **13.28** | 8.1% | 12.41 | kirilim, rvol2 | 15.4% |
-| **ALARK** | 102.50 | **111.00** | 8.3% | 103.68 | kirilim, rvol2 | 12.2% |
-| **SISE** | 41.64 | **45.38** | 9.0% | 42.99 | kirilim, rvol2 | 13.5% |
-| **YKBNK** | 35.54 | **35.78** | 0.7% | 33.17 | kirilim, rvol2, tepede_kapanis | 16.2% |
-| **SAHOL** | 88.80 | **90.60** | 2.0% | 85.74 | kirilim, rvol2, tepede_kapanis | 10.4% |
-| **MPARK** | 430.00 | **439.25** | 2.2% | 412.00 | kirilim, rvol2, tepede_kapanis | 11.5% |
-| **GARAN** | 129.60 | **132.40** | 2.2% | 124.95 | kirilim, rvol2, tepede_kapanis | 7.6% |
-| **KCHOL** | 202.40 | **206.80** | 2.2% | 194.72 | kirilim, rvol2, tepede_kapanis | 8.6% |
-| **ANSGR** | 28.80 | **29.68** | 3.1% | 28.02 | kirilim, rvol2, tepede_kapanis | 13.5% |
-| **DOHOL** | 21.12 | **22.18** | 5.0% | 20.72 | kirilim, rvol2, tepede_kapanis | 8.8% |
-| **MAVI** | 38.76 | **41.58** | 7.3% | 39.63 | kirilim, rvol2, tepede_kapanis | 8.8% |
-| **THYAO** | 308.00 | **333.00** | 8.1% | 315.64 | kirilim, rvol2, tepede_kapanis | 12.8% |
-| **BIMAS** | 376.50 | **408.25** | 8.4% | 385.96 | kirilim, rvol2, tepede_kapanis | 10.5% |
-| **TCELL** | 103.10 | **112.40** | 9.0% | 106.15 | kirilim, rvol2, tepede_kapanis | 13.6% |
-| **ENJSA** | 107.40 | **117.40** | 9.3% | 110.02 | kirilim, rvol2, tepede_kapanis | 18.0% |
-| **BSOKE** | 35.00 | **38.32** | 9.5% | 35.10 | kirilim, rvol2, tepede_kapanis | 14.8% |
+| **MPARK** | 438.25 | **439.25** | 0.2% | 411.53 | kirilim, rvol2 | 11.5% |
+| **GARAN** | 131.00 | **132.40** | 1.1% | 125.19 | kirilim, rvol2 | 7.6% |
+| **KCHOL** | 207.20 | **209.50** | 1.1% | 197.40 | kirilim, rvol2 | 10.0% |
+| **IEYHO** | 178.60 | **180.90** | 1.3% | 173.60 | kirilim, rvol2, tepede_kapanis | 16.0% |
+| **YKBNK** | 35.42 | **36.06** | 1.8% | 33.53 | kirilim, rvol2, tepede_kapanis | 17.1% |
+| **SAHOL** | 89.40 | **91.70** | 2.6% | 86.75 | kirilim, rvol2, tepede_kapanis | 11.7% |
+| **ANSGR** | 28.68 | **29.68** | 3.5% | 28.05 | kirilim, rvol2, tepede_kapanis | 13.5% |
+| **ALTNY** | 16.77 | **17.57** | 4.8% | 16.22 | kirilim, rvol2, tepede_kapanis | 16.2% |
+| **DOHOL** | 20.86 | **22.18** | 6.3% | 20.73 | kirilim, rvol2, tepede_kapanis | 8.8% |
+| **ALARK** | 103.40 | **111.00** | 7.4% | 103.72 | kirilim, rvol2, tepede_kapanis | 12.2% |
+| **TCELL** | 104.10 | **112.40** | 8.0% | 106.27 | kirilim, rvol2, tepede_kapanis | 13.6% |
+| **KRDMD** | 41.48 | **45.10** | 8.7% | 41.66 | kirilim, rvol2, tepede_kapanis | 16.5% |
+| **BIMAS** | 374.75 | **408.25** | 8.9% | 386.59 | kirilim, rvol2, tepede_kapanis | 10.3% |
+| **THYAO** | 305.25 | **333.00** | 9.1% | 315.59 | kirilim, rvol2, tepede_kapanis | 12.8% |
+| **SISE** | 41.40 | **45.38** | 9.6% | 42.94 | kirilim, rvol2, tepede_kapanis | 13.5% |
 
-_Kirilim seviyesine %10'den uzak 3 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): CCOLA, DOAS, TURSG_
+_Kirilim seviyesine %10'den uzak 6 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): AKSA, BSOKE, ENJSA, TURSG, CCOLA, DOAS_
 
 ## Nasil kullanilir
 
