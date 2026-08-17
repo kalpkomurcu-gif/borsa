@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-08-14 16:27
+# BIST 100 Tarama — 2026-08-17 15:54
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 3
@@ -7,9 +7,9 @@ Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 3
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| TUPRS | 07.08.2026 | 323.5 | 361.75 | +11.8% | 6 |
-| GLRMK | 12.08.2026 | 177.0 | 179.0 | +1.1% | 3 |
-| ECILC | 12.08.2026 | 76.0 | 75.0 | -1.3% | 3 |
+| TUPRS | 07.08.2026 | 323.5 | 368.75 | +14.0% | 7 |
+| GLRMK | 12.08.2026 | 177.0 | 177.3 | +0.2% | 4 |
+| ECILC | 12.08.2026 | 76.0 | 75.85 | -0.2% | 4 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (3)
 

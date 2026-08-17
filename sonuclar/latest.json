@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-08-14 16:27",
+  "tarih": "2026-08-17 15:54",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,25 +7,25 @@
       "hisse": "TUPRS",
       "giris_tarih": "2026-08-07",
       "giris_fiyat": 323.5,
-      "guncel_fiyat": 361.75,
-      "getiri": 11.8,
-      "gun": 6
+      "guncel_fiyat": 368.75,
+      "getiri": 14.0,
+      "gun": 7
     },
     {
       "hisse": "GLRMK",
       "giris_tarih": "2026-08-12",
       "giris_fiyat": 177.0,
-      "guncel_fiyat": 179.0,
-      "getiri": 1.1,
-      "gun": 3
+      "guncel_fiyat": 177.3,
+      "getiri": 0.2,
+      "gun": 4
     },
     {
       "hisse": "ECILC",
       "giris_tarih": "2026-08-12",
       "giris_fiyat": 76.0,
-      "guncel_fiyat": 75.0,
-      "getiri": -1.3,
-      "gun": 3
+      "guncel_fiyat": 75.85,
+      "getiri": -0.2,
+      "gun": 4
     }
   ],
   "listeden_cikanlar": [
