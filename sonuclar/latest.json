@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-08-26 16:37",
+  "tarih": "2026-08-28 00:34",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -48,14 +48,6 @@
       "giris_tarih": "2026-08-26",
       "giris_fiyat": 92.2,
       "guncel_fiyat": 92.2,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "ISCTR",
-      "giris_tarih": "2026-08-26",
-      "giris_fiyat": 12.91,
-      "guncel_fiyat": 12.91,
       "getiri": 0.0,
       "gun": 1
     },
@@ -111,15 +103,6 @@
       "cikis_fiyat": 91.75,
       "getiri": -6.1,
       "gun": 3
-    },
-    {
-      "hisse": "EKGYO",
-      "giris_tarih": "2026-08-19",
-      "giris_fiyat": 19.41,
-      "cikis_tarih": "2026-08-21",
-      "cikis_fiyat": 19.45,
-      "getiri": 0.2,
-      "gun": 2
     }
   ],
   "veri_alinamayan": []
