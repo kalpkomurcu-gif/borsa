@@ -1,71 +1,87 @@
 {
-  "tarih": "2026-08-28 00:34",
+  "tarih": "2026-08-29 00:05",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
     {
-      "hisse": "TUPRS",
-      "giris_tarih": "2026-08-07",
-      "giris_fiyat": 323.5,
-      "guncel_fiyat": 380.0,
-      "getiri": 17.5,
-      "gun": 14
-    },
-    {
       "hisse": "GSRAY",
       "giris_tarih": "2026-08-19",
       "giris_fiyat": 1.06,
-      "guncel_fiyat": 1.15,
-      "getiri": 8.5,
-      "gun": 6
+      "guncel_fiyat": 1.14,
+      "getiri": 7.5,
+      "gun": 7
     },
     {
       "hisse": "ALARK",
       "giris_tarih": "2026-08-25",
       "giris_fiyat": 105.9,
-      "guncel_fiyat": 108.5,
-      "getiri": 2.5,
-      "gun": 2
+      "guncel_fiyat": 109.6,
+      "getiri": 3.5,
+      "gun": 3
     },
     {
       "hisse": "GLRMK",
       "giris_tarih": "2026-08-12",
       "giris_fiyat": 177.0,
-      "guncel_fiyat": 180.3,
-      "getiri": 1.9,
-      "gun": 11
-    },
-    {
-      "hisse": "BIMAS",
-      "giris_tarih": "2026-08-26",
-      "giris_fiyat": 418.25,
-      "guncel_fiyat": 418.25,
-      "getiri": 0.0,
-      "gun": 1
+      "guncel_fiyat": 180.0,
+      "getiri": 1.7,
+      "gun": 12
     },
     {
       "hisse": "GESAN",
       "giris_tarih": "2026-08-26",
       "giris_fiyat": 92.2,
-      "guncel_fiyat": 92.2,
+      "guncel_fiyat": 93.6,
+      "getiri": 1.5,
+      "gun": 2
+    },
+    {
+      "hisse": "FENER",
+      "giris_tarih": "2026-08-27",
+      "giris_fiyat": 3.35,
+      "guncel_fiyat": 3.35,
       "getiri": 0.0,
       "gun": 1
     },
     {
-      "hisse": "OBAMS",
-      "giris_tarih": "2026-08-24",
-      "giris_fiyat": 5.4,
-      "guncel_fiyat": 5.4,
+      "hisse": "ISCTR",
+      "giris_tarih": "2026-08-27",
+      "giris_fiyat": 12.75,
+      "guncel_fiyat": 12.75,
       "getiri": 0.0,
-      "gun": 3
+      "gun": 1
+    },
+    {
+      "hisse": "ULKER",
+      "giris_tarih": "2026-08-27",
+      "giris_fiyat": 92.65,
+      "guncel_fiyat": 92.65,
+      "getiri": 0.0,
+      "gun": 1
     },
     {
       "hisse": "EKGYO",
       "giris_tarih": "2026-08-24",
       "giris_fiyat": 20.72,
-      "guncel_fiyat": 20.6,
-      "getiri": -0.6,
-      "gun": 3
+      "guncel_fiyat": 20.52,
+      "getiri": -1.0,
+      "gun": 4
+    },
+    {
+      "hisse": "BIMAS",
+      "giris_tarih": "2026-08-26",
+      "giris_fiyat": 418.25,
+      "guncel_fiyat": 413.75,
+      "getiri": -1.1,
+      "gun": 2
+    },
+    {
+      "hisse": "OBAMS",
+      "giris_tarih": "2026-08-24",
+      "giris_fiyat": 5.4,
+      "guncel_fiyat": 5.3,
+      "getiri": -1.9,
+      "gun": 4
     },
     {
       "hisse": "KCHOL",
@@ -73,10 +89,19 @@
       "giris_fiyat": 218.8,
       "guncel_fiyat": 214.2,
       "getiri": -2.1,
-      "gun": 3
+      "gun": 4
     }
   ],
   "listeden_cikanlar": [
+    {
+      "hisse": "TUPRS",
+      "giris_tarih": "2026-08-07",
+      "giris_fiyat": 323.5,
+      "cikis_tarih": "2026-08-27",
+      "cikis_fiyat": 380.75,
+      "getiri": 17.7,
+      "gun": 14
+    },
     {
       "hisse": "BERA",
       "giris_tarih": "2026-08-21",
