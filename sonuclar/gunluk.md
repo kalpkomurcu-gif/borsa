@@ -1,16 +1,16 @@
-# Gunluk Tarama — 27.08.2026
+# Gunluk Tarama — 28.08.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-28 00:36
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-08-29 00:06
 
-**Taranan gun (kapanis): 27.08.2026**
+**Taranan gun (kapanis): 28.08.2026**
 
-> ⚠️ **100 hissenin 27.08.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(26.08), AKBNK(26.08), AKSA(26.08), AKSEN(26.08), ALARK(26.08), ALTNY(26.08), ANSGR(26.08), ARCLK(26.08), ASELS(26.08), ASTOR(26.08), BALSU(26.08), BERA(26.08), BIMAS(26.08), BRSAN(26.08), BRYAT(26.08), BSOKE(26.08), BTCIM(26.08), CANTE(26.08), CCOLA(26.08), CIMSA(26.08) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
+> ⚠️ **100 hissenin 28.08.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(27.08), AKBNK(27.08), AKSA(27.08), AKSEN(27.08), ALARK(27.08), ALTNY(27.08), ANSGR(27.08), ARCLK(27.08), ASELS(27.08), ASTOR(27.08), BALSU(27.08), BERA(27.08), BIMAS(27.08), BRSAN(27.08), BRYAT(27.08), BSOKE(27.08), BTCIM(27.08), CANTE(27.08), CCOLA(27.08), CIMSA(27.08) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**27.08.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**28.08.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
