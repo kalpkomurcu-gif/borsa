@@ -1,18 +1,21 @@
-# BIST 100 Tarama — 2026-09-03 18:51
+# BIST 100 Tarama — 2026-09-04 18:32
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
-Taranan: 100 hisse | Listede: 4 | Son 7 gunde cikan: 17
+Taranan: 100 hisse | Listede: 7 | Son 7 gunde cikan: 16
 
-## 🟢 Aktif Sinyaller (4)
+## 🟢 Aktif Sinyaller (7)
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| ALARK | 25.08.2026 | 105.9 | 111.7 | +5.5% | 8 |
-| CANTE | 01.09.2026 | 1.3 | 1.34 | +3.1% | 3 |
-| ENERY | 02.09.2026 | 10.5 | 10.5 | +0.0% | 2 |
-| GUBRF | 28.08.2026 | 497.75 | 482.25 | -3.1% | 5 |
+| ALARK | 25.08.2026 | 105.9 | 112.0 | +5.8% | 9 |
+| ENERY | 02.09.2026 | 10.5 | 11.04 | +5.1% | 3 |
+| CANTE | 01.09.2026 | 1.3 | 1.33 | +2.3% | 4 |
+| BERA | 04.09.2026 | 13.62 | 13.62 | +0.0% | 1 |
+| IEYHO | 04.09.2026 | 214.6 | 214.6 | +0.0% | 1 |
+| VAKBN | 04.09.2026 | 33.62 | 33.62 | +0.0% | 1 |
+| GUBRF | 28.08.2026 | 497.75 | 478.75 | -3.8% | 6 |
 
-## 🔴 Listeden Cikanlar — Son 7 Gun (17)
+## 🔴 Listeden Cikanlar — Son 7 Gun (16)
 
 | Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |
 |---|---|---|---|---|---|---|
@@ -32,6 +35,5 @@ Taranan: 100 hisse | Listede: 4 | Son 7 gunde cikan: 17
 | GLRMK | 12.08.2026 | 177.0 | 31.08.2026 | 169.6 | -4.2% | 13 |
 | ISCTR | 27.08.2026 | 12.75 | 31.08.2026 | 12.64 | -0.9% | 2 |
 | TUKAS | 28.08.2026 | 2.06 | 31.08.2026 | 2.02 | -1.9% | 1 |
-| ULKER | 27.08.2026 | 92.65 | 28.08.2026 | 91.9 | -0.8% | 1 |
 
 Not: Giris/cikis fiyatlari sinyal gununun kapanisidir; gercek islem fiyati ertesi gun acilisina gore degisebilir.
