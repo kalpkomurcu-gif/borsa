@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-09-09 18:49",
+  "tarih": "2026-09-10 18:39",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,135 +7,107 @@
       "hisse": "ALARK",
       "giris_tarih": "2026-08-25",
       "giris_fiyat": 105.9,
-      "guncel_fiyat": 116.3,
-      "getiri": 9.8,
-      "gun": 11
-    },
-    {
-      "hisse": "VAKBN",
-      "giris_tarih": "2026-09-04",
-      "giris_fiyat": 33.62,
-      "guncel_fiyat": 35.52,
-      "getiri": 5.7,
-      "gun": 3
+      "guncel_fiyat": 116.6,
+      "getiri": 10.1,
+      "gun": 12
     },
     {
       "hisse": "ENERY",
       "giris_tarih": "2026-09-02",
       "giris_fiyat": 10.5,
-      "guncel_fiyat": 11.09,
-      "getiri": 5.6,
-      "gun": 5
+      "guncel_fiyat": 11.47,
+      "getiri": 9.2,
+      "gun": 6
     },
     {
       "hisse": "IEYHO",
       "giris_tarih": "2026-09-04",
       "giris_fiyat": 214.6,
-      "guncel_fiyat": 221.8,
-      "getiri": 3.4,
-      "gun": 3
-    },
-    {
-      "hisse": "BERA",
-      "giris_tarih": "2026-09-04",
-      "giris_fiyat": 13.62,
-      "guncel_fiyat": 14.04,
-      "getiri": 3.1,
-      "gun": 3
-    },
-    {
-      "hisse": "GUBRF",
-      "giris_tarih": "2026-08-28",
-      "giris_fiyat": 497.75,
-      "guncel_fiyat": 512.0,
-      "getiri": 2.9,
-      "gun": 8
+      "guncel_fiyat": 225.5,
+      "getiri": 5.1,
+      "gun": 4
     },
     {
       "hisse": "CANTE",
       "giris_tarih": "2026-09-01",
       "giris_fiyat": 1.3,
-      "guncel_fiyat": 1.33,
-      "getiri": 2.3,
-      "gun": 6
+      "guncel_fiyat": 1.35,
+      "getiri": 3.8,
+      "gun": 7
     },
     {
-      "hisse": "FROTO",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 83.95,
-      "guncel_fiyat": 83.95,
-      "getiri": 0.0,
-      "gun": 1
+      "hisse": "BERA",
+      "giris_tarih": "2026-09-04",
+      "giris_fiyat": 13.62,
+      "guncel_fiyat": 14.11,
+      "getiri": 3.6,
+      "gun": 4
     },
     {
-      "hisse": "ISCTR",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 13.92,
-      "guncel_fiyat": 13.92,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "ISMEN",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 37.38,
-      "guncel_fiyat": 37.38,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "VESTL",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 26.96,
-      "guncel_fiyat": 26.96,
-      "getiri": 0.0,
-      "gun": 1
+      "hisse": "VAKBN",
+      "giris_tarih": "2026-09-04",
+      "giris_fiyat": 33.62,
+      "guncel_fiyat": 34.62,
+      "getiri": 3.0,
+      "gun": 4
     },
     {
       "hisse": "ZOREN",
       "giris_tarih": "2026-09-09",
       "giris_fiyat": 2.48,
-      "guncel_fiyat": 2.48,
-      "getiri": 0.0,
-      "gun": 1
+      "guncel_fiyat": 2.52,
+      "getiri": 1.6,
+      "gun": 2
+    },
+    {
+      "hisse": "GUBRF",
+      "giris_tarih": "2026-08-28",
+      "giris_fiyat": 497.75,
+      "guncel_fiyat": 504.5,
+      "getiri": 1.4,
+      "gun": 9
     },
     {
       "hisse": "KCHOL",
       "giris_tarih": "2026-09-08",
       "giris_fiyat": 224.8,
-      "guncel_fiyat": 223.7,
-      "getiri": -0.5,
+      "guncel_fiyat": 224.3,
+      "getiri": -0.2,
+      "gun": 3
+    },
+    {
+      "hisse": "ISCTR",
+      "giris_tarih": "2026-09-09",
+      "giris_fiyat": 13.92,
+      "guncel_fiyat": 13.74,
+      "getiri": -1.3,
+      "gun": 2
+    },
+    {
+      "hisse": "ISMEN",
+      "giris_tarih": "2026-09-08",
+      "giris_fiyat": 36.7,
+      "guncel_fiyat": 35.88,
+      "getiri": -2.2,
+      "gun": 3
+    },
+    {
+      "hisse": "FROTO",
+      "giris_tarih": "2026-09-09",
+      "giris_fiyat": 83.95,
+      "guncel_fiyat": 81.9,
+      "getiri": -2.4,
+      "gun": 2
+    },
+    {
+      "hisse": "VESTL",
+      "giris_tarih": "2026-09-09",
+      "giris_fiyat": 26.96,
+      "guncel_fiyat": 25.96,
+      "getiri": -3.7,
       "gun": 2
     }
   ],
-  "listeden_cikanlar": [
-    {
-      "hisse": "ENKAI",
-      "giris_tarih": "2026-08-28",
-      "giris_fiyat": 89.0,
-      "cikis_tarih": "2026-09-03",
-      "cikis_fiyat": 86.9,
-      "getiri": -2.4,
-      "gun": 4
-    },
-    {
-      "hisse": "OBAMS",
-      "giris_tarih": "2026-08-24",
-      "giris_fiyat": 5.4,
-      "cikis_tarih": "2026-09-03",
-      "cikis_fiyat": 5.27,
-      "getiri": -2.4,
-      "gun": 8
-    },
-    {
-      "hisse": "ZOREN",
-      "giris_tarih": "2026-09-02",
-      "giris_fiyat": 2.44,
-      "cikis_tarih": "2026-09-03",
-      "cikis_fiyat": 2.3,
-      "getiri": -5.7,
-      "gun": 1
-    }
-  ],
+  "listeden_cikanlar": [],
   "veri_alinamayan": []
 }
