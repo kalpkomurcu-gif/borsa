@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-09-15 19:10",
+  "tarih": "2026-09-16 19:02",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,60 +7,73 @@
       "hisse": "ENERY",
       "giris_tarih": "2026-09-02",
       "giris_fiyat": 10.5,
-      "guncel_fiyat": 12.7,
-      "getiri": 21.0,
-      "gun": 9
-    },
-    {
-      "hisse": "IEYHO",
-      "giris_tarih": "2026-09-04",
-      "giris_fiyat": 214.6,
-      "guncel_fiyat": 230.0,
-      "getiri": 7.2,
-      "gun": 7
+      "guncel_fiyat": 11.94,
+      "getiri": 13.7,
+      "gun": 10
     },
     {
       "hisse": "ZOREN",
       "giris_tarih": "2026-09-09",
       "giris_fiyat": 2.48,
-      "guncel_fiyat": 2.52,
-      "getiri": 1.6,
-      "gun": 5
+      "guncel_fiyat": 2.55,
+      "getiri": 2.8,
+      "gun": 6
     },
     {
-      "hisse": "VAKBN",
+      "hisse": "CANTE",
+      "giris_tarih": "2026-09-16",
+      "giris_fiyat": 1.35,
+      "guncel_fiyat": 1.35,
+      "getiri": 0.0,
+      "gun": 1
+    }
+  ],
+  "listeden_cikanlar": [
+    {
+      "hisse": "IEYHO",
       "giris_tarih": "2026-09-04",
-      "giris_fiyat": 33.62,
-      "guncel_fiyat": 33.88,
-      "getiri": 0.8,
+      "giris_fiyat": 214.6,
+      "cikis_tarih": "2026-09-16",
+      "cikis_fiyat": 207.0,
+      "getiri": -3.5,
       "gun": 7
     },
     {
       "hisse": "ISCTR",
       "giris_tarih": "2026-09-09",
       "giris_fiyat": 13.92,
-      "guncel_fiyat": 13.36,
-      "getiri": -4.0,
-      "gun": 5
-    },
-    {
-      "hisse": "VESTL",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 26.96,
-      "guncel_fiyat": 25.64,
-      "getiri": -4.9,
+      "cikis_tarih": "2026-09-16",
+      "cikis_fiyat": 12.22,
+      "getiri": -12.2,
       "gun": 5
     },
     {
       "hisse": "SISE",
       "giris_tarih": "2026-09-11",
       "giris_fiyat": 44.98,
-      "guncel_fiyat": 42.4,
-      "getiri": -5.7,
+      "cikis_tarih": "2026-09-16",
+      "cikis_fiyat": 38.22,
+      "getiri": -15.0,
       "gun": 3
-    }
-  ],
-  "listeden_cikanlar": [
+    },
+    {
+      "hisse": "VAKBN",
+      "giris_tarih": "2026-09-04",
+      "giris_fiyat": 33.62,
+      "cikis_tarih": "2026-09-16",
+      "cikis_fiyat": 30.86,
+      "getiri": -8.2,
+      "gun": 7
+    },
+    {
+      "hisse": "VESTL",
+      "giris_tarih": "2026-09-09",
+      "giris_fiyat": 26.96,
+      "cikis_tarih": "2026-09-16",
+      "cikis_fiyat": 23.84,
+      "getiri": -11.6,
+      "gun": 5
+    },
     {
       "hisse": "ALARK",
       "giris_tarih": "2026-08-25",
