@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-09-16 19:02
+# BIST 100 Tarama — 2026-09-17 19:13
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 13
@@ -7,9 +7,9 @@ Taranan: 100 hisse | Listede: 3 | Son 7 gunde cikan: 13
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| ENERY | 02.09.2026 | 10.5 | 11.94 | +13.7% | 10 |
-| ZOREN | 09.09.2026 | 2.48 | 2.55 | +2.8% | 6 |
-| CANTE | 16.09.2026 | 1.35 | 1.35 | +0.0% | 1 |
+| ENERY | 02.09.2026 | 10.5 | 12.66 | +20.6% | 11 |
+| TKFEN | 17.09.2026 | 258.0 | 258.0 | +0.0% | 1 |
+| ZOREN | 09.09.2026 | 2.48 | 2.45 | -1.2% | 7 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (13)
 
