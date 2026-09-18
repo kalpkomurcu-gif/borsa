@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-09-17 19:13",
+  "tarih": "2026-09-18 18:37",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,28 +7,29 @@
       "hisse": "ENERY",
       "giris_tarih": "2026-09-02",
       "giris_fiyat": 10.5,
-      "guncel_fiyat": 12.66,
-      "getiri": 20.6,
-      "gun": 11
+      "guncel_fiyat": 12.85,
+      "getiri": 22.4,
+      "gun": 12
     },
     {
       "hisse": "TKFEN",
-      "giris_tarih": "2026-09-17",
-      "giris_fiyat": 258.0,
-      "guncel_fiyat": 258.0,
+      "giris_tarih": "2026-09-18",
+      "giris_fiyat": 244.8,
+      "guncel_fiyat": 244.8,
       "getiri": 0.0,
       "gun": 1
-    },
-    {
-      "hisse": "ZOREN",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 2.48,
-      "guncel_fiyat": 2.45,
-      "getiri": -1.2,
-      "gun": 7
     }
   ],
   "listeden_cikanlar": [
+    {
+      "hisse": "ZOREN",
+      "giris_tarih": "2026-09-07",
+      "giris_fiyat": 2.36,
+      "cikis_tarih": "2026-09-18",
+      "cikis_fiyat": 2.29,
+      "getiri": -3.0,
+      "gun": 8
+    },
     {
       "hisse": "IEYHO",
       "giris_tarih": "2026-09-04",
@@ -36,7 +37,7 @@
       "cikis_tarih": "2026-09-16",
       "cikis_fiyat": 207.0,
       "getiri": -3.5,
-      "gun": 7
+      "gun": 8
     },
     {
       "hisse": "ISCTR",
@@ -63,16 +64,7 @@
       "cikis_tarih": "2026-09-16",
       "cikis_fiyat": 30.86,
       "getiri": -8.2,
-      "gun": 7
-    },
-    {
-      "hisse": "VESTL",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 26.96,
-      "cikis_tarih": "2026-09-16",
-      "cikis_fiyat": 23.84,
-      "getiri": -11.6,
-      "gun": 5
+      "gun": 8
     },
     {
       "hisse": "ALARK",
@@ -81,7 +73,7 @@
       "cikis_tarih": "2026-09-15",
       "cikis_fiyat": 109.0,
       "getiri": 2.9,
-      "gun": 14
+      "gun": 15
     },
     {
       "hisse": "CANTE",
@@ -90,7 +82,7 @@
       "cikis_tarih": "2026-09-15",
       "cikis_fiyat": 1.27,
       "getiri": -2.3,
-      "gun": 9
+      "gun": 10
     },
     {
       "hisse": "EKGYO",
@@ -100,24 +92,6 @@
       "cikis_fiyat": 19.8,
       "getiri": -5.4,
       "gun": 2
-    },
-    {
-      "hisse": "FROTO",
-      "giris_tarih": "2026-09-09",
-      "giris_fiyat": 83.95,
-      "cikis_tarih": "2026-09-15",
-      "cikis_fiyat": 78.4,
-      "getiri": -6.6,
-      "gun": 4
-    },
-    {
-      "hisse": "GUBRF",
-      "giris_tarih": "2026-08-28",
-      "giris_fiyat": 497.75,
-      "cikis_tarih": "2026-09-15",
-      "cikis_fiyat": 461.0,
-      "getiri": -7.4,
-      "gun": 11
     },
     {
       "hisse": "ISMEN",
@@ -144,7 +118,16 @@
       "cikis_tarih": "2026-09-14",
       "cikis_fiyat": 13.53,
       "getiri": -0.7,
-      "gun": 5
+      "gun": 6
+    },
+    {
+      "hisse": "GUBRF",
+      "giris_tarih": "2026-08-28",
+      "giris_fiyat": 497.75,
+      "cikis_tarih": "2026-09-14",
+      "cikis_fiyat": 478.75,
+      "getiri": -3.8,
+      "gun": 11
     }
   ],
   "veri_alinamayan": []
