@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-09-18 18:37",
+  "tarih": "2026-09-21 20:06",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,17 +7,17 @@
       "hisse": "ENERY",
       "giris_tarih": "2026-09-02",
       "giris_fiyat": 10.5,
-      "guncel_fiyat": 12.85,
-      "getiri": 22.4,
-      "gun": 12
+      "guncel_fiyat": 11.84,
+      "getiri": 12.8,
+      "gun": 14
     },
     {
       "hisse": "TKFEN",
-      "giris_tarih": "2026-09-18",
-      "giris_fiyat": 244.8,
-      "guncel_fiyat": 244.8,
-      "getiri": 0.0,
-      "gun": 1
+      "giris_tarih": "2026-09-17",
+      "giris_fiyat": 258.0,
+      "guncel_fiyat": 239.3,
+      "getiri": -7.2,
+      "gun": 3
     }
   ],
   "listeden_cikanlar": [
@@ -28,7 +28,7 @@
       "cikis_tarih": "2026-09-18",
       "cikis_fiyat": 2.29,
       "getiri": -3.0,
-      "gun": 8
+      "gun": 9
     },
     {
       "hisse": "IEYHO",
@@ -110,24 +110,6 @@
       "cikis_fiyat": 218.8,
       "getiri": -2.7,
       "gun": 5
-    },
-    {
-      "hisse": "BERA",
-      "giris_tarih": "2026-09-04",
-      "giris_fiyat": 13.62,
-      "cikis_tarih": "2026-09-14",
-      "cikis_fiyat": 13.53,
-      "getiri": -0.7,
-      "gun": 6
-    },
-    {
-      "hisse": "GUBRF",
-      "giris_tarih": "2026-08-28",
-      "giris_fiyat": 497.75,
-      "cikis_tarih": "2026-09-14",
-      "cikis_fiyat": 478.75,
-      "getiri": -3.8,
-      "gun": 11
     }
   ],
   "veri_alinamayan": []
