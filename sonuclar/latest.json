@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-09-24 19:28",
+  "tarih": "2026-09-25 19:29",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,29 +7,19 @@
       "hisse": "ENERY",
       "giris_tarih": "2026-09-02",
       "giris_fiyat": 10.5,
-      "guncel_fiyat": 13.04,
-      "getiri": 24.2,
-      "gun": 17
+      "guncel_fiyat": 13.51,
+      "getiri": 28.7,
+      "gun": 18
     },
     {
       "hisse": "TKFEN",
       "giris_tarih": "2026-09-17",
       "giris_fiyat": 258.0,
-      "guncel_fiyat": 274.0,
-      "getiri": 6.2,
-      "gun": 6
+      "guncel_fiyat": 277.5,
+      "getiri": 7.6,
+      "gun": 7
     }
   ],
-  "listeden_cikanlar": [
-    {
-      "hisse": "ZOREN",
-      "giris_tarih": "2026-09-07",
-      "giris_fiyat": 2.36,
-      "cikis_tarih": "2026-09-18",
-      "cikis_fiyat": 2.29,
-      "getiri": -3.0,
-      "gun": 9
-    }
-  ],
+  "listeden_cikanlar": [],
   "veri_alinamayan": []
 }
