@@ -1,20 +1,20 @@
-# Gunluk Tarama — 29.09.2026
+# Gunluk Tarama — 30.09.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-09-29 20:12
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-09-30 20:17
 
-**Taranan gun (kapanis): 29.09.2026**
+**Taranan gun (kapanis): 30.09.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**29.09.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**30.09.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
 Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; sinyal uretmek icin kriter gevsetmek sistemi bozar.
 
-## 🟡 Izleme listesi (7) — bilgi amacli
+## 🟡 Izleme listesi (3) — bilgi amacli
 
 Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
 
@@ -22,15 +22,11 @@ Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviye
 
 | Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
 |---|---|---|---|---|---|---|
-| **CCOLA** | 78.60 | **81.70** | 3.9% | 76.59 | kirilim, rvol2 | 9.5% |
-| **BIMAS** | 421.75 | **443.25** | 5.1% | 419.53 | kirilim, rvol2, tepede_kapanis | 13.7% |
-| **GARAN** | 129.10 | **137.80** | 6.7% | 129.67 | kirilim, rvol2, tepede_kapanis | 17.0% |
-| **TOASO** | 277.00 | **299.75** | 8.2% | 277.76 | kirilim, rvol2, tepede_kapanis | 16.6% |
-| **KCHOL** | 214.10 | **232.50** | 8.6% | 219.23 | kirilim, rvol2, tepede_kapanis | 16.0% |
-| **SOKM** | 56.95 | **61.90** | 8.7% | 57.34 | kirilim, rvol2, tepede_kapanis | 13.2% |
-| **EREGL** | 36.76 | **40.36** | 9.8% | 37.61 | kirilim, rvol2, tepede_kapanis | 17.2% |
+| **MPARK** | 417.75 | **455.75** | 9.1% | 428.74 | kirilim, tepede_kapanis | 12.8% |
+| **CCOLA** | 77.45 | **81.70** | 5.5% | 76.66 | kirilim, rvol2, tepede_kapanis | 9.5% |
+| **BIMAS** | 418.50 | **443.25** | 5.9% | 419.67 | kirilim, rvol2, tepede_kapanis | 13.7% |
 
-_Kirilim seviyesine %10'den uzak 5 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): AEFES, TUPRS, MPARK, ENJSA, DOHOL_
+_Kirilim seviyesine %10'den uzak 4 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): ENJSA, KCHOL, EREGL, TUPRS_
 
 ## Nasil kullanilir
 
