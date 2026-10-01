@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-09-30 20:16
+# BIST 100 Tarama — 2026-10-01 20:27
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 1 | Son 7 gunde cikan: 1
@@ -7,7 +7,7 @@ Taranan: 100 hisse | Listede: 1 | Son 7 gunde cikan: 1
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| ENERY | 01.09.2026 | 10.17 | 13.22 | +30.0% | 22 |
+| ENERY | 02.09.2026 | 10.5 | 13.53 | +28.9% | 22 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (1)
 
