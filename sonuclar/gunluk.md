@@ -1,28 +1,38 @@
-# Gunluk Tarama — 05.10.2026
+# Gunluk Tarama — 06.10.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-05 22:10
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-06 20:32
 
-**Taranan gun (kapanis): 05.10.2026**
-
-> ⚠️ **100 hissenin 05.10.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(02.10), AKBNK(02.10), AKSA(02.10), AKSEN(02.10), ALARK(02.10), ALTNY(02.10), ANSGR(02.10), ARCLK(02.10), ASELS(02.10), ASTOR(02.10), BALSU(02.10), BERA(02.10), BIMAS(02.10), BRSAN(02.10), BRYAT(02.10), BSOKE(02.10), BTCIM(02.10), CANTE(02.10), CCOLA(02.10), CIMSA(02.10) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
+**Taranan gun (kapanis): 06.10.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**05.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**06.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
 Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; sinyal uretmek icin kriter gevsetmek sistemi bozar.
 
-## 🟡 Izleme listesi (0) — bilgi amacli
+## 🟡 Izleme listesi (9) — bilgi amacli
 
 Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
 
 Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviyesine yakin olmak sinyal degildir: hacim ve tepede kapanis o gun ayrica gerceklesmeli ve bu ancak kapanista belli olur.
 
-Kurulumu tamamlanmis hisse yok.
+| Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
+|---|---|---|---|---|---|---|
+| **CCOLA** | 82.10 | **81.70** | -0.5% | 76.90 | rvol2 | 9.5% |
+| **GARAN** | 131.20 | **137.80** | 5.0% | 129.61 | kirilim, rvol2 | 17.0% |
+| **AEFES** | 18.67 | **19.96** | 6.9% | 18.78 | kirilim, rvol2 | 13.5% |
+| **MPARK** | 429.00 | **455.75** | 6.2% | 428.41 | kirilim, rvol2, tepede_kapanis | 12.8% |
+| **ENJSA** | 111.60 | **119.60** | 7.2% | 111.98 | kirilim, rvol2, tepede_kapanis | 16.6% |
+| **BIMAS** | 409.25 | **443.25** | 8.3% | 419.95 | kirilim, rvol2, tepede_kapanis | 13.7% |
+| **EREGL** | 37.08 | **40.36** | 8.8% | 37.71 | kirilim, rvol2, tepede_kapanis | 17.2% |
+| **KCHOL** | 213.60 | **232.50** | 8.8% | 218.90 | kirilim, rvol2, tepede_kapanis | 16.0% |
+| **SOKM** | 56.35 | **61.90** | 9.8% | 57.40 | kirilim, rvol2, tepede_kapanis | 15.7% |
+
+_Kirilim seviyesine %10'den uzak 1 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): TUPRS_
 
 ## Nasil kullanilir
 
