@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-10-07 20:45",
+  "tarih": "2026-10-08 20:47",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,9 +7,9 @@
       "hisse": "ENERY",
       "giris_tarih": "2026-09-01",
       "giris_fiyat": 10.17,
-      "guncel_fiyat": 14.0,
-      "getiri": 37.7,
-      "gun": 27
+      "guncel_fiyat": 14.15,
+      "getiri": 39.1,
+      "gun": 28
     }
   ],
   "listeden_cikanlar": [],
