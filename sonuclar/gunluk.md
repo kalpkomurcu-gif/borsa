@@ -1,14 +1,14 @@
-# Gunluk Tarama — 08.10.2026
+# Gunluk Tarama — 09.10.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-08 20:48
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-09 20:19
 
-**Taranan gun (kapanis): 08.10.2026**
+**Taranan gun (kapanis): 09.10.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**08.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**09.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
@@ -22,18 +22,18 @@ Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviye
 
 | Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
 |---|---|---|---|---|---|---|
-| **KCHOL** | 212.40 | **227.60** | 7.2% | 214.13 | kirilim, rvol2 | 13.5% |
-| **BRSAN** | 670.50 | **721.50** | 7.6% | 663.69 | kirilim, rvol2 | 17.9% |
-| **AEFES** | 18.36 | **19.96** | 8.7% | 18.77 | kirilim, rvol2 | 13.5% |
-| **SAHOL** | 88.75 | **96.60** | 8.8% | 91.21 | kirilim, rvol2 | 17.4% |
-| **AKSA** | 10.49 | **11.47** | 9.3% | 10.80 | kirilim, rvol2 | 12.7% |
-| **CCOLA** | 80.40 | **82.55** | 2.7% | 77.71 | kirilim, rvol2, tepede_kapanis | 10.7% |
-| **ENJSA** | 113.00 | **119.60** | 5.8% | 111.98 | kirilim, rvol2, tepede_kapanis | 16.6% |
-| **GARAN** | 128.50 | **136.10** | 5.9% | 128.09 | kirilim, rvol2, tepede_kapanis | 15.5% |
-| **THYAO** | 284.25 | **304.00** | 6.9% | 287.92 | kirilim, rvol2, tepede_kapanis | 17.7% |
-| **TUPRS** | 392.25 | **424.25** | 8.2% | 393.49 | kirilim, rvol2, tepede_kapanis | 13.7% |
-| **MPARK** | 420.25 | **455.75** | 8.4% | 429.05 | kirilim, rvol2, tepede_kapanis | 12.8% |
-| **EREGL** | 36.60 | **40.00** | 9.3% | 37.42 | kirilim, rvol2, tepede_kapanis | 16.1% |
+| **CCOLA** | 83.75 | **82.55** | -1.4% | 77.56 | rvol2 | 10.7% |
+| **MPARK** | 437.25 | **455.75** | 4.2% | 428.52 | kirilim, rvol2 | 12.8% |
+| **GARAN** | 129.30 | **135.90** | 5.1% | 128.06 | kirilim, rvol2 | 15.4% |
+| **SOKM** | 58.20 | **61.90** | 6.4% | 57.48 | kirilim, rvol2 | 15.7% |
+| **ENJSA** | 113.40 | **118.00** | 4.1% | 110.50 | kirilim, rvol2, tepede_kapanis | 15.0% |
+| **THYAO** | 287.50 | **302.75** | 5.3% | 286.93 | kirilim, rvol2, tepede_kapanis | 17.2% |
+| **EREGL** | 37.32 | **40.00** | 7.2% | 37.45 | kirilim, rvol2, tepede_kapanis | 16.1% |
+| **AEFES** | 18.56 | **19.96** | 7.5% | 18.78 | kirilim, rvol2, tepede_kapanis | 13.5% |
+| **BRSAN** | 659.00 | **714.50** | 8.4% | 657.11 | kirilim, rvol2, tepede_kapanis | 16.7% |
+| **AKSA** | 10.55 | **11.47** | 8.7% | 10.81 | kirilim, rvol2, tepede_kapanis | 12.7% |
+| **KCHOL** | 208.00 | **227.60** | 9.4% | 213.96 | kirilim, rvol2, tepede_kapanis | 13.5% |
+| **TUPRS** | 386.25 | **424.25** | 9.8% | 393.79 | kirilim, rvol2, tepede_kapanis | 13.7% |
 
 _Kirilim seviyesine %10'den uzak 1 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): BIMAS_
 
