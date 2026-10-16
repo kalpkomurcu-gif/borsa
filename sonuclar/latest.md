@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-10-15 19:21
+# BIST 100 Tarama — 2026-10-16 18:59
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 0 | Son 7 gunde cikan: 1
