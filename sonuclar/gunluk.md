@@ -1,20 +1,20 @@
-# Gunluk Tarama — 23.10.2026
+# Gunluk Tarama — 26.10.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-23 19:32
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-26 20:44
 
-**Taranan gun (kapanis): 23.10.2026**
+**Taranan gun (kapanis): 26.10.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**23.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**26.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
 Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; sinyal uretmek icin kriter gevsetmek sistemi bozar.
 
-## 🟡 Izleme listesi (3) — bilgi amacli
+## 🟡 Izleme listesi (5) — bilgi amacli
 
 Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
 
@@ -22,11 +22,13 @@ Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviye
 
 | Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
 |---|---|---|---|---|---|---|
-| **ENJSA** | 112.90 | **117.50** | 4.1% | 109.80 | kirilim, rvol2 | 11.8% |
-| **SOKM** | 57.40 | **60.00** | 4.5% | 55.72 | kirilim, rvol2 | 12.1% |
-| **ALARK** | 101.30 | **111.10** | 9.7% | 103.46 | kirilim, rvol2 | 13.9% |
+| **YKBNK** | 35.84 | **36.78** | 2.6% | 34.32 | kirilim, rvol2 | 10.7% |
+| **SOKM** | 57.60 | **60.00** | 4.2% | 55.70 | kirilim, rvol2 | 12.1% |
+| **GARAN** | 128.80 | **134.80** | 4.7% | 126.87 | kirilim, rvol2 | 11.6% |
+| **KCHOL** | 200.60 | **217.90** | 8.6% | 204.58 | kirilim, rvol2 | 15.5% |
+| **ENJSA** | 111.70 | **117.50** | 5.2% | 109.82 | kirilim, rvol2, tepede_kapanis | 11.8% |
 
-_Kirilim seviyesine %10'den uzak 5 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): KCHOL, BRSAN, CCOLA, TUPRS, BIMAS_
+_Kirilim seviyesine %10'den uzak 4 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): BIMAS, TUPRS, ALARK, BRSAN_
 
 ## Nasil kullanilir
 
