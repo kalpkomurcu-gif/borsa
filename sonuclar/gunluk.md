@@ -1,31 +1,28 @@
-# Gunluk Tarama — 28.10.2026
+# Gunluk Tarama — 30.10.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-29 20:33
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-30 20:07
 
-**Taranan gun (kapanis): 28.10.2026**
+**Taranan gun (kapanis): 30.10.2026**
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**28.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**30.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
 Bu normaldir. 5 yillik olcumde erken_dar stratejisi 360 sinyal uretti, yani ortalama ayda ~6. Sinyalsiz gunler cogunluktadir; sinyal uretmek icin kriter gevsetmek sistemi bozar.
 
-## 🟡 Izleme listesi (2) — bilgi amacli
+## 🟡 Izleme listesi (0) — bilgi amacli
 
 Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ** — alim listesi yukaridaki.
 
 Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviyesine yakin olmak sinyal degildir: hacim ve tepede kapanis o gun ayrica gerceklesmeli ve bu ancak kapanista belli olur.
 
-| Hisse | Bugunku fiyat | **ALIM SEVIYESI** | Uzaklik | Stop (bu seviyeden) | Eksik kriter | Baz gen. |
-|---|---|---|---|---|---|---|
-| **ENJSA** | 113.20 | **117.50** | 3.8% | 109.88 | kirilim, rvol2 | 11.6% |
-| **KCHOL** | 199.80 | **217.20** | 8.7% | 204.34 | kirilim, rvol2, tepede_kapanis | 15.2% |
+Kurulumu tamamlanmis hisse yok.
 
-_Kirilim seviyesine %10'den uzak 2 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): TUPRS, ALARK_
+_Kirilim seviyesine %10'den uzak 3 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): ENJSA, KCHOL, TUPRS_
 
 ## Nasil kullanilir
 
