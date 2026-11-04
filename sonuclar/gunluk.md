@@ -1,14 +1,16 @@
-# Gunluk Tarama — 30.10.2026
+# Gunluk Tarama — 04.11.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-10-30 20:07
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-11-04 21:28
 
-**Taranan gun (kapanis): 30.10.2026**
+**Taranan gun (kapanis): 04.11.2026**
+
+> ⚠️ **100 hissenin 04.11.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(03.11), AKBNK(03.11), AKSA(03.11), AKSEN(03.11), ALARK(03.11), ALTNY(03.11), ANSGR(03.11), ARCLK(03.11), ASELS(03.11), ASTOR(03.11), BALSU(03.11), BERA(03.11), BIMAS(03.11), BRSAN(03.11), BRYAT(03.11), BSOKE(03.11), BTCIM(03.11), CANTE(03.11), CCOLA(03.11), CIMSA(03.11) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**30.10.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**04.11.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
@@ -21,8 +23,6 @@ Kurulum tamam (dar baz + zirveye yakin), tetik gelmedi. **Buradan alim YAPILMAZ*
 Bu liste sadece "hangi hisseler kurulmus durumda" sorusunu cevaplar. Alim seviyesine yakin olmak sinyal degildir: hacim ve tepede kapanis o gun ayrica gerceklesmeli ve bu ancak kapanista belli olur.
 
 Kurulumu tamamlanmis hisse yok.
-
-_Kirilim seviyesine %10'den uzak 3 hisse listeden cikarildi (tek gunde o mesafeyi kapatmasi beklenmez): ENJSA, KCHOL, TUPRS_
 
 ## Nasil kullanilir
 
