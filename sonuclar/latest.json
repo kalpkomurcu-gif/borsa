@@ -1,8 +1,33 @@
 {
-  "tarih": "2026-11-04 21:27",
+  "tarih": "2026-11-05 21:32",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
-  "aktif_sinyaller": [],
+  "aktif_sinyaller": [
+    {
+      "hisse": "ASELS",
+      "giris_tarih": "2026-11-04",
+      "giris_fiyat": 353.75,
+      "guncel_fiyat": 353.75,
+      "getiri": 0.0,
+      "gun": 1
+    },
+    {
+      "hisse": "CIMSA",
+      "giris_tarih": "2026-11-04",
+      "giris_fiyat": 41.68,
+      "guncel_fiyat": 41.68,
+      "getiri": 0.0,
+      "gun": 1
+    },
+    {
+      "hisse": "ENKAI",
+      "giris_tarih": "2026-11-04",
+      "giris_fiyat": 81.25,
+      "guncel_fiyat": 81.25,
+      "getiri": 0.0,
+      "gun": 1
+    }
+  ],
   "listeden_cikanlar": [],
   "veri_alinamayan": []
 }
