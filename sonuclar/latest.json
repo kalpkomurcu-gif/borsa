@@ -1,31 +1,31 @@
 {
-  "tarih": "2026-11-10 21:24",
+  "tarih": "2026-11-11 22:13",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
     {
-      "hisse": "THYAO",
-      "giris_tarih": "2026-11-06",
-      "giris_fiyat": 299.25,
-      "guncel_fiyat": 310.0,
-      "getiri": 3.6,
-      "gun": 2
-    },
-    {
       "hisse": "PGSUS",
       "giris_tarih": "2026-11-06",
       "giris_fiyat": 141.6,
-      "guncel_fiyat": 146.5,
-      "getiri": 3.5,
-      "gun": 2
+      "guncel_fiyat": 154.4,
+      "getiri": 9.0,
+      "gun": 3
     },
     {
-      "hisse": "CIMSA",
-      "giris_tarih": "2026-11-04",
-      "giris_fiyat": 41.68,
-      "guncel_fiyat": 42.68,
-      "getiri": 2.4,
-      "gun": 4
+      "hisse": "THYAO",
+      "giris_tarih": "2026-11-06",
+      "giris_fiyat": 299.25,
+      "guncel_fiyat": 313.75,
+      "getiri": 4.8,
+      "gun": 3
+    },
+    {
+      "hisse": "MGROS",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 474.15,
+      "guncel_fiyat": 484.51,
+      "getiri": 2.2,
+      "gun": 2
     },
     {
       "hisse": "TSKB",
@@ -33,77 +33,45 @@
       "giris_fiyat": 10.24,
       "guncel_fiyat": 10.45,
       "getiri": 2.1,
-      "gun": 3
-    },
-    {
-      "hisse": "AKBNK",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 70.95,
-      "guncel_fiyat": 70.95,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "DOHOL",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 18.12,
-      "guncel_fiyat": 18.12,
-      "getiri": 0.0,
-      "gun": 1
+      "gun": 4
     },
     {
       "hisse": "FROTO",
       "giris_tarih": "2026-11-09",
       "giris_fiyat": 74.45,
-      "guncel_fiyat": 74.45,
-      "getiri": 0.0,
-      "gun": 1
+      "guncel_fiyat": 75.9,
+      "getiri": 1.9,
+      "gun": 2
     },
     {
       "hisse": "GARAN",
       "giris_tarih": "2026-11-09",
       "giris_fiyat": 153.1,
-      "guncel_fiyat": 153.1,
+      "guncel_fiyat": 155.4,
+      "getiri": 1.5,
+      "gun": 2
+    },
+    {
+      "hisse": "CIMSA",
+      "giris_tarih": "2026-11-04",
+      "giris_fiyat": 41.68,
+      "guncel_fiyat": 42.24,
+      "getiri": 1.3,
+      "gun": 5
+    },
+    {
+      "hisse": "AKSEN",
+      "giris_tarih": "2026-11-10",
+      "giris_fiyat": 68.95,
+      "guncel_fiyat": 68.95,
       "getiri": 0.0,
       "gun": 1
     },
     {
-      "hisse": "KCHOL",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 212.4,
-      "guncel_fiyat": 212.4,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "MGROS",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 480.5,
-      "guncel_fiyat": 480.5,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "MPARK",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 442.0,
-      "guncel_fiyat": 442.0,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "OYAKC",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 19.77,
-      "guncel_fiyat": 19.77,
-      "getiri": 0.0,
-      "gun": 1
-    },
-    {
-      "hisse": "SAHOL",
-      "giris_tarih": "2026-11-09",
-      "giris_fiyat": 88.4,
-      "guncel_fiyat": 88.4,
+      "hisse": "TTKOM",
+      "giris_tarih": "2026-11-10",
+      "giris_fiyat": 50.45,
+      "guncel_fiyat": 50.45,
       "getiri": 0.0,
       "gun": 1
     },
@@ -111,12 +79,61 @@
       "hisse": "ENKAI",
       "giris_tarih": "2026-11-04",
       "giris_fiyat": 81.25,
-      "guncel_fiyat": 80.6,
-      "getiri": -0.8,
-      "gun": 4
+      "guncel_fiyat": 81.0,
+      "getiri": -0.3,
+      "gun": 5
+    },
+    {
+      "hisse": "AKBNK",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 70.95,
+      "guncel_fiyat": 70.7,
+      "getiri": -0.4,
+      "gun": 2
+    },
+    {
+      "hisse": "OYAKC",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 19.77,
+      "guncel_fiyat": 19.6,
+      "getiri": -0.9,
+      "gun": 2
+    },
+    {
+      "hisse": "SAHOL",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 88.4,
+      "guncel_fiyat": 87.3,
+      "getiri": -1.2,
+      "gun": 2
+    },
+    {
+      "hisse": "MPARK",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 442.0,
+      "guncel_fiyat": 435.75,
+      "getiri": -1.4,
+      "gun": 2
+    },
+    {
+      "hisse": "KCHOL",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 212.4,
+      "guncel_fiyat": 206.0,
+      "getiri": -3.0,
+      "gun": 2
     }
   ],
   "listeden_cikanlar": [
+    {
+      "hisse": "DOHOL",
+      "giris_tarih": "2026-11-09",
+      "giris_fiyat": 18.12,
+      "cikis_tarih": "2026-11-10",
+      "cikis_fiyat": 17.41,
+      "getiri": -3.9,
+      "gun": 1
+    },
     {
       "hisse": "ASELS",
       "giris_tarih": "2026-11-04",
