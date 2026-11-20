@@ -1,19 +1,19 @@
-# BIST 100 Tarama — 2026-11-19 22:44
+# BIST 100 Tarama — 2026-11-20 22:19
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
-Taranan: 100 hisse | Listede: 5 | Son 7 gunde cikan: 12
+Taranan: 100 hisse | Listede: 5 | Son 7 gunde cikan: 10
 
 ## 🟢 Aktif Sinyaller (5)
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| PGSUS | 06.11.2026 | 141.6 | 155.0 | +9.5% | 9 |
-| THYAO | 06.11.2026 | 299.25 | 323.75 | +8.2% | 9 |
-| CCOLA | 13.11.2026 | 80.3 | 79.95 | -0.4% | 4 |
-| TSKB | 05.11.2026 | 10.24 | 10.2 | -0.4% | 10 |
-| GARAN | 09.11.2026 | 153.1 | 145.7 | -4.8% | 8 |
+| PGSUS | 06.11.2026 | 141.6 | 156.6 | +10.6% | 10 |
+| THYAO | 06.11.2026 | 299.25 | 328.25 | +9.7% | 10 |
+| CCOLA | 13.11.2026 | 80.3 | 79.2 | -1.4% | 5 |
+| TSKB | 05.11.2026 | 10.24 | 10.09 | -1.5% | 11 |
+| GARAN | 09.11.2026 | 153.1 | 146.4 | -4.4% | 9 |
 
-## 🔴 Listeden Cikanlar — Son 7 Gun (12)
+## 🔴 Listeden Cikanlar — Son 7 Gun (10)
 
 | Hisse | Giris | Giris F. | Cikis | Cikis F. | Getiri % | Gun |
 |---|---|---|---|---|---|---|
@@ -27,7 +27,5 @@ Taranan: 100 hisse | Listede: 5 | Son 7 gunde cikan: 12
 | KCHOL | 12.11.2026 | 208.2 | 17.11.2026 | 202.0 | -3.0% | 3 |
 | SISE | 12.11.2026 | 36.02 | 16.11.2026 | 34.84 | -3.3% | 2 |
 | TOASO | 13.11.2026 | 243.0 | 16.11.2026 | 246.0 | +1.2% | 1 |
-| AKSEN | 10.11.2026 | 68.95 | 13.11.2026 | 71.95 | +4.4% | 3 |
-| ALARK | 11.11.2026 | 103.4 | 13.11.2026 | 109.1 | +5.5% | 2 |
 
 Not: Giris/cikis fiyatlari sinyal gununun kapanisidir; gercek islem fiyati ertesi gun acilisina gore degisebilir.

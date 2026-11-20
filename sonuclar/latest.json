@@ -1,5 +1,5 @@
 {
-  "tarih": "2026-11-19 22:44",
+  "tarih": "2026-11-20 22:19",
   "kriterler": "MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)",
   "taranan_hisse_sayisi": 100,
   "aktif_sinyaller": [
@@ -7,41 +7,41 @@
       "hisse": "PGSUS",
       "giris_tarih": "2026-11-06",
       "giris_fiyat": 141.6,
-      "guncel_fiyat": 155.0,
-      "getiri": 9.5,
-      "gun": 9
+      "guncel_fiyat": 156.6,
+      "getiri": 10.6,
+      "gun": 10
     },
     {
       "hisse": "THYAO",
       "giris_tarih": "2026-11-06",
       "giris_fiyat": 299.25,
-      "guncel_fiyat": 323.75,
-      "getiri": 8.2,
-      "gun": 9
+      "guncel_fiyat": 328.25,
+      "getiri": 9.7,
+      "gun": 10
     },
     {
       "hisse": "CCOLA",
       "giris_tarih": "2026-11-13",
       "giris_fiyat": 80.3,
-      "guncel_fiyat": 79.95,
-      "getiri": -0.4,
-      "gun": 4
+      "guncel_fiyat": 79.2,
+      "getiri": -1.4,
+      "gun": 5
     },
     {
       "hisse": "TSKB",
       "giris_tarih": "2026-11-05",
       "giris_fiyat": 10.24,
-      "guncel_fiyat": 10.2,
-      "getiri": -0.4,
-      "gun": 10
+      "guncel_fiyat": 10.09,
+      "getiri": -1.5,
+      "gun": 11
     },
     {
       "hisse": "GARAN",
       "giris_tarih": "2026-11-09",
       "giris_fiyat": 153.1,
-      "guncel_fiyat": 145.7,
-      "getiri": -4.8,
-      "gun": 8
+      "guncel_fiyat": 146.4,
+      "getiri": -4.4,
+      "gun": 9
     }
   ],
   "listeden_cikanlar": [
@@ -134,24 +134,6 @@
       "cikis_fiyat": 246.0,
       "getiri": 1.2,
       "gun": 1
-    },
-    {
-      "hisse": "AKSEN",
-      "giris_tarih": "2026-11-10",
-      "giris_fiyat": 68.95,
-      "cikis_tarih": "2026-11-13",
-      "cikis_fiyat": 71.95,
-      "getiri": 4.4,
-      "gun": 3
-    },
-    {
-      "hisse": "ALARK",
-      "giris_tarih": "2026-11-11",
-      "giris_fiyat": 103.4,
-      "cikis_tarih": "2026-11-13",
-      "cikis_fiyat": 109.1,
-      "getiri": 5.5,
-      "gun": 2
     }
   ],
   "veri_alinamayan": []
