@@ -1,4 +1,4 @@
-# BIST 100 Tarama — 2026-11-25 00:04
+# BIST 100 Tarama — 2026-11-25 23:45
 
 Kriterler: MACD > Sinyal (al kesisimi), RSI > 50, MA5 > MA21, ADX(14) > 25 (her gun), Hacim > son 20 gunun ortalama hacmi (giriste), Son 20 gunluk baz genisligi < %30 (giriste)
 Taranan: 100 hisse | Listede: 2 | Son 7 gunde cikan: 3
@@ -7,8 +7,8 @@ Taranan: 100 hisse | Listede: 2 | Son 7 gunde cikan: 3
 
 | Hisse | Giris Tarihi | Giris Fiyati | Guncel Fiyat | Getiri % | Gun |
 |---|---|---|---|---|---|
-| PGSUS | 06.11.2026 | 141.6 | 152.4 | +7.6% | 12 |
-| THYAO | 06.11.2026 | 299.25 | 321.0 | +7.3% | 12 |
+| PGSUS | 06.11.2026 | 141.6 | 154.2 | +8.9% | 13 |
+| THYAO | 06.11.2026 | 299.25 | 320.5 | +7.1% | 13 |
 
 ## 🔴 Listeden Cikanlar — Son 7 Gun (3)
 
