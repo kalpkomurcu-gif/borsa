@@ -1,16 +1,16 @@
-# Gunluk Tarama — 24.11.2026
+# Gunluk Tarama — 27.11.2026
 
-Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-11-25 00:05
+Strateji: **erken_dar** | Evren: BIST 100 | Rapor: 2026-11-27 23:43
 
-**Taranan gun (kapanis): 24.11.2026**
+**Taranan gun (kapanis): 27.11.2026**
 
-> ⚠️ **100 hissenin 24.11.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(23.11), AKBNK(23.11), AKSA(23.11), AKSEN(23.11), ALARK(23.11), ALTNY(23.11), ANSGR(23.11), ARCLK(23.11), ASELS(23.11), ASTOR(23.11), BALSU(23.11), BERA(23.11), BIMAS(23.11), BRSAN(23.11), BRYAT(23.11), BSOKE(23.11), BTCIM(23.11), CANTE(23.11), CCOLA(23.11), CIMSA(23.11) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
+> ⚠️ **100 hissenin 27.11.2026 verisi yok**, taramaya alinmadilar. Parantez ici o hissenin son veri gunu: AEFES(26.11), AKBNK(26.11), AKSA(26.11), AKSEN(26.11), ALARK(26.11), ALTNY(26.11), ANSGR(26.11), ARCLK(26.11), ASELS(26.11), ASTOR(26.11), BALSU(26.11), BERA(26.11), BIMAS(26.11), BRSAN(26.11), BRYAT(26.11), BSOKE(26.11), BTCIM(26.11), CANTE(26.11), CCOLA(26.11), CIMSA(26.11) .... Bu hisseler icin eski bir barin fiyatini bugunku gibi raporlamaktansa listeden cikarmak dogru olan.
 
 Fiyatlar **ham** (duzeltilmemis) kapanistir; aracı kurum ekranindaki fiyatla ayni olmalidir. Gostergeler ise bolunme/bedelsiz duzeltmesi yapilmis seri uzerinde hesaplanir.
 
 ## 🟢 ALIM LISTESI — 0 hisse
 
-**24.11.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
+**27.11.2026 kapanisinda tum kriterler saglandi. Bu hisseler ERTESI ISLEM GUNU ACILISTA alinir.**
 
 Bugun tetiklenen hisse yok — **alim yok.**
 
